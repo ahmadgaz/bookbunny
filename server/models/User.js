@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ViewSchema } from "./View.js";
 
 const UserSchema = new mongoose.Schema(
     {
@@ -25,6 +26,7 @@ const UserSchema = new mongoose.Schema(
             required: true,
             min: 5,
         },
+        views: [ViewSchema],
     },
     { timestamps: true }
 );

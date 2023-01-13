@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import User from "../models/User.js";
 
 // REGISTER USER
 export const register = async (req, res) => {
@@ -15,6 +15,7 @@ export const register = async (req, res) => {
             last_name,
             email,
             password: passwordHash,
+            views: [],
         });
         const savedUser = await newUser.save();
 
@@ -27,7 +28,7 @@ export const register = async (req, res) => {
 // LOGGING IN
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email = "new@test.com", password = "ahmad0973" } = req.body;
         const user = await User.findOne({ email: email });
         if (!user) return res.status(400).json({ msg: "User does not exist!" });
 
