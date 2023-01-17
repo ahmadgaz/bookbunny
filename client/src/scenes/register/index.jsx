@@ -1,7 +1,7 @@
 import { Box, useMediaQuery } from "@mui/material";
 import Form from "./form";
 
-const Login = () => {
+const Register = () => {
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     return (
@@ -11,4 +11,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;

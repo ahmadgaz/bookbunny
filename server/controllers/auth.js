@@ -5,7 +5,17 @@ import User from "../models/User.js";
 // REGISTER USER
 export const register = async (req, res) => {
     try {
-        const { first_name, last_name, email, password } = req.body;
+        const {
+            first_name,
+            last_name,
+            email,
+            // timezone,
+            password,
+        } = req.body;
+
+        const userAlreadyExists = await User.findOne({ email: email });
+        if (userAlreadyExists)
+            return res.status(400).json({ msg: "Email is already in use!" });
 
         const salt = await bcrypt.genSalt();
         const passwordHash = await bcrypt.hash(password, salt);
@@ -14,6 +24,7 @@ export const register = async (req, res) => {
             first_name,
             last_name,
             email,
+            // timezone,
             password: passwordHash,
             views: [],
         });
@@ -28,7 +39,7 @@ export const register = async (req, res) => {
 // LOGGING IN
 export const login = async (req, res) => {
     try {
-        const { email = "new@test.com", password = "ahmad0973" } = req.body;
+        const { email, password } = req.body;
         const user = await User.findOne({ email: email });
         if (!user) return res.status(400).json({ msg: "User does not exist!" });
 

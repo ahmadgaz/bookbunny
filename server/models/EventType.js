@@ -13,6 +13,16 @@ export const EventTypeSchema = new mongoose.Schema(
             required: true,
             ref: "View",
         },
+        event_type_name: {
+            type: String,
+            required: true,
+            max: 100,
+        },
+        event_type_duration: {
+            type: String,
+            required: true,
+        },
+        event_type_location: { type: String },
         events: [EventSchema],
     },
     { timestamps: true }

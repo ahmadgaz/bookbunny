@@ -11,7 +11,6 @@ export const ViewSchema = new mongoose.Schema(
         view_name: {
             type: String,
             required: true,
-            min: 2,
             max: 100,
         },
         view_desc: {
@@ -22,17 +21,15 @@ export const ViewSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        view_schedule: [
-            {
-                sunday: [{ start_time: String, end_time: String }],
-                monday: [{ start_time: String, end_time: String }],
-                tuesday: [{ start_time: String, end_time: String }],
-                wednesday: [{ start_time: String, end_time: String }],
-                thursday: [{ start_time: String, end_time: String }],
-                friday: [{ start_time: String, end_time: String }],
-                saturday: [{ start_time: String, end_time: String }],
-            },
-        ],
+        view_schedule: {
+            sunday: { type: [Object], required: true },
+            monday: { type: [Object], required: true },
+            tuesday: { type: [Object], required: true },
+            wednesday: { type: [Object], required: true },
+            thursday: { type: [Object], required: true },
+            friday: { type: [Object], required: true },
+            saturday: { type: [Object], required: true },
+        },
         view_selected: {
             type: Boolean,
             required: true,

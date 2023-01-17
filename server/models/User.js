@@ -21,6 +21,9 @@ const UserSchema = new mongoose.Schema(
             max: 50,
             unique: true,
         },
+        // timezone: {
+
+        // },
         password: {
             type: String,
             required: true,
