@@ -39,4 +39,6 @@ export const ViewSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export const View = mongoose.model("View", ViewSchema);
+const View = mongoose.model("View", ViewSchema);
+
+export default View;

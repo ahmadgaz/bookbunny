@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
 
-const authURL = `${process.env.REACT_APP_BASE_URL}/auth`;
+const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
 const loginSchema = yup.object().shape({
     email: yup.string().email("Invalid Email").required("Enter your email!"),
@@ -43,7 +43,7 @@ const Form = () => {
 
         const loggedIn = await loggedInResponse.json();
 
-        if (loggedIn.token !== undefined && loggedIn.user !== undefined) {
+        if (loggedIn.token && loggedIn.user) {
             onSubmitProps.resetForm();
             dispatch(
                 setLogin({
@@ -51,9 +51,12 @@ const Form = () => {
                     token: loggedIn.token,
                 })
             );
+            console.log(previousPage);
             navigate(previousPage);
-        } else {
+        } else if (loggedIn.msg) {
             setError(loggedIn.msg);
+        } else {
+            setError("There has been an error in the server.");
         }
     };
 

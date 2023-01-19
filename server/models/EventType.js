@@ -23,9 +23,10 @@ export const EventTypeSchema = new mongoose.Schema(
             required: true,
         },
         event_type_location: { type: String },
-        events: [EventSchema],
     },
     { timestamps: true }
 );
 
-export const EventType = mongoose.model("EventType", EventTypeSchema);
+const EventType = mongoose.model("EventType", EventTypeSchema);
+
+export default EventType;

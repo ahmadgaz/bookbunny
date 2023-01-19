@@ -16,6 +16,10 @@ const View = () => {
             height="100%"
             width="100%"
         >
+            Edit View
+            <br />
+            Delete View
+            <br />
             <Box height="260px" width="100%">
                 <Schedule
                     direction="horizontal"
@@ -37,6 +41,7 @@ const View = () => {
                     }
                 />
             </Box>
+            <Box height="260px" width="100%"></Box>
         </Box>
     );
 };

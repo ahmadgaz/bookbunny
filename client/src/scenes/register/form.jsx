@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
 
-const authURL = `${process.env.REACT_APP_BASE_URL}/auth`;
+const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
 const registerSchema = yup.object().shape({
     first_name: yup.string().required("Enter your first name!"),
@@ -51,6 +51,8 @@ const Form = () => {
         } else if (savedUser.msg) {
             setError(savedUser.msg);
             return;
+        } else {
+            setError("There has been an error in the server.");
         }
 
         login(values, onSubmitProps);
@@ -75,6 +77,7 @@ const Form = () => {
                     token: loggedIn.token,
                 })
             );
+            console.log(previousPage);
             navigate(previousPage);
         } else {
             setError("There has been an error on our end.");

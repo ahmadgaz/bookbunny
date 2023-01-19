@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { Box, useMediaQuery, AppBar, Button, Toolbar } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setRouteBeforeLogInOrSignUp } from "state";
 
-const Navbar = () => {
-    const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
-    const dispatch = useDispatch();
+const Navbar = (props) => {
+    const { setPrevPage } = props;
+    // const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const navigate = useNavigate();
-    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    // const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     return (
         <AppBar>
@@ -24,11 +22,7 @@ const Navbar = () => {
                     <Button
                         color="inherit"
                         onClick={() => {
-                            dispatch(
-                                setRouteBeforeLogInOrSignUp({
-                                    routeBeforeLogInOrSignUp: "/home",
-                                })
-                            );
+                            setPrevPage();
                             navigate("/login");
                         }}
                     >
@@ -38,6 +32,7 @@ const Navbar = () => {
                         color="inherit"
                         variant="contained"
                         onClick={() => {
+                            setPrevPage();
                             navigate("/register");
                         }}
                     >

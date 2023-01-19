@@ -4,6 +4,7 @@ import Home from "scenes/home";
 import Login from "scenes/login";
 import Register from "scenes/register";
 import Dashboard from "scenes/dashboard";
+import NewEvent from "scenes/newEvent";
 
 function App() {
     const isAuth = Boolean(useSelector((state) => state.token));
@@ -17,23 +18,24 @@ function App() {
                         element={
                             isAuth ? <Navigate to="/dashboard" /> : <Home />
                         }
+                        // errorElement={}
                     />
                     <Route
                         path="/login"
-                        element={
-                            isAuth ? <Navigate to="/dashboard" /> : <Login />
-                        }
+                        element={<Login />}
+                        // errorElement={}
                     />
                     <Route
                         path="/register"
-                        element={
-                            isAuth ? <Navigate to="/dashboard" /> : <Register />
-                        }
+                        element={<Register />}
+                        // errorElement={}
                     />
                     <Route
                         path="/dashboard"
                         element={isAuth ? <Dashboard /> : <Navigate to="/" />}
+                        // errorElement={}
                     />
+                    <Route path="/newEvent/:eventType" element={<NewEvent />} />
                 </Routes>
             </BrowserRouter>
         </div>

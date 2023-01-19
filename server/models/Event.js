@@ -7,16 +7,22 @@ export const EventSchema = new mongoose.Schema(
             required: true,
             ref: "User",
         },
-        view_id: {
-            type: mongoose.Schema.Types.ObjectId,
-            required: true,
-            ref: "View",
-        },
         event_type_id: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
             ref: "EventType",
         },
+        event_date: { type: Date, required: true },
+        event_notes: { type: String, max: 1000 },
+        event_attendees: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                required: true,
+                ref: "User",
+            },
+        ],
+        event_status: { type: String, required: true },
+        event_attending: { type: Boolean },
     },
     { timestamps: true }
 );

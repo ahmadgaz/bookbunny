@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { ViewSchema } from "./View.js";
+import { EventSchema } from "./Event.js";
 
 const UserSchema = new mongoose.Schema(
     {
@@ -30,6 +31,7 @@ const UserSchema = new mongoose.Schema(
             min: 5,
         },
         views: [ViewSchema],
+        events: [EventSchema],
     },
     { timestamps: true }
 );
