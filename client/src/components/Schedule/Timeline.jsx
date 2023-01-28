@@ -1,3 +1,4 @@
+import { Box, Button, Popover } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { v4 } from "uuid";
@@ -6,11 +7,16 @@ import { getTime, getPosAndSize } from "./convertData";
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
-        ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(
-              result[3],
-              16
-          )}`
-        : null;
+        ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+          }
+        : {
+              r: "",
+              g: "",
+              b: "",
+          };
 }
 function move(input, from, to) {
     let numberOfDeletedElm = 1;
@@ -39,20 +45,42 @@ const useStyles = makeStyles({
 });
 
 const Timeline = (props) => {
-    const { direction, type, pxSize, label, views, updateView } = props;
+    const {
+        direction,
+        type,
+        pxSize,
+        label,
+        views,
+        incrementSize,
+        updateView,
+        deleteEvent,
+        acceptEvent,
+    } = props;
     const classes = useStyles();
 
     class TimeslotData {
-        constructor(color, time) {
+        constructor(color, time, event) {
             this.key = v4();
             this.direction = direction;
             this.color = color;
+            this.borderColor = `rgba(${hexToRgb(color).r - 100}, ${
+                hexToRgb(color).g - 100
+            }, ${hexToRgb(color).b - 100}, 1)`;
             this.time = time;
+            this.event = event;
         }
         getStyle() {
             return {
                 position: "absolute",
-                cursor: type === "read" ? "" : "no-drop",
+                cursor:
+                    type === "write"
+                        ? "no-drop"
+                        : this.event
+                        ? this.event.event_status === "denied" ||
+                          this.event.event_status === "canceled"
+                            ? "no-drop"
+                            : ""
+                        : "",
                 left:
                     this.direction === "horizontal"
                         ? this.position + "px"
@@ -62,11 +90,15 @@ const Timeline = (props) => {
                         ? this.position + "px"
                         : "0px",
                 width:
-                    this.direction === "horizontal" ? this.size + "px" : "100%",
+                    this.direction === "horizontal"
+                        ? `calc(${this.size}px - 4px)`
+                        : "100%",
                 height:
-                    this.direction === "vertical" ? this.size + "px" : "100%",
-                borderRadius: "2px",
-                border: this.size > 0 ? "1px inset rgba(0,0,0,0.25)" : "",
+                    this.direction === "vertical"
+                        ? `calc(${this.size}px - 4px)`
+                        : "100%",
+                borderRadius: "5px",
+                border: this.size > 0 ? `1.5px solid ${this.borderColor}` : "",
                 background: this.color,
                 WebkitUserSelect: "none",
                 KhtmlUserSelect: "none",
@@ -96,17 +128,16 @@ const Timeline = (props) => {
                     ? e.clientY - this.cellDistFromBoundingClient
                     : e.clientX - this.cellDistFromBoundingClient;
         }
-        setThirtyMinSize(target) {
-            this.thirtyMinSize =
+        setIncrement(target) {
+            this.increment =
                 this.direction === "vertical"
-                    ? target.clientHeight / 48
-                    : target.clientWidth / 48;
+                    ? target.clientHeight / ((60 / incrementSize) * 24)
+                    : target.clientWidth / ((60 / incrementSize) * 24);
         }
-        IsNearThirtyMinMark() {
-            return this.rawPosition % this.thirtyMinSize <
-                this.thirtyMinSize / 5 ||
-                this.rawPosition % this.thirtyMinSize >
-                    this.thirtyMinSize - this.thirtyMinSize / 5
+        IsNearIncrementMark() {
+            return this.rawPosition % this.increment < this.increment / 5 ||
+                this.rawPosition % this.increment >
+                    this.increment - this.increment / 5
                 ? true
                 : false;
         }
@@ -114,30 +145,28 @@ const Timeline = (props) => {
             if (isFor === "pos") {
                 this.time = {
                     start_time: `${getTime(
-                        this.rawPosition -
-                            (this.rawPosition % this.thirtyMinSize),
-                        this.thirtyMinSize
+                        this.rawPosition - (this.rawPosition % this.increment),
+                        this.increment
                     )}`,
                     end_time: `${getTime(
-                        this.rawPosition -
-                            (this.rawPosition % this.thirtyMinSize),
-                        this.thirtyMinSize
+                        this.rawPosition - (this.rawPosition % this.increment),
+                        this.increment
                     )}`,
                 };
             } else if (isFor === "size") {
                 this.time.end_time = `${getTime(
                     this.rawPosition +
-                        this.thirtyMinSize / 5 -
-                        ((this.rawPosition + this.thirtyMinSize / 5) %
-                            this.thirtyMinSize) -
+                        this.increment / 5 -
+                        ((this.rawPosition + this.increment / 5) %
+                            this.increment) -
                         this.position >=
                         0
                         ? this.rawPosition +
-                              this.thirtyMinSize / 5 -
-                              ((this.rawPosition + this.thirtyMinSize / 5) %
-                                  this.thirtyMinSize)
+                              this.increment / 5 -
+                              ((this.rawPosition + this.increment / 5) %
+                                  this.increment)
                         : 0,
-                    this.thirtyMinSize
+                    this.increment
                 )}`;
             } else if (isFor === "time") {
                 this.time = time;
@@ -145,10 +174,18 @@ const Timeline = (props) => {
             // {start_time: "00:00", end_time: "00:00"}
         }
         setPosition() {
-            this.position = getPosAndSize(this.time, this.thirtyMinSize).pos;
+            this.position = getPosAndSize(
+                this.time,
+                this.increment,
+                incrementSize
+            ).pos;
         }
         setSize() {
-            this.size = getPosAndSize(this.time, this.thirtyMinSize).size;
+            this.size = getPosAndSize(
+                this.time,
+                this.increment,
+                incrementSize
+            ).size;
         }
         correctOverlapsForWriteComponents(timeslotsDataCurrent) {
             let data = [...timeslotsDataCurrent];
@@ -182,11 +219,11 @@ const Timeline = (props) => {
                     timeslot.time = {
                         start_time: `${getTime(
                             timeslot.position,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                         end_time: `${getTime(
                             timeslot.position + timeslot.size,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                     };
                     data = [
@@ -200,8 +237,7 @@ const Timeline = (props) => {
                                 );
                                 splitSlot.cellDistFromBoundingClient =
                                     timeslot.cellDistFromBoundingClient;
-                                splitSlot.thirtyMinSize =
-                                    timeslot.thirtyMinSize;
+                                splitSlot.increment = timeslot.increment;
                                 splitSlot.setPosition();
                                 splitSlot.setSize();
                                 return [t, splitSlot];
@@ -217,11 +253,11 @@ const Timeline = (props) => {
                     data[idx + 1].time = {
                         start_time: `${getTime(
                             data[idx + 1].position,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                         end_time: `${getTime(
                             data[idx + 1].position + data[idx + 1].size,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                     };
                     return;
@@ -232,11 +268,11 @@ const Timeline = (props) => {
                     timeslot.time = {
                         start_time: `${getTime(
                             timeslot.position,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                         end_time: `${getTime(
                             timeslot.position + timeslot.size,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                     };
                     return;
@@ -251,11 +287,11 @@ const Timeline = (props) => {
                     timeslot.time = {
                         start_time: `${getTime(
                             timeslot.position,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                         end_time: `${getTime(
                             timeslot.position + timeslot.size,
-                            this.thirtyMinSize
+                            this.increment
                         )}`,
                     };
                     return;
@@ -294,8 +330,12 @@ const Timeline = (props) => {
         }
         correctOverlapsForReadComponents(timeslotsDataCurrent) {
             let data = [...timeslotsDataCurrent];
-            const color = `rgba(${hexToRgb(this.color)}, 1)`;
-            const opaqueColor = ` rgba(${hexToRgb(this.color)}, 0.5)`;
+            const color = `rgba(${hexToRgb(this.color).r}, ${
+                hexToRgb(this.color).g
+            }, ${hexToRgb(this.color).b}, 1)`;
+            const opaqueColor = ` rgba(${hexToRgb(this.color).r}, ${
+                hexToRgb(this.color).g
+            }, ${hexToRgb(this.color).b}, 0.5)`;
             let opaqueParts = [];
             let linearGradient = `linear-gradient(${
                 direction === "horizontal" ? "90deg" : "180deg"
@@ -421,6 +461,14 @@ const Timeline = (props) => {
             // console.log(opaqueParts.map((part) => part.percentages));
             return data;
         }
+        handlePopoverOpen(event) {
+            this.popoverAnchorEl = event.currentTarget;
+            updateTimeslots();
+        }
+        handlePopoverClose() {
+            this.popoverAnchorEl = null;
+            updateTimeslots();
+        }
     }
 
     const cell = useRef();
@@ -434,11 +482,17 @@ const Timeline = (props) => {
         let schedule = view.current.view_schedule[label.toLowerCase()];
         if (schedule.length > 0) {
             schedule.forEach((timeslot) => {
-                data.push(new TimeslotData(view.current.view_color, timeslot));
+                data.push(
+                    new TimeslotData(
+                        view.current.view_color,
+                        timeslot,
+                        view.current.view_event ? view.current.view_event : null
+                    )
+                );
                 data[data.length - 1].setCellDistFromBoundingClient(
                     cell.current
                 );
-                data[data.length - 1].setThirtyMinSize(cell.current);
+                data[data.length - 1].setIncrement(cell.current);
                 data[data.length - 1].setPosition();
                 data[data.length - 1].setSize();
                 data[data.length - 1].correctOverlapsForWriteComponents(data);
@@ -453,11 +507,17 @@ const Timeline = (props) => {
                 let schedule = view.view_schedule[label.toLowerCase()];
                 if (schedule.length > 0) {
                     schedule.forEach((timeslot) => {
-                        data.push(new TimeslotData(view.view_color, timeslot));
+                        data.push(
+                            new TimeslotData(
+                                view.view_color,
+                                timeslot,
+                                view.view_event ? view.view_event : null
+                            )
+                        );
                         data[data.length - 1].setCellDistFromBoundingClient(
                             cell.current
                         );
-                        data[data.length - 1].setThirtyMinSize(cell.current);
+                        data[data.length - 1].setIncrement(cell.current);
                         data[data.length - 1].setPosition();
                         data[data.length - 1].setSize();
                         data[data.length - 1].correctOverlapsForReadComponents(
@@ -470,16 +530,19 @@ const Timeline = (props) => {
         return data;
     };
     useEffect(() => {
+        if (!views[0]) {
+            view.current = [];
+        }
         if (views.length > 0) {
             view.current = JSON.parse(JSON.stringify(views[0]));
+            if (type === "write") {
+                timeslotsData.current = setSelectedView();
+            } else {
+                timeslotsData.current = setAllViews();
+            }
+            timeslotsData.current = handleMouseUpMouseLeave();
+            updateTimeslots();
         }
-        if (type === "write") {
-            timeslotsData.current = setSelectedView();
-        } else {
-            timeslotsData.current = setAllViews();
-        }
-        timeslotsData.current = handleMouseUpMouseLeave();
-        updateTimeslots();
     }, [direction, type, pxSize, label, views]);
 
     const handleOnMouseDown = (e) => {
@@ -488,7 +551,7 @@ const Timeline = (props) => {
         data.push(new TimeslotData(color));
         data[data.length - 1].setCellDistFromBoundingClient(e.target);
         data[data.length - 1].setRawPosition(e);
-        data[data.length - 1].setThirtyMinSize(e.target);
+        data[data.length - 1].setIncrement(e.target);
         data[data.length - 1].setTime("pos");
         data[data.length - 1].setPosition();
         data[data.length - 1].setSize();
@@ -511,7 +574,7 @@ const Timeline = (props) => {
         data[data.length - 1].setRawPosition(e);
 
         // Set current timeslot
-        if (data[data.length - 1].IsNearThirtyMinMark()) {
+        if (data[data.length - 1].IsNearIncrementMark()) {
             data[data.length - 1].setTime("size");
             data[data.length - 1].setSize();
             data =
@@ -552,7 +615,7 @@ const Timeline = (props) => {
                 <div
                     key={timeslot.key}
                     style={timeslot.getStyle()}
-                    onMouseDown={() => {
+                    onMouseDown={(e) => {
                         if (type === "write") {
                             timeslotsData.current = handleOnTimeslotClick(idx);
                             view.current.view_schedule[label.toLowerCase()] =
@@ -560,6 +623,19 @@ const Timeline = (props) => {
                                     (timeslot) => timeslot.time
                                 );
                             updateTimeslots();
+                        } else if (type === "read" && timeslot.event) {
+                            if (
+                                timeslot.event.event_status !== "denied" &&
+                                timeslot.event.event_status !== "canceled"
+                            ) {
+                                timeslot.handlePopoverOpen(e);
+                            } else if (
+                                timeslot.event.event_status === "denied" ||
+                                timeslot.event.event_status === "canceled"
+                            ) {
+                                console.log();
+                                deleteEvent(timeslot.event);
+                            }
                         }
                     }}
                 >
@@ -567,9 +643,79 @@ const Timeline = (props) => {
                         className={
                             type === "write"
                                 ? classes.timeslotHoverAnimation
+                                : type === "read" && timeslot.event
+                                ? classes.timeslotHoverAnimation
                                 : ""
                         }
                     ></div>
+                    {timeslot.event && (
+                        <Popover
+                            open={Boolean(timeslot.popoverAnchorEl)}
+                            anchorEl={timeslot.popoverAnchorEl}
+                            anchorOrigin={{
+                                vertical: "center",
+                                horizontal: "center",
+                            }}
+                            PaperProps={{
+                                style: {
+                                    marginTop: "10px",
+                                },
+                            }}
+                            onClose={() => {
+                                timeslot.handlePopoverClose();
+                            }}
+                        >
+                            {timeslot.event.event_name}
+                            <br />
+                            {timeslot.event.event_location}
+                            <br />
+                            {timeslot.event.event_date}
+                            <br />
+                            {timeslot.event.event_duration}
+                            <br />
+                            {timeslot.event.event_notes}
+                            <br />
+                            {timeslot.event.event_attendees}
+                            <br />
+                            {timeslot.event.event_status}
+                            <br />
+                            {timeslot.event.event_attending.toString()}
+                            <br />
+                            {((timeslot.event.event_status === "pending" &&
+                                timeslot.event.event_attending) ||
+                                (timeslot.event.event_status === "confirmed" &&
+                                    timeslot.event.event_attending)) && (
+                                <Box>
+                                    <Button
+                                        onClick={() => {
+                                            deleteEvent(timeslot.event);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </Box>
+                            )}
+                            {timeslot.event.event_status === "pending" &&
+                                !timeslot.event.event_attending && (
+                                    <Box>
+                                        <Button
+                                            onClick={() => {
+                                                acceptEvent(timeslot.event);
+                                            }}
+                                        >
+                                            Accept
+                                        </Button>
+                                        <Button
+                                            onClick={() => {
+                                                deleteEvent(timeslot.event);
+                                            }}
+                                        >
+                                            Deny
+                                        </Button>
+                                    </Box>
+                                )}
+                        </Popover>
+                    )}
                 </div>
             )),
         ]);
@@ -629,40 +775,40 @@ const Timeline = (props) => {
                     minHeight: 0,
                 }}
                 onTouchStartCapture={(e) => {
-                    if (type === "write") {
+                    if (type === "write" && views.length > 0) {
                         e.persist();
                         timeslotsData.current = handleOnMouseDown(e.touches[0]);
                         updateTimeslots();
                     }
                 }}
                 onTouchMoveCapture={(e) => {
-                    if (type === "write") {
+                    if (type === "write" && views.length > 0) {
                         handleMouseMove(e.touches[0]);
                     }
                 }}
                 onTouchEndCapture={() => {
-                    if (type === "write") {
+                    if (type === "write" && views.length > 0) {
                         timeslotsData.current = handleMouseUpMouseLeave();
                         updateTimeslots();
                         updateView(view.current);
                     }
                 }}
                 onMouseDownCapture={(e) => {
-                    if (type === "write") {
+                    if (type === "write" && views.length > 0) {
                         e.persist();
                         timeslotsData.current = handleOnMouseDown(e);
                         updateTimeslots();
                     }
                 }}
                 onMouseUpCapture={() => {
-                    if (type === "write") {
+                    if (type === "write" && views.length > 0) {
                         timeslotsData.current = handleMouseUpMouseLeave();
                         updateTimeslots();
                         updateView(view.current);
                     }
                 }}
                 onMouseLeave={() => {
-                    if (type === "write") {
+                    if (type === "write" && views.length > 0) {
                         timeslotsData.current = handleMouseUpMouseLeave();
                         updateTimeslots();
                         updateView(view.current);

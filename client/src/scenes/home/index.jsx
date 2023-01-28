@@ -10,7 +10,7 @@ const Home = () => {
     const setPrevPageToHome = () => {
         dispatch(
             setRouteBeforeLogInOrSignUp({
-                routeBeforeLogInOrSignUp: "/home",
+                routeBeforeLogInOrSignUp: "/",
             })
         );
     };

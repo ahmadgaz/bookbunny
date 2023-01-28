@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import View from "../models/View.js";
 import EventType from "../models/EventType.js";
+import Event from "../models/Event.js";
 
 // USER
 export const getUser = async (req, res) => {
@@ -11,6 +12,37 @@ export const getUser = async (req, res) => {
             _id: req.params.user,
         }).exec();
         res.status(201).json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const getRecievingUser = async (req, res) => {
+    try {
+        req.params.eventType = mongoose.Types.ObjectId(req.params.eventType);
+        const eventType = await EventType.findOne({
+            _id: req.params.eventType,
+        }).exec();
+        if (!eventType) return res.status(500).json("Event type not found!");
+        const user = await User.findOne({
+            _id: eventType.owner_id,
+        }).exec();
+        if (!user) return res.status(500).json("User not found!");
+        res.status(201).json(user);
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).json({ error: err.message });
+    }
+};
+export const getFirstFourUsers = async (req, res) => {
+    try {
+        const users = req.params.filter
+            ? await User.find({
+                  email: { $regex: "^" + req.params.filter, $options: "i" },
+              })
+                  .limit(4)
+                  .exec()
+            : [];
+        res.status(201).json(users);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -138,6 +170,15 @@ export const deleteView = async (req, res) => {
                 user.views.splice(idx, 1);
             }
         });
+
+        if (user.views.length > 0) {
+            let selectedView = await View.findOne({
+                _id: user.views[0]._id,
+            }).exec();
+            selectedView.view_selected = true;
+            user.views[0].view_selected = true;
+            await selectedView.save();
+        }
 
         // Save user
         await user.save();
@@ -287,5 +328,310 @@ export const deleteEventType = async (req, res) => {
         res.status(201).json("Event-type deleted");
     } catch (err) {
         res.status(500).json({ error: err.message });
+    }
+};
+
+// EVENTS
+export const createEvent = async (req, res) => {
+    try {
+        const { event_date, event_duration, event_notes, event_attendees } =
+            req.body;
+
+        console.log(req.body);
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        req.params.eventType = mongoose.Types.ObjectId(req.params.eventType);
+        const eventType = await EventType.findOne({
+            _id: req.params.eventType,
+        });
+
+        // Create & save base event for sender
+        let newEvents = [
+            new Event({
+                owner_id: req.params.user,
+                sender_id: req.params.user,
+                event_type_id: eventType._id,
+                event_name: eventType.event_type_name,
+                event_location: eventType.event_type_location,
+                event_id: undefined,
+                event_date,
+                event_duration,
+                event_notes,
+                event_attendees,
+                event_status: "pending",
+                event_attending: true,
+            }),
+        ];
+        newEvents[0].event_id = newEvents[0]._id;
+        let users = [await User.findOne({ _id: req.params.user }).exec()];
+        users[0].events.push(newEvents[0]);
+        await newEvents[0].save();
+        await users[0].save();
+
+        // Create & save event for receivers
+        for (const [idx, attendee] of event_attendees.entries()) {
+            if (attendee.toString() !== req.params.user.toString()) {
+                newEvents = [
+                    ...newEvents,
+                    new Event({
+                        owner_id: attendee,
+                        sender_id: req.params.user,
+                        event_type_id: eventType._id,
+                        event_name: eventType.event_type_name,
+                        event_location: eventType.event_type_location,
+                        event_id: newEvents[0]._id,
+                        event_date,
+                        event_duration,
+                        event_notes,
+                        event_attendees,
+                        event_status: "pending",
+                        event_attending: false,
+                    }),
+                ];
+                users = [
+                    ...users,
+                    await User.findOne({ _id: attendee }).exec(),
+                ];
+                users[idx].events.push(newEvents[idx]);
+                await newEvents[idx].save();
+                await users[idx].save();
+            }
+        }
+
+        res.status(201).json(newEvents);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const getEvent = async (req, res) => {
+    try {
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        req.params.event = mongoose.Types.ObjectId(req.params.event);
+        const event = await Event.findOne({
+            event_id: req.params.event,
+            owner_id: req.params.user,
+        }).exec();
+        res.status(201).json(event);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const acceptEvent = async (req, res) => {
+    try {
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        req.params.event = mongoose.Types.ObjectId(req.params.event);
+        let user = await User.findOne({ _id: req.params.user }).exec();
+        let event = await Event.findOne({
+            owner_id: req.params.user,
+            event_id: req.params.event,
+        }).exec();
+
+        let eventIndex = user.events.findIndex(
+            (e) => e.event_id.toString() === event.event_id.toString()
+        );
+        user.events[eventIndex].event_attending = true;
+        user.events[eventIndex].event_status = "confirmed";
+        event.event_attending = true;
+        event.event_status = "confirmed";
+        await user.save();
+        await event.save();
+
+        // Check if all users have accepted their events
+        let allHaveAccepted = true;
+        for (const attendee of event.event_attendees) {
+            // Skip if the attendee id is the sender id
+            let e = await Event.findOne({
+                owner_id: attendee,
+                event_id: event.event_id,
+            }).exec();
+
+            if (e.event_attending === false) {
+                allHaveAccepted = false;
+            }
+        }
+
+        if (allHaveAccepted) {
+            let s = await User.findOne({ _id: event.sender_id }).exec();
+            let e = await Event.findOne({
+                owner_id: s._id,
+                event_id: event.event_id,
+            }).exec();
+
+            let senderEventIndex = s.events.findIndex(
+                (ev) => ev.event_id.toString() === e.event_id.toString()
+            );
+            s.events[senderEventIndex].event_attending = true;
+            s.events[senderEventIndex].event_status = "confirmed";
+            e.event_attending = true;
+            e.event_status = "confirmed";
+            await s.save();
+            await e.save();
+        }
+
+        res.status(201).json("Event accepted");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const deleteEvent = async (req, res) => {
+    try {
+        // SCENARIOS:
+        // 1. sender cancels -> set status of attending receivers to canceled, remove it for non-attending receivers
+        // 2. receiver denies OR cancels -> remove it for receiver
+        // 3. all receivers have denied -> set status to denied
+        // 3. all attendees have canceled -> set status to canceled
+
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        req.params.event = mongoose.Types.ObjectId(req.params.event);
+        let user = await User.findOne({ _id: req.params.user }).exec();
+        let event = await Event.findOne({
+            owner_id: req.params.user,
+            event_id: req.params.event,
+        }).exec();
+        const senderCanceled =
+            user._id.toString() === event.sender_id.toString();
+
+        // 1
+        console.log("522");
+        if (senderCanceled) {
+            for (const attendee of event.event_attendees) {
+                console.log(attendee);
+                // Skip if the attendee id is the sender id
+                if (attendee.toString() === event.sender_id.toString()) {
+                    continue;
+                }
+
+                let u = await User.findOne({ _id: attendee }).exec();
+                console.log("531");
+                let e = await Event.findOne({
+                    owner_id: attendee,
+                    event_id: event.event_id,
+                }).exec();
+
+                // If user is not attending, remove the event
+                let eventIndex = u.events.findIndex(
+                    (e) => e.event_id.toString() === event.event_id.toString()
+                );
+                if (!u.events[eventIndex].event_attending) {
+                    u.events.splice(eventIndex, 1);
+                    console.log("542");
+                    await Event.deleteOne({
+                        owner_id: attendee,
+                        event_id: event.event_id,
+                    });
+                    await u.save();
+                    continue;
+                }
+
+                // If user is attending, then remove sender from event_attendees, set their event_attending to false, and set their event_status to canceled
+                let cancelersIndex = u.events[
+                    eventIndex
+                ].event_attendees.findIndex(
+                    (attendee) =>
+                        attendee.toString() === event.sender_id.toString()
+                );
+                if (u.events[eventIndex].event_attending) {
+                    u.events[eventIndex].event_attendees = [];
+                    u.events[eventIndex].event_status = "canceled";
+                    u.events[eventIndex].event_attending = false;
+                    e.event_attendees = [];
+                    e.event_status = "canceled";
+                    e.event_attending = false;
+                    await u.save();
+                    await e.save();
+                    continue;
+                }
+            }
+
+            let senderEventIndex = user.events.findIndex(
+                (e) => e.event_id.toString() === event.event_id.toString()
+            );
+            console.log("577");
+            user.events.splice(senderEventIndex, 1);
+            await Event.deleteOne({
+                owner_id: user._id,
+                event_id: event.event_id,
+            }).exec();
+            console.log("583");
+            await user.save();
+        }
+
+        // 2, 3, 4
+        console.log("585");
+        if (!senderCanceled) {
+            // Remove user from other peoples attendees list
+            for (const attendee of event.event_attendees) {
+                if (attendee.toString() !== user._id.toString()) {
+                    let u = await User.findOne({ _id: attendee }).exec();
+                    let e = await Event.findOne({
+                        owner_id: attendee,
+                        event_id: event.event_id,
+                    }).exec();
+                    let eventIndex = u.events.findIndex(
+                        (e) =>
+                            e.event_id.toString() === event.event_id.toString()
+                    );
+                    let cancelersIndex = u.events[
+                        eventIndex
+                    ].event_attendees.findIndex(
+                        (attendee) =>
+                            attendee.toString() === user._id.toString()
+                    );
+                    u.events[eventIndex].event_attendees.splice(
+                        cancelersIndex,
+                        1
+                    );
+                    e.event_attendees.splice(cancelersIndex, 1);
+                    await u.save();
+                    await e.save();
+                }
+            }
+
+            // Check if sender has been completely canceled on or denied by every receiver before deleting this last receivers event
+            if (event.event_attendees.length === 2) {
+                let s = await User.findOne({
+                    _id: event.sender_id,
+                }).exec();
+                let e = await Event.findOne({
+                    owner_id: event.sender_id,
+                    event_id: event.event_id,
+                }).exec();
+                let eventIndex = s.events.findIndex(
+                    (e) => e.event_id.toString() === event.event_id.toString()
+                );
+                if (s.events[eventIndex].event_status === "confirmed") {
+                    s.events[eventIndex].event_status = "canceled";
+                    e.event_status = "canceled";
+                } else if (s.events[eventIndex].event_status === "pending") {
+                    s.events[eventIndex].event_status = "denied";
+                    e.event_status = "denied";
+                }
+                await s.save();
+                await e.save();
+            }
+
+            // Delete user event
+            let receiverEventIndex = user.events.findIndex(
+                (e) => e.event_id.toString() === event.event_id.toString()
+            );
+            user.events.splice(receiverEventIndex, 1);
+            console.log("642");
+            await Event.deleteOne({
+                owner_id: user._id,
+                event_id: event.event_id,
+            }).exec();
+            console.log("647");
+            await user.save();
+        }
+
+        res.status(201).json(
+            `${
+                senderCanceled
+                    ? "Sender canceled"
+                    : "Receiver canceled or denied"
+            }, event deleted`
+        );
+    } catch (err) {
+        console.log(err.message + "\n" + err.stack.split("\n").join("\n"));
+        res.status(500).json({ error: err });
     }
 };

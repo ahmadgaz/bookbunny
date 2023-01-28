@@ -1,6 +1,12 @@
 import express from "express";
 import {
     getUser,
+    getRecievingUser,
+    getFirstFourUsers,
+    createEvent,
+    getEvent,
+    acceptEvent,
+    deleteEvent,
     createView,
     getView,
     updateView,
@@ -16,6 +22,14 @@ const router = express.Router();
 
 // USER
 router.get("/:user", verifyToken, getUser);
+router.get("/getRecievingUser/:eventType", verifyToken, getRecievingUser);
+router.get("/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers);
+
+// EVENTS
+router.post("/:user/:eventType/createEvent", verifyToken, createEvent);
+router.get("/:user/getEvent/:event", verifyToken, getEvent);
+router.patch("/:user/acceptEvent/:event", verifyToken, acceptEvent);
+router.delete("/:user/deleteEvent/:event", verifyToken, deleteEvent);
 
 // EVENT TYPES
 router.post("/:user/:view/createEventType", verifyToken, createEventType);

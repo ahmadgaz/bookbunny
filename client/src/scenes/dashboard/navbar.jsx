@@ -22,7 +22,7 @@ import ViewDayIcon from "@mui/icons-material/ViewDay";
 import TodayIcon from "@mui/icons-material/Today";
 import PersonIcon from "@mui/icons-material/Person";
 import SupportIcon from "@mui/icons-material/Support";
-import { CRUDFunctionsContext } from ".";
+import { CRUDFunctionsContext } from "App";
 import { useDispatch } from "react-redux";
 import { setLogout } from "state";
 import { Global } from "@emotion/react";
@@ -74,7 +74,6 @@ const DeleteEventTypeDialog = (props) => {
         </Dialog>
     );
 };
-
 const eventTypeFormValidationSchema = yup.object().shape({
     event_type_name: yup.string().required("Enter a name for your event type!"),
     event_type_duration: yup
@@ -83,7 +82,6 @@ const eventTypeFormValidationSchema = yup.object().shape({
         .matches(/^([0-9]?[0-9]):[0-5][0-9]$/, "Wrong format. Use HH:MM"),
     event_type_location: yup.string().notRequired(),
 });
-
 const EditEventTypeDialog = (props) => {
     const { eventType, setShowDialog, setShowSnackbar } = props;
     const { getSelectedView, updateEventType } =
@@ -211,13 +209,11 @@ const EditEventTypeDialog = (props) => {
         </Dialog>
     );
 };
-
 const initialValuesAddEventType = {
     event_type_name: "",
     event_type_duration: "",
     event_type_location: "",
 };
-
 const AddEventTypeDialog = (props) => {
     const { setShowDialog, setShowSnackbar } = props;
     const { getSelectedView, createEventType } =
@@ -339,9 +335,7 @@ const AddEventTypeDialog = (props) => {
         </Dialog>
     );
 };
-
 const eventTypeURL = `${process.env.REACT_APP_CLIENT_BASE_URL}/newEvent`;
-
 const EventTypesDropdown = () => {
     const { getSelectedView } = useContext(CRUDFunctionsContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -352,7 +346,7 @@ const EventTypesDropdown = () => {
     const [showDeletedSnackbar, setShowDeletedSnackbar] = useState(false);
     const [showEditedSnackbar, setShowEditedSnackbar] = useState(false);
     const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
-    let view = { ...getSelectedView() };
+    const view = { ...getSelectedView() };
 
     const handleDeleteDialogOpen = (et) => {
         setShowDeleteDialog(et);
@@ -536,20 +530,18 @@ const EventTypesDropdown = () => {
     );
 };
 
+// VIEWS
 const addViewSchema = yup.object().shape({
     view_name: yup.string().required("Enter a view name!"),
     view_desc: yup.string().notRequired(),
     view_color: yup.string().required("Pick a color!"),
 });
-
 const initialValuesAddView = {
     view_name: "",
     view_desc: "",
     view_color: "",
 };
-
 const colors = ["#423E3B", "#FF2E00", "#FEA82F", "#FFFECB", "#5448C8"];
-
 const hexToRgb = (hex) => {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
@@ -560,7 +552,6 @@ const hexToRgb = (hex) => {
           }
         : null;
 };
-
 const ColorPickerBtn = (props) => {
     const { error, selected, color, onClick } = props;
 
@@ -584,7 +575,6 @@ const ColorPickerBtn = (props) => {
         ></Button>
     );
 };
-
 const AddViewDialog = (props) => {
     const { setShowDialog, setShowSnackbar } = props;
     const { createView } = useContext(CRUDFunctionsContext);
@@ -702,7 +692,6 @@ const AddViewDialog = (props) => {
         </Dialog>
     );
 };
-
 const ViewsDropdown = () => {
     const { user, getSelectedView, updateView } =
         useContext(CRUDFunctionsContext);

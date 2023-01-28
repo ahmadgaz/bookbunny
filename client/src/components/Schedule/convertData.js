@@ -10,7 +10,7 @@ export const getTime = (cur, thirtyMinSize) => {
     // min: 00-59
 };
 
-export const getPosAndSize = (cur, thirtyMinSize) => {
+export const getPosAndSize = (cur, thirtyMinSize, incrementSize) => {
     if (cur === undefined) return { pos: 0, size: 0 };
 
     const { start_time, end_time } = cur;
@@ -24,20 +24,36 @@ export const getPosAndSize = (cur, thirtyMinSize) => {
     const endMinutes = parseInt(end[2], 10);
     let pos = 0;
     let size = 0;
+    // 5:56 - 7:23
 
-    if (startMinutes < 30) {
-        pos = thirtyMinSize * (2 * startHours);
-    } else if (startMinutes >= 30) {
-        pos = thirtyMinSize * (2 * startHours + 1);
-    }
-    if (endMinutes < 30) {
-        size = thirtyMinSize * (2 * endHours) - pos;
-    } else if (endMinutes >= 30) {
-        if (endMinutes === 59) {
-            size = thirtyMinSize * (2 * endHours + 2) - pos;
-        } else {
-            size = thirtyMinSize * (2 * endHours + 1) - pos;
+    let iteration = 0;
+    for (let i = 0; i < 60; i += parseInt(incrementSize)) {
+        if (startMinutes >= i && startMinutes < i + parseInt(incrementSize)) {
+            pos =
+                thirtyMinSize *
+                ((60 / parseInt(incrementSize)) * startHours + iteration);
         }
+        iteration++;
+    }
+
+    iteration = 0;
+    for (let i = 0; i < 60; i += parseInt(incrementSize)) {
+        if (endMinutes >= i && endMinutes < i + parseInt(incrementSize)) {
+            if (endMinutes === 59) {
+                size =
+                    thirtyMinSize *
+                        ((60 / parseInt(incrementSize)) * endHours +
+                            60 / parseInt(incrementSize)) -
+                    pos;
+            } else {
+                size =
+                    thirtyMinSize *
+                        ((60 / parseInt(incrementSize)) * endHours +
+                            iteration) -
+                    pos;
+            }
+        }
+        iteration++;
     }
 
     if (size <= 0) {

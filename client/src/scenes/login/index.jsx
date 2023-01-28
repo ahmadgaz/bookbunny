@@ -1,8 +1,11 @@
-import { Box, useMediaQuery } from "@mui/material";
+import {
+    Box,
+    // , useMediaQuery
+} from "@mui/material";
 import Form from "./form";
 
 const Login = () => {
-    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    // const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     return (
         <Box>

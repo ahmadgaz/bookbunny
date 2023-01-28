@@ -1,7 +1,24 @@
 import Timeline from "./Timeline";
 
 const Schedule = (props) => {
-    const { direction, type, pxSize, views, updateView = () => {} } = props;
+    /* FORMAT
+    view => [{view_color: "", view_schedule: [{
+       sunday: [{start_time: "00:00", end_time: "00:00"}]
+       ...
+       saturday: ...
+    }]}]
+    */
+
+    const {
+        direction,
+        type,
+        pxSize,
+        views,
+        incrementSize = 30,
+        updateView = () => {},
+        deleteEvent = () => {},
+        acceptEvent = () => {},
+    } = props;
     const dividers = [];
     for (let i = 0; i < 24; i++) {
         dividers.push(
@@ -107,7 +124,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Sunday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
                 <Timeline
                     direction={direction}
@@ -115,7 +135,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Monday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
                 <Timeline
                     direction={direction}
@@ -123,7 +146,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Tuesday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
                 <Timeline
                     direction={direction}
@@ -131,7 +157,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Wednesday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
                 <Timeline
                     direction={direction}
@@ -139,7 +168,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Thursday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
                 <Timeline
                     direction={direction}
@@ -147,7 +179,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Friday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
                 <Timeline
                     direction={direction}
@@ -155,7 +190,10 @@ const Schedule = (props) => {
                     pxSize={pxSize + "px"}
                     label="Saturday"
                     views={views}
+                    incrementSize={incrementSize}
                     updateView={updateView}
+                    deleteEvent={deleteEvent}
+                    acceptEvent={acceptEvent}
                 />
             </div>
         </div>
