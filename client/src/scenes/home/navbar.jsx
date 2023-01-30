@@ -3,10 +3,12 @@ import {
     Box,
     // useMediaQuery,
     AppBar,
-    Button,
     Toolbar,
+    Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Logo from "../../assets/Logo-02.svg";
+import Button from "components/Button";
 
 const Navbar = (props) => {
     const { setPrevPage } = props;
@@ -16,35 +18,31 @@ const Navbar = (props) => {
 
     return (
         <AppBar>
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                LOGO
-                <Box>
-                    <Button
-                        color="inherit"
-                        onClick={() => {
-                            setPrevPage();
-                            navigate("/login");
-                        }}
-                    >
-                        Log in
-                    </Button>
-                    <Button
-                        color="inherit"
-                        variant="contained"
-                        onClick={() => {
-                            setPrevPage();
-                            navigate("/register");
-                        }}
-                    >
-                        Sign up
-                    </Button>
-                </Box>
+            <Toolbar>
+                <Button
+                    variant="outlined"
+                    onClick={() => {
+                        setPrevPage();
+                        navigate("/login");
+                    }}
+                >
+                    Log In
+                </Button>
+                <img
+                    src={Logo}
+                    alt="Logo"
+                    style={{ height: "50px", margin: "10px 0" }}
+                />
+                <Button
+                    rounded
+                    variant="contained"
+                    onClick={() => {
+                        setPrevPage();
+                        navigate("/register");
+                    }}
+                >
+                    Sign Up
+                </Button>
             </Toolbar>
         </AppBar>
     );

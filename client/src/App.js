@@ -1,13 +1,68 @@
-import { createContext, useEffect } from "react";
+import { createContext, useEffect, useMemo } from "react";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { setUser } from "state";
 
+import { themeSettings } from "theme";
 import Home from "scenes/home";
 import Login from "scenes/login";
 import Register from "scenes/register";
 import Dashboard from "scenes/dashboard";
 import NewEvent from "scenes/newEvent";
+
+function App() {
+    const mode = useSelector((state) => state.mode);
+    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+    const isAuth = Boolean(useSelector((state) => state.token));
+
+    return (
+        <div className="app">
+            <CRUDFunctionsContextProvider>
+                <BrowserRouter>
+                    <ThemeProvider theme={theme}>
+                        <CssBaseline />
+                        <Routes>
+                            <Route
+                                path="/"
+                                element={
+                                    isAuth ? (
+                                        <Navigate to="/dashboard" />
+                                    ) : (
+                                        <Home />
+                                    )
+                                }
+                                // errorElement={}
+                            />
+                            <Route
+                                path="/login"
+                                element={<Login />}
+                                // errorElement={}
+                            />
+                            <Route
+                                path="/register"
+                                element={<Register />}
+                                // errorElement={}
+                            />
+                            <Route
+                                path="/dashboard"
+                                element={
+                                    isAuth ? <Dashboard /> : <Navigate to="/" />
+                                }
+                                // errorElement={}
+                            />
+                            <Route
+                                path="/newEvent/:eventTypeID"
+                                element={<NewEvent />}
+                            />
+                        </Routes>
+                    </ThemeProvider>
+                </BrowserRouter>
+            </CRUDFunctionsContextProvider>
+        </div>
+    );
+}
 
 const userURL = `${process.env.REACT_APP_SERVER_BASE_URL}/user`;
 export const CRUDFunctionsContext = createContext();
@@ -327,48 +382,5 @@ const CRUDFunctionsContextProvider = (props) => {
         </CRUDFunctionsContext.Provider>
     );
 };
-
-function App() {
-    const isAuth = Boolean(useSelector((state) => state.token));
-
-    return (
-        <div className="app">
-            <CRUDFunctionsContextProvider>
-                <BrowserRouter>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                isAuth ? <Navigate to="/dashboard" /> : <Home />
-                            }
-                            // errorElement={}
-                        />
-                        <Route
-                            path="/login"
-                            element={<Login />}
-                            // errorElement={}
-                        />
-                        <Route
-                            path="/register"
-                            element={<Register />}
-                            // errorElement={}
-                        />
-                        <Route
-                            path="/dashboard"
-                            element={
-                                isAuth ? <Dashboard /> : <Navigate to="/" />
-                            }
-                            // errorElement={}
-                        />
-                        <Route
-                            path="/newEvent/:eventTypeID"
-                            element={<NewEvent />}
-                        />
-                    </Routes>
-                </BrowserRouter>
-            </CRUDFunctionsContextProvider>
-        </div>
-    );
-}
 
 export default App;

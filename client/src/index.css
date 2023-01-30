@@ -1,4 +1,157 @@
-@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
+@font-face {
+    font-family: "ProspectusProXL";
+    src: url("fonts/ProspectusProXLDEMO-Black.woff2") format("woff2"),
+        url("fonts/ProspectusProXLDEMO-Black.woff") format("woff");
+    font-weight: bolder;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProXL";
+    src: url("fonts/ProspectusProXLDEMO-BlackItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProXLDEMO-BlackItalic.woff") format("woff");
+    font-weight: bolder;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProXL";
+    src: url("fonts/ProspectusProXLDEMO-Regular.woff2") format("woff2"),
+        url("fonts/ProspectusProXLDEMO-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProXL";
+    src: url("fonts/ProspectusProXLDEMO-Italic.woff2") format("woff2"),
+        url("fonts/ProspectusProXLDEMO-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProXL";
+    src: url("fonts/ProspectusProXLDEMO-Bold.woff2") format("woff2"),
+        url("fonts/ProspectusProXLDEMO-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProXL";
+    src: url("fonts/ProspectusProXLDEMO-BoldItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProXLDEMO-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProL";
+    src: url("fonts/ProspectusProLDEMO-BlackItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProLDEMO-BlackItalic.woff") format("woff");
+    font-weight: bolder;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProL";
+    src: url("fonts/ProspectusProLDEMO-Black.woff2") format("woff2"),
+        url("fonts/ProspectusProLDEMO-Black.woff") format("woff");
+    font-weight: bolder;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProL";
+    src: url("fonts/ProspectusProLDEMO-BoldItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProLDEMO-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProL";
+    src: url("fonts/ProspectusProLDEMO-Bold.woff2") format("woff2"),
+        url("fonts/ProspectusProLDEMO-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProL";
+    src: url("fonts/ProspectusProLDEMO-Italic.woff2") format("woff2"),
+        url("fonts/ProspectusProLDEMO-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProL";
+    src: url("fonts/ProspectusProLDEMO-Regular.woff2") format("woff2"),
+        url("fonts/ProspectusProLDEMO-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-BlackItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-BlackItalic.woff") format("woff");
+    font-weight: bolder;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-Black.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-Black.woff") format("woff");
+    font-weight: bolder;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-BoldItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-BoldItalic.woff") format("woff");
+    font-weight: bold;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-Bold.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-Italic.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-Regular.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-LightItalic.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-LightItalic.woff") format("woff");
+    font-weight: lighter;
+    font-style: italic;
+}
+@font-face {
+    font-family: "ProspectusProM";
+    src: url("fonts/ProspectusProMDEMO-Light.woff2") format("woff2"),
+        url("fonts/ProspectusProMDEMO-Light.woff") format("woff");
+    font-weight: lighter;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProS";
+    src: url("fonts/ProspectusProSDEMO-Regular.woff2") format("woff2"),
+        url("fonts/ProspectusProSDEMO-Regular.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: "ProspectusProS";
+    src: url("fonts/ProspectusProSDEMO-Italic.woff2") format("woff2"),
+        url("fonts/ProspectusProSDEMO-Italic.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+}
 
 * {
     -webkit-transition: background-color 0.05s ease;
@@ -17,7 +170,7 @@ body,
     margin: 0px;
     padding: 0px;
     scroll-behavior: smooth;
-    font-family: "Source Sans Pro", sans-serif;
+    font-family: sans-serif;
 }
 
 .app {

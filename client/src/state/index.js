@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     user: null, // Including all data
-    theme: null,
+    mode: "light",
     token: null,
     routeBeforeLogInOrSignUp: null,
 };
@@ -12,7 +12,7 @@ export const authSlice = createSlice({
     initialState,
     reducers: {
         setTheme: (state) => {
-            state.theme = state.user.views.find(
+            state.mode = state.user.views.find(
                 (view) => view.view_selected === true
             ).view_color;
         },
