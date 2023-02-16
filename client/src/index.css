@@ -164,8 +164,8 @@ body,
 #root,
 .app,
 .content {
-    min-height: 100%;
-    height: max-content;
+    display: flex;
+    justify-content: center;
     width: 100%;
     margin: 0px;
     padding: 0px;
@@ -173,7 +173,24 @@ body,
     font-family: sans-serif;
 }
 
-.app {
-    display: flex;
-    position: relative;
+/* Scroll bar stylings */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--lightestgrey);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #cccba2cc;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #99987acc;
 }

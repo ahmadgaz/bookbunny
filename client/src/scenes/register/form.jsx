@@ -12,6 +12,8 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
+import Container from "components/Container";
+import { tokens } from "theme";
 
 const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
@@ -35,6 +37,7 @@ const Form = () => {
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
+    const colors = tokens("light");
 
     const register = async (values, onSubmitProps) => {
         const savedUserResponse = await fetch(`${authURL}/register`, {
@@ -115,7 +118,7 @@ const Form = () => {
                         }}
                     >
                         <TextField
-                            label="First Name"
+                            label="First Name*"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.first_name}
@@ -142,7 +145,7 @@ const Form = () => {
                         />
                         {/* ADD TIMEZONE HERE */}
                         <TextField
-                            label="Email"
+                            label="Email*"
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.email}
@@ -154,7 +157,7 @@ const Form = () => {
                             sx={{ gridColumn: "span 4" }}
                         />
                         <TextField
-                            label="Password"
+                            label="Password*"
                             type="password"
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -171,16 +174,16 @@ const Form = () => {
 
                     {/* BUTTONS */}
                     <Box>
-                        <Button
-                            fullWidth
-                            type="submit"
-                            sx={{
-                                m: "2rem 0",
-                                p: "1rem",
-                            }}
-                        >
-                            REGISTER
-                        </Button>
+                        <Box sx={{ m: "2rem 0", p: "1rem" }}>
+                            <Container
+                                size="m"
+                                fullWidth
+                                variant="contained"
+                                type="submit"
+                            >
+                                Register
+                            </Container>
+                        </Box>
 
                         {/* QUESTION */}
                         <Typography>Already have an account?</Typography>
@@ -190,6 +193,7 @@ const Form = () => {
                                 resetForm();
                             }}
                             sx={{
+                                color: colors.primary[500],
                                 textDecoration: "underline",
                                 "&:hover": {
                                     cursor: "pointer",

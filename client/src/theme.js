@@ -194,7 +194,7 @@ export const themeSettings = (mode) => {
             hero: {
                 fontFamily: ["ProspectusProXL", "sans-serif"].join(","),
                 fontStyle: "italic",
-                fontSize: 100,
+                fontSize: 84,
                 lineHeight: 1.1,
                 color: colors.neutralDark[500],
             },
@@ -202,42 +202,42 @@ export const themeSettings = (mode) => {
                 fontFamily: ["ProspectusProL", "sans-serif"].join(","),
                 fontWeight: "bolder",
                 fontStyle: "normal",
-                fontSize: 60,
+                fontSize: 48,
                 color: colors.neutralDark[500],
             },
             h2: {
                 fontFamily: ["ProspectusProL", "sans-serif"].join(","),
                 fontWeight: "bolder",
                 fontStyle: "normal",
-                fontSize: 48,
+                fontSize: 36,
                 color: colors.neutralDark[500],
             },
             h3: {
                 fontFamily: ["ProspectusProL", "sans-serif"].join(","),
                 fontWeight: "bold",
                 fontStyle: "normal",
-                fontSize: 36,
+                fontSize: 30,
                 color: colors.neutralDark[500],
             },
             h4: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
                 fontWeight: "bolder",
                 fontStyle: "normal",
-                fontSize: 30,
+                fontSize: 24,
                 color: colors.neutralDark[500],
             },
             h5: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
                 fontWeight: "bolder",
                 fontStyle: "normal",
-                fontSize: 24,
+                fontSize: 18,
                 color: colors.neutralDark[500],
             },
             h6: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
                 fontWeight: "bold",
                 fontStyle: "normal",
-                fontSize: 18,
+                fontSize: 16,
                 color: colors.neutralDark[500],
             },
             subtitle1: {
@@ -309,6 +309,11 @@ export const themeSettings = (mode) => {
                     },
                 },
             },
+            MuiPaper: {
+                defaultProps: {
+                    elevation: 0,
+                },
+            },
         },
     };
 };
@@ -330,6 +335,12 @@ const theme = createTheme({
                     minHeight: "0",
                 },
             },
+        },
+        MuiPaper: {
+            defaultProps: {
+                elevation: 5,
+            },
+            styleOverrides: {},
         },
         MuiButton: {
             defaultProps: {

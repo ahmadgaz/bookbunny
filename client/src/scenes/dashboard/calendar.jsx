@@ -9,59 +9,61 @@ const Calendar = () => {
         useContext(CRUDFunctionsContext);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const selectedView = getSelectedView() ? [getSelectedView()] : [];
-    const calendarTimeslots = [
-        ...selectedView,
-        ...user.events.map((event) => {
-            let dayOfWeek = dayjs(event.event_date).format("dddd");
-            let start = dayjs(event.event_date).format("HH:mm");
-            let end = dayjs(event.event_date)
-                .add(event.event_duration, "minute")
-                .format("HH:mm");
+    const userEvents = user
+        ? [
+              ...user.events.map((event) => {
+                  let dayOfWeek = dayjs(event.event_date).format("dddd");
+                  let start = dayjs(event.event_date).format("HH:mm");
+                  let end = dayjs(event.event_date)
+                      .add(event.event_duration, "minute")
+                      .format("HH:mm");
 
-            return {
-                view_event: event,
-                view_color:
-                    event.event_status === "denied" ||
-                    event.event_status === "canceled"
-                        ? "#FF2E00"
-                        : event.event_status === "pending"
-                        ? "#FEA82F"
-                        : event.event_status === "confirmed"
-                        ? "#00A300"
-                        : "",
-                view_schedule: {
-                    sunday:
-                        dayOfWeek === "Sunday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                    monday:
-                        dayOfWeek === "Monday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                    tuesday:
-                        dayOfWeek === "Tuesday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                    wednesday:
-                        dayOfWeek === "Wednesday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                    thursday:
-                        dayOfWeek === "Thursday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                    friday:
-                        dayOfWeek === "Friday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                    saturday:
-                        dayOfWeek === "Saturday"
-                            ? [{ start_time: start, end_time: end }]
-                            : [],
-                },
-            };
-        }),
-    ];
+                  return {
+                      view_event: event,
+                      view_color:
+                          event.event_status === "denied" ||
+                          event.event_status === "canceled"
+                              ? "#FF2E00"
+                              : event.event_status === "pending"
+                              ? "#FEA82F"
+                              : event.event_status === "confirmed"
+                              ? "#00A300"
+                              : "",
+                      view_schedule: {
+                          sunday:
+                              dayOfWeek === "Sunday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                          monday:
+                              dayOfWeek === "Monday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                          tuesday:
+                              dayOfWeek === "Tuesday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                          wednesday:
+                              dayOfWeek === "Wednesday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                          thursday:
+                              dayOfWeek === "Thursday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                          friday:
+                              dayOfWeek === "Friday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                          saturday:
+                              dayOfWeek === "Saturday"
+                                  ? [{ start_time: start, end_time: end }]
+                                  : [],
+                      },
+                  };
+              }),
+          ]
+        : [];
+    const calendarTimeslots = [...selectedView, ...userEvents];
 
     return (
         <Box
