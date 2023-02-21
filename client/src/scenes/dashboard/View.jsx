@@ -990,11 +990,16 @@ const View = () => {
                         paddingLeft="20px"
                         width="100%"
                         justifyContent="space-between"
+                        alignItems="center"
                     >
                         <div
                             onMouseOver={() => setLeftArrowHovered(true)}
                             onMouseLeave={() => setLeftArrowHovered(false)}
-                            style={{ width: "30px", cursor: "pointer" }}
+                            style={{
+                                width: "30px",
+                                cursor: "pointer",
+                                height: "43.2px",
+                            }}
                         >
                             <Box
                                 backgroundColor={colors.neutralDark[500]}
@@ -1025,9 +1030,18 @@ const View = () => {
                                 }}
                             ></Box>
                         </div>
-                        <Typography variant="h2" paddingRight="25px">
-                            {view.view_name}
-                        </Typography>
+                        <Box flexGrow="1" paddingLeft="20px">
+                            <Typography variant="h2">
+                                {view.view_name}
+                            </Typography>
+                            <Typography
+                                variant="body1"
+                                fontSize={16}
+                                color="grey"
+                            >
+                                {view.view_desc}
+                            </Typography>
+                        </Box>
                         <div
                             onMouseOver={() => setRightArrowHovered(true)}
                             onMouseLeave={() => setRightArrowHovered(false)}
@@ -1035,6 +1049,7 @@ const View = () => {
                                 width: "30px",
                                 cursor: "pointer",
                                 paddingRight: "25px",
+                                height: "43.2px",
                             }}
                         >
                             <Box
