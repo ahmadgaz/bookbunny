@@ -167,6 +167,7 @@ body,
     display: flex;
     justify-content: center;
     width: 100%;
+    min-width: fit-content;
     margin: 0px;
     padding: 0px;
     scroll-behavior: smooth;
@@ -186,11 +187,11 @@ body,
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #cccba2cc;
+    background: #cccba277;
     border-radius: 5px;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #99987acc;
+    background: #99987a77;
 }

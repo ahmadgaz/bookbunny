@@ -21,7 +21,20 @@ const registerSchema = yup.object().shape({
     first_name: yup.string().required("Enter your first name!"),
     last_name: yup.string().notRequired(),
     email: yup.string().email("Invalid email").required("Enter an email!"),
-    password: yup.string().required("Enter a password!"),
+    password: yup
+        .string()
+        .required("Enter a password!")
+        .min(8, "Password must be 8 characters long!")
+        .matches(/[0-9]/, "Password requires a number!")
+        .matches(/[a-z]/, "Password requires a lowercase letter!")
+        .matches(/[A-Z]/, "Password requires an uppercase letter!")
+        .matches(/[^\w]/, "Password requires a symbol!"),
+    passwordConfirm: yup
+        .string()
+        .oneOf(
+            [yup.ref("password"), null],
+            'Must match "Password" field value'
+        ),
 });
 
 const initialValuesRegister = {
@@ -29,6 +42,7 @@ const initialValuesRegister = {
     last_name: "",
     email: "",
     password: "",
+    passwordConfirm: "",
 };
 
 const Form = () => {
@@ -38,6 +52,7 @@ const Form = () => {
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
     const colors = tokens("light");
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState();
 
     const register = async (values, onSubmitProps) => {
         const savedUserResponse = await fetch(`${authURL}/register`, {
@@ -104,7 +119,16 @@ const Form = () => {
                 resetForm,
             }) => (
                 <form onSubmit={handleSubmit}>
-                    {error && <Typography>{error}</Typography>}
+                    {error && (
+                        <Typography
+                            textAlign="left"
+                            variant="h6"
+                            margin="0 0 10px 0"
+                            color={colors.redAccent[500]}
+                        >
+                            {error}
+                        </Typography>
+                    )}
 
                     {/* FIELDS */}
                     <Box
@@ -160,7 +184,10 @@ const Form = () => {
                             label="Password*"
                             type="password"
                             onBlur={handleBlur}
-                            onChange={handleChange}
+                            onChange={(e) => {
+                                setShowPasswordRequirements(e.target.value);
+                                handleChange(e);
+                            }}
                             value={values.password}
                             name="password"
                             error={
@@ -168,13 +195,79 @@ const Form = () => {
                                 Boolean(errors.password)
                             }
                             helperText={touched.password && errors.password}
-                            sx={{ gridColumn: "span 4" }}
+                            sx={{ gridColumn: "span 2" }}
                         />
+
+                        <TextField
+                            label="Confirm Password*"
+                            type="password"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.passwordConfirm}
+                            name="passwordConfirm"
+                            error={
+                                Boolean(touched.passwordConfirm) &&
+                                Boolean(errors.passwordConfirm)
+                            }
+                            helperText={
+                                touched.passwordConfirm &&
+                                errors.passwordConfirm
+                            }
+                            sx={{ gridColumn: "span 2" }}
+                        />
+                        {showPasswordRequirements && (
+                            <Box
+                                sx={{
+                                    gridColumn: "span 4",
+                                    opacity: showPasswordRequirements
+                                        ? "100%"
+                                        : "0%",
+                                    transition: "opacity 0.2s ease",
+                                }}
+                            >
+                                <Container
+                                    fullWidth
+                                    button={false}
+                                    style={{
+                                        padding: "15px",
+                                        backgroundColor: colors.secondary[200],
+                                        textAlign: "left",
+                                    }}
+                                >
+                                    <Typography variant="h6">
+                                        Your password must:
+                                    </Typography>
+
+                                    <ul>
+                                        <li>
+                                            <Typography
+                                                variant="body1"
+                                                fontSize={14}
+                                            >
+                                                Contain at least{" "}
+                                                <b>8 characters</b>
+                                            </Typography>
+                                        </li>
+                                        <li>
+                                            <Typography
+                                                variant="body1"
+                                                fontSize={14}
+                                            >
+                                                Contain at least <b>1 number</b>
+                                                , <b>1 lowercase letter</b>,{" "}
+                                                <b>1 uppercase letter</b>, and{" "}
+                                                <b>1 unique character</b>
+                                            </Typography>
+                                        </li>
+                                    </ul>
+                                </Container>
+                            </Box>
+                        )}
                     </Box>
 
                     {/* BUTTONS */}
                     <Box>
-                        <Box sx={{ m: "2rem 0", p: "1rem" }}>
+                        <Box sx={{ m: "2rem 0", p: "2px" }}>
                             <Container
                                 size="m"
                                 fullWidth

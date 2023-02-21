@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
     Box,
     useMediaQuery,
@@ -13,6 +13,9 @@ import {
     TextField,
     IconButton,
     Snackbar,
+    useScrollTrigger,
+    Slide,
+    Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Formik } from "formik";
@@ -22,513 +25,12 @@ import ViewDayIcon from "@mui/icons-material/ViewDay";
 import TodayIcon from "@mui/icons-material/Today";
 import PersonIcon from "@mui/icons-material/Person";
 import SupportIcon from "@mui/icons-material/Support";
+import Logo from "../../assets/Logo-01.svg";
 import { CRUDFunctionsContext } from "App";
 import { useDispatch } from "react-redux";
 import { setLogout } from "state";
 import { Global } from "@emotion/react";
 import { Delete, Edit, Link } from "@mui/icons-material";
-
-const DeleteEventTypeDialog = (props) => {
-    const { eventType, setShowDialog, setShowSnackbar } = props;
-    const { getSelectedView, deleteEventType } =
-        useContext(CRUDFunctionsContext);
-    let view = { ...getSelectedView() };
-
-    const handleOnDelete = () => {
-        deleteEventType(view, eventType);
-        setShowDialog(null);
-        setShowSnackbar(true);
-    };
-
-    return (
-        <Dialog
-            open
-            onClose={() => {
-                setShowDialog(null);
-            }}
-        >
-            Are you sure you want to delete {eventType.event_type_name}?
-            <Button
-                variant="outlined"
-                color="inherit"
-                style={{
-                    padding: "10px 30px 8px 30px",
-                }}
-                onClick={() => {
-                    setShowDialog(null);
-                }}
-            >
-                Cancel
-            </Button>
-            <Button
-                variant="contained"
-                color="inherit"
-                onClick={handleOnDelete}
-                style={{
-                    padding: "10px 30px 8px 30px",
-                    backgroundColor: "red",
-                }}
-            >
-                Delete
-            </Button>
-        </Dialog>
-    );
-};
-const eventTypeFormValidationSchema = yup.object().shape({
-    event_type_name: yup.string().required("Enter a name for your event type!"),
-    event_type_duration: yup
-        .string()
-        .required("Enter a duration for your event type!")
-        .matches(/^([0-9]?[0-9]):[0-5][0-9]$/, "Wrong format. Use HH:MM"),
-    event_type_location: yup.string().notRequired(),
-});
-const EditEventTypeDialog = (props) => {
-    const { eventType, setShowDialog, setShowSnackbar } = props;
-    const { getSelectedView, updateEventType } =
-        useContext(CRUDFunctionsContext);
-    let view = { ...getSelectedView() };
-
-    const initialValuesEditEventType = {
-        event_type_name: eventType.event_type_name,
-        event_type_duration: eventType.event_type_duration,
-        event_type_location: eventType.event_type_location,
-    };
-
-    const handleFormSubmit = (values, onSubmitProps) => {
-        let et = { ...eventType };
-        et.event_type_name = values.event_type_name;
-        et.event_type_duration = values.event_type_duration;
-        et.event_type_location = values.event_type_location;
-        updateEventType(view, et);
-        setShowDialog(null);
-        setShowSnackbar(true);
-        onSubmitProps.resetForm();
-    };
-
-    return (
-        <Dialog
-            open
-            onClose={() => {
-                setShowDialog(null);
-            }}
-        >
-            <Formik
-                onSubmit={handleFormSubmit}
-                initialValues={initialValuesEditEventType}
-                validationSchema={eventTypeFormValidationSchema}
-            >
-                {({
-                    values,
-                    errors,
-                    touched,
-                    handleBlur,
-                    handleChange,
-                    handleSubmit,
-                    setFieldValue,
-                    resetForm,
-                }) => (
-                    <form onSubmit={handleSubmit}>
-                        Edit Event Type
-                        <TextField
-                            label="Event Type Name"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.event_type_name}
-                            name="event_type_name"
-                            error={
-                                Boolean(touched.event_type_name) &&
-                                Boolean(errors.event_type_name)
-                            }
-                            helperText={
-                                touched.event_type_name &&
-                                errors.event_type_name
-                            }
-                        />
-                        <TextField
-                            label="Event Type Duration"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            inputProps={{
-                                min: "00:00",
-                                max: "23:59",
-                            }}
-                            value={values.event_type_duration}
-                            name="event_type_duration"
-                            error={
-                                Boolean(touched.event_type_duration) &&
-                                Boolean(errors.event_type_duration)
-                            }
-                            helperText={
-                                touched.event_type_duration &&
-                                errors.event_type_duration
-                            }
-                        />
-                        <TextField
-                            label="Event Type Location"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.event_type_location}
-                            name="event_type_location"
-                            error={
-                                Boolean(touched.event_type_location) &&
-                                Boolean(errors.event_type_location)
-                            }
-                            helperText={
-                                touched.event_type_location &&
-                                errors.event_type_location
-                            }
-                        />
-                        <Button
-                            variant="outlined"
-                            color="inherit"
-                            style={{
-                                padding: "10px 30px 8px 30px",
-                            }}
-                            onClick={() => {
-                                setShowDialog(null);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="inherit"
-                            type="submit"
-                            style={{
-                                padding: "10px 30px 8px 30px",
-                            }}
-                        >
-                            Save
-                        </Button>
-                    </form>
-                )}
-            </Formik>
-        </Dialog>
-    );
-};
-const initialValuesAddEventType = {
-    event_type_name: "",
-    event_type_duration: "",
-    event_type_location: "",
-};
-const AddEventTypeDialog = (props) => {
-    const { setShowDialog, setShowSnackbar } = props;
-    const { getSelectedView, createEventType } =
-        useContext(CRUDFunctionsContext);
-    let view = { ...getSelectedView() };
-
-    const handleFormSubmit = (values, onSubmitProps) => {
-        createEventType(
-            view,
-            values.event_type_name,
-            values.event_type_duration,
-            values.event_type_location
-        );
-        setShowDialog(false);
-        setShowSnackbar(true);
-        onSubmitProps.resetForm();
-    };
-
-    return (
-        <Dialog
-            open
-            onClose={() => {
-                setShowDialog(false);
-            }}
-        >
-            <Formik
-                onSubmit={handleFormSubmit}
-                initialValues={initialValuesAddEventType}
-                validationSchema={eventTypeFormValidationSchema}
-            >
-                {({
-                    values,
-                    errors,
-                    touched,
-                    handleBlur,
-                    handleChange,
-                    handleSubmit,
-                    setFieldValue,
-                    resetForm,
-                }) => (
-                    <form onSubmit={handleSubmit}>
-                        Add Event Type
-                        <TextField
-                            label="Event Type Name"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.event_type_name}
-                            name="event_type_name"
-                            error={
-                                Boolean(touched.event_type_name) &&
-                                Boolean(errors.event_type_name)
-                            }
-                            helperText={
-                                touched.event_type_name &&
-                                errors.event_type_name
-                            }
-                        />
-                        <TextField
-                            label="Event Type Duration"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            inputProps={{
-                                placeholder: "HH:MM",
-                            }}
-                            value={values.event_type_duration}
-                            name="event_type_duration"
-                            error={
-                                Boolean(touched.event_type_duration) &&
-                                Boolean(errors.event_type_duration)
-                            }
-                            helperText={
-                                touched.event_type_duration &&
-                                errors.event_type_duration
-                            }
-                        />
-                        <TextField
-                            label="Event Type Location"
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            value={values.event_type_location}
-                            name="event_type_location"
-                            error={
-                                Boolean(touched.event_type_location) &&
-                                Boolean(errors.event_type_location)
-                            }
-                            helperText={
-                                touched.event_type_location &&
-                                errors.event_type_location
-                            }
-                        />
-                        <Button
-                            variant="outlined"
-                            color="inherit"
-                            style={{
-                                padding: "10px 30px 8px 30px",
-                            }}
-                            onClick={() => {
-                                setShowDialog(false);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="inherit"
-                            type="submit"
-                            style={{
-                                padding: "10px 30px 8px 30px",
-                            }}
-                        >
-                            Create
-                        </Button>
-                    </form>
-                )}
-            </Formik>
-        </Dialog>
-    );
-};
-const eventTypeURL = `${process.env.REACT_APP_CLIENT_BASE_URL}/newEvent`;
-const EventTypesDropdown = () => {
-    const { getSelectedView } = useContext(CRUDFunctionsContext);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [showDeleteDialog, setShowDeleteDialog] = useState(null);
-    const [showEditDialog, setShowEditDialog] = useState(null);
-    const [showAddDialog, setShowAddDialog] = useState(false);
-    const [showCopiedSnackbar, setShowCopiedSnackbar] = useState(false);
-    const [showDeletedSnackbar, setShowDeletedSnackbar] = useState(false);
-    const [showEditedSnackbar, setShowEditedSnackbar] = useState(false);
-    const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
-    const view = { ...getSelectedView() };
-
-    const handleDeleteDialogOpen = (et) => {
-        setShowDeleteDialog(et);
-    };
-    const handleEditDialogOpen = (et) => {
-        setShowEditDialog(et);
-    };
-    const handleAddDialogOpen = () => {
-        setShowAddDialog(true);
-    };
-    const handlePopoverOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
-
-    const eventTypeList = () => {
-        return (
-            <ul style={{ margin: 0, padding: 0, listStyleType: "none" }}>
-                {view.event_types &&
-                    view.event_types.map((et, idx) => {
-                        return (
-                            <li key={idx}>
-                                <Box
-                                    width="100%"
-                                    style={{
-                                        display: "flex",
-                                        flexWrap: "nowrap",
-                                        padding: "10px 30px",
-                                        width: "100%",
-                                        borderBottom: "2px solid red",
-                                        backgroundColor: view.view_color,
-                                    }}
-                                >
-                                    <Box>
-                                        {et.event_type_name}
-                                        <IconButton
-                                            onClick={() => {
-                                                handleEditDialogOpen(et);
-                                                handlePopoverClose();
-                                            }}
-                                        >
-                                            <Edit />
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={() => {
-                                                handleDeleteDialogOpen(et);
-                                                handlePopoverClose();
-                                            }}
-                                        >
-                                            <Delete />
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(
-                                                    `${eventTypeURL}/${et._id}`
-                                                );
-                                                setShowCopiedSnackbar(true);
-                                            }}
-                                        >
-                                            <Link />
-                                        </IconButton>
-                                        <br />
-                                        {et.event_type_duration}
-                                        {et.event_type_location && <hr />}
-                                        {et.event_type_location &&
-                                            et.event_type_location}
-                                    </Box>
-                                </Box>
-                            </li>
-                        );
-                    })}
-                <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={() => {
-                        handleAddDialogOpen();
-                        handlePopoverClose();
-                    }}
-                    style={{
-                        backgroundColor: "",
-                        padding: "10px 30px 8px 30px",
-                    }}
-                >
-                    Add Event Type +
-                </Button>
-            </ul>
-        );
-    };
-
-    return (
-        <>
-            <Button
-                disabled={view._id ? false : true}
-                variant="contained"
-                onClick={(e) => {
-                    handlePopoverOpen(e);
-                }}
-                style={{
-                    backgroundColor: view._id ? view.view_color : "",
-                    padding: "10px 30px 8px 30px",
-                }}
-            >
-                Event Types
-                <ArrowDropDownIcon sx={{ m: "0 2px" }} />
-            </Button>
-            <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                }}
-                onClose={() => {
-                    handlePopoverClose();
-                }}
-                PaperProps={{
-                    style: {
-                        marginTop: "10px",
-                    },
-                }}
-            >
-                {eventTypeList()}
-            </Popover>
-            {showDeleteDialog && (
-                <DeleteEventTypeDialog
-                    eventType={showDeleteDialog}
-                    setShowDialog={setShowDeleteDialog}
-                    setShowSnackbar={setShowDeletedSnackbar}
-                />
-            )}
-            {showEditDialog && (
-                <EditEventTypeDialog
-                    eventType={showEditDialog}
-                    setShowDialog={setShowEditDialog}
-                    setShowSnackbar={setShowEditedSnackbar}
-                />
-            )}
-            {showAddDialog && (
-                <AddEventTypeDialog
-                    setShowDialog={setShowAddDialog}
-                    setShowSnackbar={setShowAddedSnackbar}
-                />
-            )}
-            <Snackbar
-                open={showCopiedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowCopiedSnackbar(false);
-                }}
-                message="Link copied!"
-            />
-            <Snackbar
-                open={showDeletedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowDeletedSnackbar(false);
-                }}
-                message="Event type deleted!"
-                // action={} undo
-            />
-            <Snackbar
-                open={showEditedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowEditedSnackbar(false);
-                }}
-                message="Event type saved!"
-                // action={} undo
-            />
-            <Snackbar
-                open={showAddedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowAddedSnackbar(false);
-                }}
-                message="Event type added!"
-            />
-        </>
-    );
-};
 
 // VIEWS
 const addViewSchema = yup.object().shape({
@@ -667,9 +169,7 @@ const AddViewDialog = (props) => {
                         <Button
                             variant="outlined"
                             color="inherit"
-                            style={{
-                                padding: "10px 30px 8px 30px",
-                            }}
+                            style={{}}
                             onClick={() => {
                                 setShowDialog(false);
                             }}
@@ -680,9 +180,7 @@ const AddViewDialog = (props) => {
                             variant="contained"
                             color="inherit"
                             type="submit"
-                            style={{
-                                padding: "10px 30px 8px 30px",
-                            }}
+                            style={{}}
                         >
                             Create
                         </Button>
@@ -710,50 +208,52 @@ const ViewsDropdown = () => {
         setAnchorEl(null);
     };
     const viewList = () => {
-        return (
-            <ul style={{ margin: 0, padding: 0, listStyleType: "none" }}>
-                {user.views.map((v, idx) => {
-                    if (v._id !== view._id) {
-                        return (
-                            <li key={idx}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    onClick={() => {
-                                        setSelectedView(v);
-                                        handlePopoverClose();
-                                    }}
-                                    style={{
-                                        cursor: "pointer",
-                                        padding: "10px 30px",
-                                        width: "100%",
-                                        borderRadius: "0",
-                                        backgroundColor: v.view_color,
-                                    }}
-                                >
-                                    {v.view_name}
-                                </Button>
-                            </li>
-                        );
-                    }
-                    return null;
-                })}
-                <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={() => {
-                        handleDialogOpen();
-                        handlePopoverClose();
-                    }}
-                    style={{
-                        backgroundColor: "",
-                        padding: "10px 30px 8px 30px",
-                    }}
-                >
-                    Add view +
-                </Button>
-            </ul>
-        );
+        if (user.views) {
+            return (
+                <ul style={{ margin: 0, padding: 0, listStyleType: "none" }}>
+                    {user.views.map((v, idx) => {
+                        if (v._id !== view._id) {
+                            return (
+                                <li key={idx}>
+                                    <Button
+                                        fullWidth
+                                        variant="contained"
+                                        onClick={() => {
+                                            setSelectedView(v);
+                                            handlePopoverClose();
+                                        }}
+                                        style={{
+                                            cursor: "pointer",
+                                            padding: "10px 30px",
+                                            width: "100%",
+                                            borderRadius: "0",
+                                            backgroundColor: v.view_color,
+                                        }}
+                                    >
+                                        {v.view_name}
+                                    </Button>
+                                </li>
+                            );
+                        }
+                        return null;
+                    })}
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={() => {
+                            handleDialogOpen();
+                            handlePopoverClose();
+                        }}
+                        style={{
+                            backgroundColor: "",
+                        }}
+                    >
+                        Add view +
+                    </Button>
+                </ul>
+            );
+        }
+        return null;
     };
 
     const setSelectedView = (v) => {
@@ -771,13 +271,10 @@ const ViewsDropdown = () => {
                     onClick={(e) => {
                         handlePopoverOpen(e);
                     }}
-                    style={{
-                        backgroundColor: view.view_color,
-                        padding: "10px 30px 8px 30px",
-                    }}
+                    color="primary"
+                    endIcon={<ArrowDropDownIcon sx={{ m: "0 0 0 5px" }} />}
                 >
                     {view.view_name}
-                    <ArrowDropDownIcon sx={{ m: "0 2px" }} />
                 </Button>
             ) : (
                 <Button
@@ -787,7 +284,6 @@ const ViewsDropdown = () => {
                     }}
                     style={{
                         backgroundColor: "",
-                        padding: "10px 30px 8px 30px",
                     }}
                 >
                     Add View +
@@ -920,6 +416,23 @@ const StyledTabs = styled(({ className, ...other }) => {
     },
 });
 
+const HideOnScroll = (props) => {
+    const { children } = props;
+    // Note that you normally won't need to set the window ref as useScrollTrigger
+    // will default to window.
+    // This is only being set here because the demo is in an iframe.
+    const trigger = useScrollTrigger();
+    useEffect(() => {
+        console.log(trigger);
+    }, [trigger]);
+
+    return (
+        <Slide appear={false} direction="down" in={!trigger}>
+            {children}
+        </Slide>
+    );
+};
+
 const Navbar = (props) => {
     const { tab, handleTabChange } = props;
     const { user } = useContext(CRUDFunctionsContext);
@@ -932,39 +445,52 @@ const Navbar = (props) => {
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     return isNonMobileScreens ? (
-        <AppBar>
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                LOGO
-                <ViewsDropdown />
-                <Tabs
-                    value={tab}
-                    onChange={handleTabChange}
-                    indicatorColor="secondary"
-                    textColor="inherit"
-                    variant="fullWidth"
-                >
-                    <Tab label="View" />
-                    <Tab label="Calendar" />
-                    <Tab label={`${user.first_name}'s Account`} />
-                    <Tab label="Help" />
-                </Tabs>
-                <EventTypesDropdown />
-                <Button
-                    color="inherit"
-                    onClick={() => {
-                        dispatch(setLogout());
+        <HideOnScroll>
+            <AppBar>
+                <Toolbar
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                     }}
                 >
-                    Log out
-                </Button>
-            </Toolbar>
-        </AppBar>
+                    <Box display="flex" alignItems="center">
+                        <img
+                            src={Logo}
+                            alt="Logo"
+                            style={{ height: "50px", margin: "0 30px 0 0" }}
+                        />
+                        <Box>
+                            <ViewsDropdown />
+                        </Box>
+                    </Box>
+                    <Tabs
+                        value={tab}
+                        onChange={handleTabChange}
+                        indicatorColor="secondary"
+                        textColor="inherit"
+                        variant="fullWidth"
+                        sx={{ paddingRight: "140px" }}
+                    >
+                        <Tab label="View" />
+                        <Tab label="Calendar" />
+                        <Tab label="Help" />
+                        <Tab label="Account" />
+                    </Tabs>
+
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => {
+                            dispatch(setLogout());
+                        }}
+                        sx={{ marginLeft: "30px" }}
+                    >
+                        Log out
+                    </Button>
+                </Toolbar>
+            </AppBar>
+        </HideOnScroll>
     ) : (
         <>
             <Global
@@ -1035,7 +561,7 @@ const Navbar = (props) => {
                     height="100%"
                 >
                     <ViewsDropdown />
-                    <EventTypesDropdown />
+
                     <Button
                         color="inherit"
                         variant="contained"

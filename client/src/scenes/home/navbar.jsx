@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo-02.svg";
 import Button from "components/Container";
+import { useEffect } from "react";
 
 const HideOnScroll = (props) => {
     const { children } = props;
@@ -18,6 +19,9 @@ const HideOnScroll = (props) => {
     // will default to window.
     // This is only being set here because the demo is in an iframe.
     const trigger = useScrollTrigger();
+    useEffect(() => {
+        console.log(trigger);
+    }, [trigger]);
 
     return (
         <Slide appear={false} direction="down" in={!trigger}>

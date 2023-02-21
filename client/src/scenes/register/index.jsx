@@ -1,4 +1,4 @@
-import { Box, Paper, Typography, useMediaQuery } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import Container from "components/Container";
 import Logo from "../../assets/Logo-02.svg";
 import Form from "./form";
@@ -15,8 +15,9 @@ const Register = () => {
             <Box
                 sx={{
                     margin: "30px 0 0 0",
-                    gridColumnStart: 5,
-                    gridColumnEnd: 9,
+                    width: "100%",
+                    gridColumnStart: 4,
+                    gridColumnEnd: 10,
                     justifySelf: "center",
                     alignSelf: "center",
                     display: "flex",
@@ -86,7 +87,7 @@ const Register = () => {
                 flexDirection: "column",
                 flexWrap: "nowrap",
                 width: "100%",
-                height: "100%",
+                height: "max(100%, 100vh)",
                 minHeight: "max-content",
                 padding: "50px",
                 backgroundColor: "#fff",

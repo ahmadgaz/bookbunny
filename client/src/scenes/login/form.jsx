@@ -11,6 +11,8 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
+import { tokens } from "theme";
+import Container from "components/Container";
 
 const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
@@ -30,6 +32,7 @@ const Form = () => {
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
+    const colors = tokens("light");
 
     const login = async (values, onSubmitProps) => {
         const loggedInResponse = await fetch(`${authURL}/login`, {
@@ -77,7 +80,16 @@ const Form = () => {
                 resetForm,
             }) => (
                 <form onSubmit={handleSubmit}>
-                    {error && <Typography>{error}</Typography>}
+                    {error && (
+                        <Typography
+                            textAlign="left"
+                            variant="h6"
+                            margin="0 0 10px 0"
+                            color={colors.redAccent[500]}
+                        >
+                            {error}
+                        </Typography>
+                    )}
 
                     {/* FIELDS */}
                     <Box
@@ -120,16 +132,16 @@ const Form = () => {
 
                     {/* BUTTONS */}
                     <Box>
-                        <Button
-                            fullWidth
-                            type="submit"
-                            sx={{
-                                m: "2rem 0",
-                                p: "1rem",
-                            }}
-                        >
-                            LOG IN
-                        </Button>
+                        <Box sx={{ m: "2rem 0", p: "2px" }}>
+                            <Container
+                                size="m"
+                                fullWidth
+                                variant="contained"
+                                type="submit"
+                            >
+                                Log in
+                            </Container>
+                        </Box>
 
                         {/* QUESTION */}
                         <Typography>Don't have an account?</Typography>
@@ -139,6 +151,7 @@ const Form = () => {
                                 resetForm();
                             }}
                             sx={{
+                                color: colors.primary[500],
                                 textDecoration: "underline",
                                 "&:hover": {
                                     cursor: "pointer",

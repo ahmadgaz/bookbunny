@@ -136,24 +136,24 @@ export const themeSettings = (mode) => {
             ...(mode === "light"
                 ? {
                       primary: {
-                          dark: colors.primary[700],
+                          dark: colors.primary[400],
                           main: colors.primary[500],
-                          light: colors.primary[100],
+                          light: colors.primary[600],
                       },
                       secondary: {
-                          dark: colors.secondary[700],
+                          dark: colors.secondary[400],
                           main: colors.secondary[500],
-                          light: colors.secondary[100],
+                          light: colors.secondary[600],
                       },
                       error: {
-                          dark: colors.redAccent[600],
+                          dark: colors.redAccent[400],
                           main: colors.redAccent[500],
-                          light: colors.redAccent[400],
+                          light: colors.redAccent[600],
                       },
                       neutral: {
-                          dark: colors.neutralDark[700],
+                          dark: colors.neutralDark[400],
                           main: colors.neutralDark[500],
-                          light: colors.neutralDark[100],
+                          light: colors.neutralDark[600],
                       },
                       background: {
                           default: colors.neutralLight[500],
@@ -268,7 +268,7 @@ export const themeSettings = (mode) => {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
                 fontWeight: "bold",
                 fontStyle: "normal",
-                fontSize: 14,
+                fontSize: 16,
                 color: colors.neutralDark[500],
             },
             caption: {
@@ -312,6 +312,39 @@ export const themeSettings = (mode) => {
             MuiPaper: {
                 defaultProps: {
                     elevation: 0,
+                },
+            },
+            MuiButton: {
+                defaultProps: {
+                    disableElevation: true,
+                    disableRipple: true, // edit .Mui-focusVisible class
+                },
+                styleOverrides: {
+                    root: {
+                        padding: "5px 20px 4px 20px",
+                        textTransform: "none",
+                        border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
+                        borderRadius: 5,
+                        boxShadow: `1.5px 1.5px 0px ${colors.neutralDark[500]}`,
+                        "&:hover": {
+                            boxShadow: `2px 2px 0px ${colors.neutralDark[500]}`,
+                        },
+                        "&:active": {
+                            boxShadow: `0.5px 0.5px 0px ${colors.neutralDark[500]}`,
+                        },
+                    },
+                    text: {
+                        "&:hover": {
+                            backgroundColor: `${colors.neutralLight[200]}`,
+                        },
+                    },
+                },
+            },
+            MuiTab: {
+                styleOverrides: {
+                    root: {
+                        textTransform: "none",
+                    },
                 },
             },
         },

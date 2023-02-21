@@ -9,7 +9,7 @@ const Calendar = () => {
         useContext(CRUDFunctionsContext);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const selectedView = getSelectedView() ? [getSelectedView()] : [];
-    const userEvents = user
+    const userEvents = user.views
         ? [
               ...user.events.map((event) => {
                   let dayOfWeek = dayjs(event.event_date).format("dddd");

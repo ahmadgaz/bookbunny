@@ -37,6 +37,7 @@ const Container = (props) => {
         button = true,
         type = "button",
         fullWidth = false,
+        fullHeight = false,
     } = props;
     const [translation, setTranslation] = useState("");
     const [containedAnimation, setContainedAnimation] = useState("-2px");
@@ -311,6 +312,7 @@ const Container = (props) => {
                         ></div>
                     )}
                     <button
+                        type={type}
                         style={{
                             position: "absolute",
                             top: containedAnimation,
@@ -440,11 +442,14 @@ const Container = (props) => {
             style={{
                 position: "relative",
                 width: fullWidth ? "100%" : "fit-content",
+                height: fullHeight ? "100%" : "fit-content",
+                maxHeight: "100%",
             }}
         >
-            {/* Shadow */}
             <Box
                 style={{
+                    maxHeight: "100%",
+                    overflow: "scroll",
                     border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
                     borderRadius: rounded ? `${parseInt(height) / 2}px` : 10,
                     backgroundColor: colors.primary[500],

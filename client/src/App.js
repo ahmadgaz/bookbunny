@@ -143,8 +143,10 @@ const CRUDFunctionsContextProvider = (props) => {
 
     // VIEWS
     const getSelectedView = () => {
-        if (user.views.length > 0) {
-            return user.views.find((view) => view.view_selected);
+        if (user.views) {
+            if (user.views.length > 0) {
+                return user.views.find((view) => view.view_selected);
+            }
         }
         return null;
     };

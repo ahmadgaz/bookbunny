@@ -30,32 +30,104 @@ const Dashboard = () => {
         }
     }, [emblaApi, tab]);
 
-    return (
-        <Box width="100%" height={isNonMobileScreens ? "100vh" : "90vh"}>
+    return isNonMobileScreens ? (
+        <Box width="100vw" height="100vh">
             <Navbar tab={tab} handleTabChange={handleTabChange} />
-            {isNonMobileScreens && <NavbarSpacer />}
             <div
                 className="embla"
                 ref={emblaRef}
                 style={{
-                    overflowY: isNonMobileScreens ? "" : "hidden",
-                    overflowX: isNonMobileScreens ? "hidden" : "",
-                    height: isNonMobileScreens ? "calc(100% - 64px)" : "100%",
+                    overflowX: "hidden",
+                    height: "100%",
                 }}
             >
                 <div
                     className="embla__container"
                     style={{
                         display: "flex",
-                        flexDirection: isNonMobileScreens ? "row" : "column",
-                        height: isNonMobileScreens ? "100%" : "90vh",
+                        flexDirection: "row",
+                        height: "100%",
                     }}
                 >
                     <div
                         className="embla__slide"
                         key="0"
                         style={{
-                            flex: isNonMobileScreens ? "0 0 100%" : "0 0 90vh",
+                            marginTop: "90px",
+                            flex: "0 0 100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            minWidth: 0,
+                        }}
+                    >
+                        <View />
+                    </div>
+                    <div
+                        className="embla__slide"
+                        key="1"
+                        style={{
+                            marginTop: "90px",
+                            flex: "0 0 100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            minWidth: 0,
+                        }}
+                    >
+                        <Calendar />
+                    </div>
+                    <div
+                        className="embla__slide"
+                        key="2"
+                        style={{
+                            marginTop: "90px",
+                            flex: "0 0 100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            minWidth: 0,
+                        }}
+                    >
+                        <Help />
+                    </div>
+                    <div
+                        className="embla__slide"
+                        key="3"
+                        style={{
+                            marginTop: "90px",
+                            flex: "0 0 100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            minWidth: 0,
+                        }}
+                    >
+                        <Account />
+                    </div>
+                </div>
+            </div>
+        </Box>
+    ) : (
+        <Box width="100vw" height="100vh">
+            <Navbar tab={tab} handleTabChange={handleTabChange} />
+            <div
+                className="embla"
+                ref={emblaRef}
+                style={{
+                    overflowY: "hidden",
+                    height: "100%",
+                }}
+            >
+                <div
+                    className="embla__container"
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "90vh",
+                    }}
+                >
+                    <div
+                        className="embla__slide"
+                        key="0"
+                        style={{
+                            flex: "0 0 90vh",
                             minWidth: 0,
                         }}
                     >
@@ -66,7 +138,7 @@ const Dashboard = () => {
                         className="embla__slide"
                         key="1"
                         style={{
-                            flex: isNonMobileScreens ? "0 0 100%" : "0 0 90vh",
+                            flex: "0 0 90vh",
                             minWidth: 0,
                         }}
                     >
@@ -77,7 +149,7 @@ const Dashboard = () => {
                         className="embla__slide"
                         key="2"
                         style={{
-                            flex: isNonMobileScreens ? "0 0 100%" : "0 0 90vh",
+                            flex: "0 0 90vh",
                             minWidth: 0,
                         }}
                     >
@@ -88,7 +160,7 @@ const Dashboard = () => {
                         className="embla__slide"
                         key="3"
                         style={{
-                            flex: isNonMobileScreens ? "0 0 100%" : "0 0 90vh",
+                            flex: "0 0 90vh",
                             minWidth: 0,
                         }}
                     >

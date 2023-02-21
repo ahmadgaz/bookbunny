@@ -13,7 +13,7 @@ const Schedule = (props) => {
         direction,
         type,
         pxSize,
-        views,
+        views = [],
         incrementSize = 30,
         updateView = () => {},
         deleteEvent = () => {},
