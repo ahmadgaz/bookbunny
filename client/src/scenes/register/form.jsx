@@ -70,6 +70,7 @@ const Form = () => {
             setError(savedUser.msg);
             return;
         } else {
+            console.log(savedUser);
             setError("There has been an error in the server.");
         }
 

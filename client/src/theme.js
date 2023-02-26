@@ -279,18 +279,25 @@ export const themeSettings = (mode) => {
             },
         },
         components: {
+            MuiBackdrop: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: `${colors.neutralLight[500]}7F`,
+                    },
+                },
+            },
             MuiAppBar: {
                 defaultProps: {},
                 styleOverrides: {
                     root: {
                         width: "100%",
                         minWidth: "400px",
-                        backgroundColor: "rgba(0,0,0,0)",
+                        background: `rgba(0,0,0,0)`,
                         boxShadow: "none",
                         left: "50%",
                         transform: "translateX(-50%)",
                         right: "",
-                        padding: "10px 10px",
+                        padding: "10px 10px 20px 10px",
                     },
                 },
             },
@@ -321,8 +328,9 @@ export const themeSettings = (mode) => {
                 },
                 styleOverrides: {
                     root: {
-                        padding: "5px 20px 4px 20px",
+                        padding: "10px 20px 8px 20px",
                         textTransform: "none",
+                        lineHeight: "1.1rem",
                         border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
                         borderRadius: 5,
                         boxShadow: `1.5px 1.5px 0px ${colors.neutralDark[500]}`,
@@ -338,12 +346,29 @@ export const themeSettings = (mode) => {
                             backgroundColor: `${colors.neutralLight[200]}`,
                         },
                     },
+                    outlined: {
+                        "&:hover": {
+                            border: `${colors.borderSize} solid ${colors.primary[500]}`,
+                            boxShadow: `1.5px 1.5px 0px ${colors.primary[500]}`,
+                        },
+                    },
                 },
             },
             MuiTab: {
                 styleOverrides: {
                     root: {
                         textTransform: "none",
+                    },
+                },
+            },
+            MuiDialog: {
+                defaultProps: {
+                    PaperProps: {
+                        sx: {
+                            boxShadow: "0px 0px 0px rgba(0,0,0,0)",
+                            overflow: "visible",
+                            backgroundColor: "rgba(0,0,0,0)",
+                        },
                     },
                 },
             },
@@ -358,7 +383,6 @@ const theme = createTheme({
             styleOverrides: {
                 root: {
                     maxWidth: "500px",
-                    backgroundColor: tokens("light").neutralLight[100],
                 },
             },
         },
@@ -386,6 +410,16 @@ const theme = createTheme({
                         backgroundColor: "#ffffff",
                     },
                 },
+            },
+        },
+        MuiDialog: {
+            defaultProps: {
+                PaperProps: {
+                    opacity: "0%",
+                },
+            },
+            styleOverrides: {
+                opacity: "50%",
             },
         },
     },

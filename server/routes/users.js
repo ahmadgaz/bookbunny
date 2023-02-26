@@ -22,7 +22,7 @@ const router = express.Router();
 
 // USER
 router.get("/:user", verifyToken, getUser);
-router.get("/getRecievingUser/:eventType", verifyToken, getRecievingUser);
+router.get("/getRecievingUser/:eventType", getRecievingUser);
 router.get("/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers);
 
 // EVENTS

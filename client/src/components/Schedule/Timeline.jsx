@@ -57,6 +57,7 @@ const Timeline = (props) => {
         acceptEvent,
     } = props;
     const classes = useStyles();
+    console.log(views);
 
     class TimeslotData {
         constructor(color, time, event) {

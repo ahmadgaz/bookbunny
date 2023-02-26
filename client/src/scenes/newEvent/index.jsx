@@ -6,6 +6,7 @@ import {
     CircularProgress,
     IconButton,
     TextField,
+    Typography,
 } from "@mui/material";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,10 +14,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CRUDFunctionsContext } from "App";
 import { setRouteBeforeLogInOrSignUp } from "state";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowBack } from "@mui/icons-material";
+import Logo from "../../assets/Logo-02.svg";
+import { ArrowBack, ArrowRight } from "@mui/icons-material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
+import Container from "components/Container";
 
 const NewEvent = () => {
     const dispatch = useDispatch();
@@ -31,10 +34,10 @@ const NewEvent = () => {
     useEffect(() => {
         async function getUser() {
             const reciever = await getRecievingUser(eventTypeID);
-            setFixedOptions([user.email, reciever.email]);
-            setAutoCompleteValue([user.email, reciever.email]);
+            setFixedOptions([user ? user.email : "", reciever.email]);
+            setAutoCompleteValue([user ? user.email : "", reciever.email]);
             setAttendees([user, reciever]);
-            setOptions([user.email, reciever.email]);
+            setOptions([user ? user.email : "", reciever.email]);
             setRecievingUser(reciever);
         }
         getUser();
@@ -204,6 +207,7 @@ const NewEvent = () => {
                 <Button
                     disabled={!dayContainsTimeslots(idx)}
                     key={idx}
+                    sx={{ margin: "10px", gridColumn: "span 1" }}
                     variant={
                         dayContainsTimeslots(idx)
                             ? dayChoice === idx
@@ -226,23 +230,26 @@ const NewEvent = () => {
     };
     const [timeChoice, setTimeChoice] = useState(null);
     const times = () => {
-        return listOfAvailableTimesOnChosenDay <= 0
-            ? "No available times"
-            : listOfAvailableTimesOnChosenDay.map((date, idx) => {
-                  return (
-                      <Button
-                          key={idx}
-                          variant={
-                              timeChoice === idx ? "contained" : "outlined"
-                          }
-                          onClick={() => {
-                              handleSetTimeChoice(idx);
-                          }}
-                      >
-                          {date.format("h:mm A")}
-                      </Button>
-                  );
-              });
+        return listOfAvailableTimesOnChosenDay <= 0 ? (
+            <Typography variant="body1" fontSize={24} color="gray">
+                No available times
+            </Typography>
+        ) : (
+            listOfAvailableTimesOnChosenDay.map((date, idx) => {
+                return (
+                    <Button
+                        key={idx}
+                        sx={{ margin: "10px", gridColumn: "span 1" }}
+                        variant={timeChoice === idx ? "contained" : "outlined"}
+                        onClick={() => {
+                            handleSetTimeChoice(idx);
+                        }}
+                    >
+                        {date.format("h:mm A")}
+                    </Button>
+                );
+            })
+        );
     };
 
     const [fixedOptions, setFixedOptions] = useState(null);
@@ -299,12 +306,23 @@ const NewEvent = () => {
         receivingUser ? (
             typeof receivingUser === "string" ||
             receivingUser instanceof String ? (
-                <div>{receivingUser}</div>
+                <Typography variant="body1" fontSize={24}>
+                    {receivingUser}
+                </Typography>
             ) : (
                 <Box width="100%" height="100vh">
                     {isAuth ? (
-                        <Box>
-                            Book an event with {receivingUser.first_name}!
+                        <Box display="grid" gridTemplateRows="15vh 70vh 15vh">
+                            <Typography
+                                justifySelf="center"
+                                paddingTop="20px"
+                                alignSelf="center"
+                                variant="hero"
+                                fontSize={40}
+                            >
+                                Book an event with{" "}
+                                <b>{receivingUser.first_name}</b>!
+                            </Typography>
                             <div
                                 className="embla"
                                 ref={emblaRef}
@@ -325,282 +343,540 @@ const NewEvent = () => {
                                         className="embla__slide"
                                         key="0"
                                         style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            overflow: "auto",
                                             flex: "0 0 100%",
                                             minWidth: 0,
                                         }}
                                     >
-                                        <Box
-                                            display="flex"
-                                            flexDirection="column"
-                                            flexWrap="nowrap"
-                                        >
-                                            <Box>
-                                                Day
-                                                <Button
-                                                    disabled={
-                                                        dayChoice === null
-                                                    }
-                                                    variant="contained"
-                                                    onClick={() => {
-                                                        handleNext(1);
-                                                    }}
+                                        <Box p="20px" width="fit-content">
+                                            <Container
+                                                button={false}
+                                                style={{
+                                                    padding: "30px",
+                                                    backgroundColor: "#fff",
+                                                    textAlign: "left",
+                                                    width: "fit-content",
+                                                }}
+                                            >
+                                                <Box
+                                                    display="flex"
+                                                    justifyContent="space-between"
                                                 >
-                                                    Next
-                                                </Button>
-                                            </Box>
-                                            <Box>{days()}</Box>
+                                                    <Typography
+                                                        variant="h1"
+                                                        paddingLeft="5px"
+                                                        margin="5px 0 10px 0"
+                                                    >
+                                                        {
+                                                            eventType.event_type_name
+                                                        }
+                                                    </Typography>
+                                                    <Box>
+                                                        <Button
+                                                            disabled={
+                                                                dayChoice ===
+                                                                null
+                                                            }
+                                                            endIcon={
+                                                                <ArrowRight />
+                                                            }
+                                                            variant="contained"
+                                                            onClick={() => {
+                                                                handleNext(1);
+                                                            }}
+                                                        >
+                                                            Next
+                                                        </Button>
+                                                    </Box>
+                                                </Box>
+                                                <Typography
+                                                    variant="body1"
+                                                    fontSize={24}
+                                                    color="grey"
+                                                    margin="0 0 20px 0"
+                                                >
+                                                    <b>Duration: </b>
+                                                    {
+                                                        eventType.event_type_duration
+                                                    }
+                                                </Typography>
+                                                <hr />
+                                                <Typography
+                                                    variant="body1"
+                                                    fontSize={28}
+                                                    margin="15px 0 20px 0"
+                                                    textAlign="center"
+                                                >
+                                                    <b>Select a date</b>
+                                                </Typography>
+                                                <Box
+                                                    display="flex"
+                                                    flexDirection="column"
+                                                    flexWrap="nowrap"
+                                                >
+                                                    <Box
+                                                        display="grid"
+                                                        gridTemplateColumns="repeat(4, auto)"
+                                                    >
+                                                        {days()}
+                                                    </Box>
+                                                </Box>
+                                            </Container>
                                         </Box>
                                     </div>
                                     <div
                                         className="embla__slide"
                                         key="1"
                                         style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            overflow: "auto",
                                             flex: "0 0 100%",
                                             minWidth: 0,
                                         }}
                                     >
-                                        <Box
-                                            display="flex"
-                                            flexDirection="column"
-                                            flexWrap="nowrap"
-                                        >
-                                            <Box>
-                                                <IconButton
-                                                    onClick={() => {
-                                                        setTab(0);
-                                                    }}
+                                        <Box p="20px" width="fit-content">
+                                            <Container
+                                                button={false}
+                                                style={{
+                                                    padding: "30px",
+                                                    backgroundColor: "#fff",
+                                                    textAlign: "left",
+                                                    width: "fit-content",
+                                                }}
+                                            >
+                                                <Box
+                                                    display="flex"
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
+                                                    width="650px"
+                                                    height="60px"
+                                                    marginBottom="20px"
                                                 >
-                                                    <ArrowBack />
-                                                </IconButton>
-                                                Time
-                                                <Button
-                                                    disabled={
-                                                        timeChoice === null
-                                                    }
-                                                    variant="contained"
-                                                    onClick={() => {
-                                                        handleNext(2);
-                                                    }}
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setTab(0);
+                                                        }}
+                                                    >
+                                                        <ArrowBack />
+                                                    </IconButton>
+                                                    <Typography
+                                                        position="absolute"
+                                                        left="50%"
+                                                        variant="body1"
+                                                        fontSize={28}
+                                                        sx={{
+                                                            transform:
+                                                                "translateX(-50%)",
+                                                        }}
+                                                    >
+                                                        <b>Select a time</b>
+                                                    </Typography>
+                                                    <Box>
+                                                        <Button
+                                                            disabled={
+                                                                timeChoice ===
+                                                                null
+                                                            }
+                                                            endIcon={
+                                                                <ArrowRight />
+                                                            }
+                                                            variant="contained"
+                                                            onClick={() => {
+                                                                handleNext(2);
+                                                            }}
+                                                        >
+                                                            Next
+                                                        </Button>
+                                                    </Box>
+                                                </Box>
+                                                <Box
+                                                    display="flex"
+                                                    flexDirection="column"
+                                                    flexWrap="nowrap"
                                                 >
-                                                    Next
-                                                </Button>
-                                            </Box>
-                                            <Box>{times()}</Box>
+                                                    <Box
+                                                        display="grid"
+                                                        gridTemplateColumns="repeat(4, auto)"
+                                                    >
+                                                        {times()}
+                                                    </Box>
+                                                </Box>
+                                            </Container>
                                         </Box>
                                     </div>
                                     <div
                                         className="embla__slide"
                                         key="2"
                                         style={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            overflow: "auto",
                                             flex: "0 0 100%",
                                             minWidth: 0,
                                         }}
                                     >
-                                        <Box
-                                            display="flex"
-                                            flexDirection="column"
-                                            flexWrap="nowrap"
-                                        >
-                                            <Box>
-                                                <IconButton
-                                                    onClick={() => {
-                                                        setTab(1);
-                                                    }}
+                                        <Box p="20px" width="fit-content">
+                                            <Container
+                                                button={false}
+                                                style={{
+                                                    padding: "30px",
+                                                    backgroundColor: "#fff",
+                                                    textAlign: "left",
+                                                    width: "fit-content",
+                                                }}
+                                            >
+                                                <Box
+                                                    display="flex"
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
+                                                    width="650px"
+                                                    height="65px"
+                                                    marginBottom="20px"
                                                 >
-                                                    <ArrowBack />
-                                                </IconButton>
-                                                {eventType.event_type_name}
-                                                <br />
-                                                <TextField
-                                                    disabled
-                                                    label="Duration"
-                                                    value={
-                                                        eventType.event_type_duration
-                                                    }
-                                                />
-                                                <br />
-                                                <br />
-                                                <TextField
-                                                    label="Notes"
-                                                    onChange={(e) => {
-                                                        setNotes(
-                                                            e.target.value
-                                                        );
-                                                    }}
-                                                    name="event_notes"
-                                                />
-                                                <br />
-                                                <br />
-                                                {autoCompleteValue && (
-                                                    <Autocomplete
-                                                        multiple
-                                                        id="event_attendees"
-                                                        limitTags={3}
-                                                        value={
-                                                            autoCompleteValue
-                                                        }
-                                                        onChange={(
-                                                            event,
-                                                            newValue
-                                                        ) => {
-                                                            setAutoCompleteValue(
-                                                                [
-                                                                    ...fixedOptions,
-                                                                    ...newValue.filter(
-                                                                        (
-                                                                            option
-                                                                        ) =>
-                                                                            fixedOptions.indexOf(
-                                                                                option
-                                                                            ) ===
-                                                                            -1
-                                                                    ),
-                                                                ]
-                                                            );
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setTab(1);
                                                         }}
-                                                        options={options}
-                                                        loading={loading}
-                                                        renderTags={(
-                                                            tagValue,
-                                                            getTagProps
-                                                        ) =>
-                                                            tagValue.map(
-                                                                (
-                                                                    option,
-                                                                    index
-                                                                ) => (
-                                                                    <Chip
-                                                                        label={
-                                                                            option
-                                                                        }
-                                                                        {...getTagProps(
-                                                                            {
-                                                                                index,
-                                                                            }
-                                                                        )}
-                                                                        disabled={
-                                                                            fixedOptions.indexOf(
-                                                                                option
-                                                                            ) !==
-                                                                            -1
-                                                                        }
-                                                                    />
-                                                                )
-                                                            )
-                                                        }
-                                                        style={{ width: 500 }}
-                                                        renderInput={(
-                                                            params
-                                                        ) => (
-                                                            <TextField
-                                                                {...params}
+                                                    >
+                                                        <ArrowBack />
+                                                    </IconButton>
+                                                    <Typography
+                                                        position="absolute"
+                                                        left="50%"
+                                                        top="30px"
+                                                        variant="body1"
+                                                        fontSize={28}
+                                                        sx={{
+                                                            transform:
+                                                                "translateX(-50%)",
+                                                        }}
+                                                    >
+                                                        <b>Almost there</b>
+                                                    </Typography>
+                                                    <Typography
+                                                        position="absolute"
+                                                        top="70px"
+                                                        left="50%"
+                                                        variant="body2"
+                                                        fontSize={20}
+                                                        color="gray"
+                                                        sx={{
+                                                            transform:
+                                                                "translateX(-50%)",
+                                                        }}
+                                                    >
+                                                        Add some more details!
+                                                    </Typography>
+                                                </Box>
+                                                <Box
+                                                    display="flex"
+                                                    flexDirection="column"
+                                                    flexWrap="nowrap"
+                                                >
+                                                    <Box
+                                                        display="grid"
+                                                        gridTemplateColumns="repeat(4, auto)"
+                                                    >
+                                                        <TextField
+                                                            disabled
+                                                            label="Duration"
+                                                            value={
+                                                                eventType.event_type_duration
+                                                            }
+                                                            sx={{
+                                                                gridColumn:
+                                                                    "span 4",
+                                                                margin: "10px",
+                                                            }}
+                                                        />
+                                                        <TextField
+                                                            label="Notes"
+                                                            onChange={(e) => {
+                                                                setNotes(
+                                                                    e.target
+                                                                        .value
+                                                                );
+                                                            }}
+                                                            name="event_notes"
+                                                            sx={{
+                                                                gridColumn:
+                                                                    "span 4",
+                                                                margin: "10px",
+                                                            }}
+                                                        />
+                                                        {autoCompleteValue && (
+                                                            <Autocomplete
+                                                                multiple
+                                                                id="event_attendees"
+                                                                limitTags={3}
+                                                                value={
+                                                                    autoCompleteValue
+                                                                }
+                                                                sx={{
+                                                                    gridColumn:
+                                                                        "span 4",
+                                                                    margin: "10px",
+                                                                }}
                                                                 onChange={(
-                                                                    e
+                                                                    event,
+                                                                    newValue
                                                                 ) => {
-                                                                    setLoading(
-                                                                        true
-                                                                    );
-                                                                    setAttendeesTextFieldValue(
-                                                                        e.target
-                                                                            .value
+                                                                    setAutoCompleteValue(
+                                                                        [
+                                                                            ...fixedOptions,
+                                                                            ...newValue.filter(
+                                                                                (
+                                                                                    option
+                                                                                ) =>
+                                                                                    fixedOptions.indexOf(
+                                                                                        option
+                                                                                    ) ===
+                                                                                    -1
+                                                                            ),
+                                                                        ]
                                                                     );
                                                                 }}
-                                                                label="Attendees"
-                                                                placeholder="Add a Guest"
-                                                                InputProps={{
-                                                                    ...params.InputProps,
-                                                                    endAdornment:
+                                                                options={
+                                                                    options
+                                                                }
+                                                                loading={
+                                                                    loading
+                                                                }
+                                                                renderTags={(
+                                                                    tagValue,
+                                                                    getTagProps
+                                                                ) =>
+                                                                    tagValue.map(
                                                                         (
-                                                                            <Fragment>
-                                                                                {loading ? (
-                                                                                    <CircularProgress
-                                                                                        color="inherit"
-                                                                                        size={
-                                                                                            20
-                                                                                        }
-                                                                                    />
-                                                                                ) : null}
-                                                                                {
-                                                                                    params
-                                                                                        .InputProps
-                                                                                        .endAdornment
+                                                                            option,
+                                                                            index
+                                                                        ) => (
+                                                                            <Chip
+                                                                                label={
+                                                                                    option
                                                                                 }
-                                                                            </Fragment>
-                                                                        ),
-                                                                }}
+                                                                                {...getTagProps(
+                                                                                    {
+                                                                                        index,
+                                                                                    }
+                                                                                )}
+                                                                                disabled={
+                                                                                    fixedOptions.indexOf(
+                                                                                        option
+                                                                                    ) !==
+                                                                                    -1
+                                                                                }
+                                                                            />
+                                                                        )
+                                                                    )
+                                                                }
+                                                                renderInput={(
+                                                                    params
+                                                                ) => (
+                                                                    <TextField
+                                                                        {...params}
+                                                                        onChange={(
+                                                                            e
+                                                                        ) => {
+                                                                            setLoading(
+                                                                                true
+                                                                            );
+                                                                            setAttendeesTextFieldValue(
+                                                                                e
+                                                                                    .target
+                                                                                    .value
+                                                                            );
+                                                                        }}
+                                                                        label="Attendees"
+                                                                        placeholder="Add a Guest"
+                                                                        InputProps={{
+                                                                            ...params.InputProps,
+                                                                            endAdornment:
+                                                                                (
+                                                                                    <Fragment>
+                                                                                        {loading ? (
+                                                                                            <CircularProgress
+                                                                                                color="inherit"
+                                                                                                size={
+                                                                                                    20
+                                                                                                }
+                                                                                            />
+                                                                                        ) : null}
+                                                                                        {
+                                                                                            params
+                                                                                                .InputProps
+                                                                                                .endAdornment
+                                                                                        }
+                                                                                    </Fragment>
+                                                                                ),
+                                                                        }}
+                                                                    />
+                                                                )}
                                                             />
                                                         )}
-                                                    />
-                                                )}
-                                                <br />
-                                                <Button
-                                                    variant="contained"
-                                                    onClick={() => {
-                                                        createEvent(
-                                                            {
-                                                                event_date:
-                                                                    listOfAvailableTimesOnChosenDay[
-                                                                        timeChoice
-                                                                    ],
-                                                                event_duration:
-                                                                    duration,
-                                                                event_notes:
-                                                                    notes,
-                                                                event_attendees:
-                                                                    attendees.map(
-                                                                        (
-                                                                            attendee
-                                                                        ) =>
-                                                                            attendee._id
-                                                                    ),
-                                                            },
-                                                            eventTypeID
-                                                        );
-                                                        setSubmitted(true);
-                                                    }}
-                                                >
-                                                    Schedule
-                                                </Button>
-                                            </Box>
+
+                                                        <Box
+                                                            sx={{
+                                                                gridColumn:
+                                                                    "span 4",
+                                                                margin: "20px 10px 0 10px",
+                                                            }}
+                                                        >
+                                                            <Container
+                                                                fullWidth
+                                                                button
+                                                                size="m"
+                                                                variant="contained"
+                                                                onClick={() => {
+                                                                    createEvent(
+                                                                        {
+                                                                            event_date:
+                                                                                listOfAvailableTimesOnChosenDay[
+                                                                                    timeChoice
+                                                                                ],
+                                                                            event_duration:
+                                                                                duration,
+                                                                            event_notes:
+                                                                                notes,
+                                                                            event_attendees:
+                                                                                attendees.map(
+                                                                                    (
+                                                                                        attendee
+                                                                                    ) =>
+                                                                                        attendee._id
+                                                                                ),
+                                                                        },
+                                                                        eventTypeID
+                                                                    );
+                                                                    setSubmitted(
+                                                                        true
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Schedule
+                                                            </Container>
+                                                        </Box>
+                                                    </Box>
+                                                </Box>
+                                            </Container>
                                         </Box>
                                     </div>
                                 </div>
                             </div>
+                            <img
+                                src={Logo}
+                                alt="Logo"
+                                style={{
+                                    justifySelf: "center",
+                                    alignSelf: "center",
+                                    height: "50px",
+                                    margin: "10px 0",
+                                }}
+                            />
                         </Box>
                     ) : (
-                        <Box>
-                            Log in and book an event with{" "}
-                            {receivingUser.first_name}!
-                            <Box>
-                                <Button
-                                    color="inherit"
-                                    onClick={() => {
-                                        setPrevPageToNewEvent();
-                                        navigate("/login");
-                                    }}
-                                >
-                                    Log in
-                                </Button>
-                                <Button
-                                    color="inherit"
-                                    variant="contained"
-                                    onClick={() => {
-                                        setPrevPageToNewEvent();
-                                        navigate("/register");
-                                    }}
-                                >
-                                    Sign up
-                                </Button>
+                        <Box
+                            display="flex"
+                            width="100vw"
+                            height="100vh"
+                            flexDirection="column"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Typography
+                                variant="hero"
+                                textAlign="center"
+                                fontSize={56}
+                                sx={{ margin: "40px" }}
+                            >
+                                <b>Log in</b> or <b>create an account</b> and
+                                book an event with{" "}
+                                <b>{receivingUser.first_name}</b>!
+                            </Typography>
+                            <Box
+                                display="grid"
+                                gridTemplateColumns="200px 200px"
+                            >
+                                <Box justifySelf="center" alignSelf="center">
+                                    <Container
+                                        button
+                                        size="m"
+                                        variant="outlined"
+                                        onClick={() => {
+                                            setPrevPageToNewEvent();
+                                            navigate("/login");
+                                        }}
+                                    >
+                                        Log In
+                                    </Container>
+                                </Box>
+                                <Box justifySelf="center" alignSelf="center">
+                                    <Container
+                                        button
+                                        size="m"
+                                        variant="contained"
+                                        onClick={() => {
+                                            setPrevPageToNewEvent();
+                                            navigate("/register");
+                                        }}
+                                    >
+                                        Sign Up
+                                    </Container>
+                                </Box>
                             </Box>
                         </Box>
                     )}
                 </Box>
             )
         ) : (
-            <Box>Loading</Box>
+            <Typography variant="h3" margin="50px">
+                Loading...
+            </Typography>
         )
     ) : (
-        <Box>You've successfully booked the event!</Box>
+        <Box
+            display="flex"
+            width="100vw"
+            height="100vh"
+            flexDirection="column"
+            justifyContent="center"
+            alignItems="center"
+        >
+            <Typography
+                variant="hero"
+                textAlign="center"
+                sx={{ margin: "40px" }}
+            >
+                You've successfully booked <b>{eventType.event_type_name}</b>{" "}
+                for{" "}
+                <b>
+                    {listOfAvailableTimesOnChosenDay[timeChoice].format(
+                        "MMMM D, YYYY"
+                    )}
+                </b>{" "}
+                at{" "}
+                <b>
+                    {listOfAvailableTimesOnChosenDay[timeChoice].format(
+                        "h:mm A"
+                    )}
+                </b>
+                !
+            </Typography>
+
+            <Container
+                button
+                size="l"
+                variant="contained"
+                onClick={() => {
+                    navigate("/dashboard");
+                }}
+            >
+                Return Home
+            </Container>
+        </Box>
     );
 };
 
