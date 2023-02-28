@@ -34,6 +34,10 @@ const Calendar = () => {
                           .add(event.event_duration, "minute")
                           .format("HH:mm");
 
+                      if (end === "00:00") {
+                          end = "24:00";
+                      }
+
                       return {
                           view_event: event,
                           view_color:
@@ -86,101 +90,88 @@ const Calendar = () => {
 
     return (
         <Box
-            display="grid"
-            m="20px"
-            p="20px"
-            height="auto"
-            gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
-            gridTemplateRows=" 60px 100px 100px 100px 100px 100px 100px"
-            columnGap="20px"
-            rowGap="20px"
+            sx={{
+                width: "fit-content",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+            }}
         >
             <Box
-                sx={{
-                    width: "fit-content",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 8,
-                    gridRowStart: 1,
-                    gridRowEnd: 8,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
+                display="flex"
+                width="100%"
+                justifyContent="center"
+                alignItems="center"
             >
-                <Box
-                    display="flex"
-                    width="100%"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <Box padding="10px 20px">
-                        <Typography variant="h2">
-                            {startOfCurrentWeek.month() ===
-                            startOfCurrentWeek.add(7, "days").month()
-                                ? startOfCurrentWeek.format("MMMM")
-                                : `${startOfCurrentWeek.format(
-                                      "MMMM"
-                                  )} - ${startOfCurrentWeek
-                                      .add(7, "days")
-                                      .format("MMMM")}`}
-                        </Typography>
-                    </Box>
+                <Box padding="10px 20px">
+                    <Typography variant="h2">
+                        {startOfCurrentWeek.month() ===
+                        startOfCurrentWeek.add(7, "days").month()
+                            ? startOfCurrentWeek.format("MMMM")
+                            : `${startOfCurrentWeek.format(
+                                  "MMMM"
+                              )} - ${startOfCurrentWeek
+                                  .add(7, "days")
+                                  .format("MMMM")}`}
+                    </Typography>
                 </Box>
-                <Box display="grid" gridTemplateColumns="50px 690px 50px">
-                    <div
-                        onClick={() => {
-                            setRandomKey(v4());
-                            setStartOfCurrentWeek(
-                                startOfCurrentWeek.subtract(7, "days")
-                            );
+            </Box>
+            <Box
+                display="grid"
+                gridTemplateColumns="7.5vmin min(690px, 70vw) 7.5vmin"
+            >
+                <div
+                    onClick={() => {
+                        setRandomKey(v4());
+                        setStartOfCurrentWeek(
+                            startOfCurrentWeek.subtract(7, "days")
+                        );
+                    }}
+                    onMouseOver={() => setLeftArrowHovered(true)}
+                    onMouseLeave={() => setLeftArrowHovered(false)}
+                    style={{
+                        width: "7.5vmin",
+                        marginTop: "3vmin",
+                        cursor: "pointer",
+                        height: "7.5vmin",
+                    }}
+                >
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            width: "0.75vmin",
+                            height: "3vmin",
+                            rotate: "45deg",
+                            border: leftArrowHovered
+                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease",
                         }}
-                        onMouseOver={() => setLeftArrowHovered(true)}
-                        onMouseLeave={() => setLeftArrowHovered(false)}
-                        style={{
-                            width: "50px",
-                            marginTop: "20px",
-                            cursor: "pointer",
-                            height: "43.2px",
+                    ></Box>
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            top: leftArrowHovered ? "-1.60vmin" : "-1.40vmin",
+                            width: "0.75vmin",
+                            height: "3vmin",
+                            rotate: "-45deg",
+                            border: leftArrowHovered
+                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease, top 0.1s ease",
                         }}
-                    >
-                        <Box
-                            backgroundColor={colors.neutralDark[500]}
-                            sx={{
-                                position: "relative",
-                                width: "5px",
-                                height: "55%",
-                                rotate: "45deg",
-                                border: leftArrowHovered
-                                    ? ` 4px solid ${colors.neutralDark[500]}`
-                                    : ` 0px solid ${colors.neutralDark[500]}`,
-                                transition: "border 0.1s ease",
-                            }}
-                        ></Box>
-                        <Box
-                            backgroundColor={colors.neutralDark[500]}
-                            sx={{
-                                position: "relative",
-                                top: leftArrowHovered ? "-12px" : "-10px",
-                                width: "5px",
-                                height: "55%",
-                                rotate: "-45deg",
-                                border: leftArrowHovered
-                                    ? ` 4px solid ${colors.neutralDark[500]}`
-                                    : ` 0px solid ${colors.neutralDark[500]}`,
-                                transition: "border 0.1s ease, top 0.1s ease",
-                            }}
-                        ></Box>
-                    </div>
+                    ></Box>
+                </div>
+                <Box marginBottom="30px" width="100%">
                     <Container
                         fullWidth
-                        fullHeight
                         button={false}
                         style={{
-                            padding: "0 30px",
-                            height: "100%",
+                            padding: "0 20px",
+                            maxWidth: "90vw",
+                            height: "77vh",
                             backgroundColor: "#fff",
                         }}
                     >
@@ -288,52 +279,52 @@ const Calendar = () => {
                             />
                         </Box>
                     </Container>
-                    <div
-                        onClick={() => {
-                            setRandomKey(v4());
-                            setStartOfCurrentWeek(
-                                startOfCurrentWeek.add(7, "days")
-                            );
-                        }}
-                        onMouseOver={() => setRightArrowHovered(true)}
-                        onMouseLeave={() => setRightArrowHovered(false)}
-                        style={{
-                            width: "30px",
-                            cursor: "pointer",
-                            marginTop: "20px",
-                            paddingLeft: "50px",
-                            height: "43.2px",
-                        }}
-                    >
-                        <Box
-                            backgroundColor={colors.neutralDark[500]}
-                            sx={{
-                                position: "relative",
-                                width: "5px",
-                                height: "55%",
-                                rotate: "-45deg",
-                                border: rightArrowHovered
-                                    ? ` 4px solid ${colors.neutralDark[500]}`
-                                    : ` 0px solid ${colors.neutralDark[500]}`,
-                                transition: "border 0.1s ease",
-                            }}
-                        ></Box>
-                        <Box
-                            backgroundColor={colors.neutralDark[500]}
-                            sx={{
-                                position: "relative",
-                                top: rightArrowHovered ? "-12px" : "-10px",
-                                width: "5px",
-                                height: "55%",
-                                rotate: "45deg",
-                                border: rightArrowHovered
-                                    ? ` 4px solid ${colors.neutralDark[500]}`
-                                    : ` 0px solid ${colors.neutralDark[500]}`,
-                                transition: "border 0.1s ease, top 0.1s ease",
-                            }}
-                        ></Box>
-                    </div>
                 </Box>
+                <div
+                    onClick={() => {
+                        setRandomKey(v4());
+                        setStartOfCurrentWeek(
+                            startOfCurrentWeek.add(7, "days")
+                        );
+                    }}
+                    onMouseOver={() => setRightArrowHovered(true)}
+                    onMouseLeave={() => setRightArrowHovered(false)}
+                    style={{
+                        width: "7.5vmin",
+                        marginTop: "3vmin",
+                        cursor: "pointer",
+                        height: "7.5vmin",
+                        paddingLeft: "7.25vmin",
+                    }}
+                >
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            width: "0.75vmin",
+                            height: "3vmin",
+                            rotate: "-45deg",
+                            border: rightArrowHovered
+                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease",
+                        }}
+                    ></Box>
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            top: rightArrowHovered ? "-1.60vmin" : "-1.40vmin",
+                            width: "0.75vmin",
+                            height: "3vmin",
+                            rotate: "45deg",
+                            border: rightArrowHovered
+                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease, top 0.1s ease",
+                        }}
+                    ></Box>
+                </div>
             </Box>
         </Box>
     );

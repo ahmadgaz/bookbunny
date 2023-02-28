@@ -298,7 +298,6 @@ const NewEvent = () => {
                 setLoading(false);
             }
             fetchFilteredFirstFourUsers();
-            console.log(attendeesTextFieldValue);
         }
     }, [attendeesTextFieldValue]);
 
@@ -391,17 +390,35 @@ const NewEvent = () => {
                                                         </Button>
                                                     </Box>
                                                 </Box>
-                                                <Typography
-                                                    variant="body1"
-                                                    fontSize={24}
-                                                    color="grey"
-                                                    margin="0 0 20px 0"
+                                                <Box
+                                                    display="flex"
+                                                    flexWrap="nowrap"
+                                                    justifyContent="space-between"
                                                 >
-                                                    <b>Duration: </b>
-                                                    {
-                                                        eventType.event_type_duration
-                                                    }
-                                                </Typography>
+                                                    <Typography
+                                                        variant="body1"
+                                                        fontSize={24}
+                                                        color="grey"
+                                                        margin="0 0 20px 0"
+                                                    >
+                                                        <b>Duration: </b>
+                                                        {
+                                                            eventType.event_type_duration
+                                                        }
+                                                    </Typography>
+                                                    <Typography
+                                                        variant="body1"
+                                                        fontSize={24}
+                                                        color="grey"
+                                                        margin="0 0 20px 0"
+                                                        textAlign="left"
+                                                    >
+                                                        <b>Location: </b>
+                                                        {
+                                                            eventType.event_type_location
+                                                        }
+                                                    </Typography>
+                                                </Box>
                                                 <hr />
                                                 <Typography
                                                     variant="body1"
@@ -847,6 +864,7 @@ const NewEvent = () => {
         >
             <Typography
                 variant="hero"
+                fontSize={56}
                 textAlign="center"
                 sx={{ margin: "40px" }}
             >
@@ -868,7 +886,7 @@ const NewEvent = () => {
 
             <Container
                 button
-                size="l"
+                size="m"
                 variant="contained"
                 onClick={() => {
                     navigate("/dashboard");

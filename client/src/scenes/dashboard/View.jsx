@@ -998,742 +998,760 @@ const View = () => {
     };
 
     return isNonMobileScreens ? (
-        <Box
-            display="grid"
-            p="20px"
-            gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
-            gridTemplateRows=" 60px 100px 100px 100px 100px 100px 100px"
-            columnGap="20px"
-            rowGap="20px"
-        >
+        <Box marginBottom="30px">
             <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
+                display="grid"
+                p="20px"
+                gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
+                gridTemplateRows=" 60px 100px 100px 100px 100px 100px 100px"
+                columnGap="20px"
+                rowGap="20px"
+            >
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
 
-                    gridColumnStart: 1,
-                    gridColumnEnd: 3,
-                    gridRowStart: 1,
-                    gridRowEnd: 5,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
-                    fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
-                    }}
-                >
-                    {" "}
-                    <Typography variant="h2" margin="5px 0 10px 0">
-                        Event Types
-                    </Typography>
-                    <EventTypes />
-                </Container>
-            </Box>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 3,
-                    gridColumnEnd: 6,
-                    gridRowStart: 1,
-                    gridRowEnd: 2,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "left",
-                    alignItems: "end",
-                }}
-            >
-                {view._id ? (
-                    <Box
-                        display="flex"
-                        paddingLeft="20px"
-                        width="100%"
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
-                        <div
-                            onClick={() => {
-                                setPrevView();
-                            }}
-                            onMouseOver={() => setLeftArrowHovered(true)}
-                            onMouseLeave={() => setLeftArrowHovered(false)}
-                            style={{
-                                width: "30px",
-                                cursor: "pointer",
-                                height: "43.2px",
-                            }}
-                        >
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "45deg",
-                                    border: leftArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition: "border 0.1s ease",
-                                }}
-                            ></Box>
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    top: leftArrowHovered ? "-12px" : "-10px",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "-45deg",
-                                    border: leftArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition:
-                                        "border 0.1s ease, top 0.1s ease",
-                                }}
-                            ></Box>
-                        </div>
-                        <Box flexGrow="1" paddingLeft="20px">
-                            <Typography variant="h2">
-                                {view.view_name}
-                            </Typography>
-                            <Typography
-                                variant="body1"
-                                fontSize={16}
-                                color="grey"
-                            >
-                                {view.view_desc}
-                            </Typography>
-                        </Box>
-                        <div
-                            onClick={() => {
-                                setNextView();
-                            }}
-                            onMouseOver={() => setRightArrowHovered(true)}
-                            onMouseLeave={() => setRightArrowHovered(false)}
-                            style={{
-                                width: "30px",
-                                cursor: "pointer",
-                                paddingRight: "25px",
-                                height: "43.2px",
-                            }}
-                        >
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "-45deg",
-                                    border: rightArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition: "border 0.1s ease",
-                                }}
-                            ></Box>
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    top: rightArrowHovered ? "-12px" : "-10px",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "45deg",
-                                    border: rightArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition:
-                                        "border 0.1s ease, top 0.1s ease",
-                                }}
-                            ></Box>
-                        </div>
-                    </Box>
-                ) : (
-                    <Typography variant="h2" color="grey">
-                        No Views
-                    </Typography>
-                )}
-            </Box>
-            <Button
-                fullWidth
-                disabled={!view._id}
-                variant="contained"
-                onClick={() => {
-                    handleEditDialogOpen(view);
-                }}
-                sx={{
-                    gridColumnStart: 6,
-                    gridColumnEnd: 7,
-                    gridRowStart: 1,
-                    gridRowEnd: 2,
-                }}
-            >
-                Edit View
-            </Button>
-            <Button
-                fullWidth
-                disabled={!view._id}
-                onClick={() => {
-                    handleDeleteDialogOpen(view);
-                }}
-                sx={{
-                    backgroundColor: "white",
-                    gridColumnStart: 7,
-                    gridColumnEnd: 8,
-                    gridRowStart: 1,
-                    gridRowEnd: 2,
-                }}
-            >
-                Delete View
-            </Button>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 3,
-                    gridColumnEnd: 8,
-                    gridRowStart: 2,
-                    gridRowEnd: 5,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
-                    fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
+                        gridColumnStart: 1,
+                        gridColumnEnd: 3,
+                        gridRowStart: 1,
+                        gridRowEnd: 5,
+                        justifySelf: "center",
+                        alignSelf: "center",
                         display: "flex",
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
+                        flexDirection: "column",
+                        justifyContent: "center",
                     }}
                 >
-                    <Box height="260px" width="fit-content">
-                        <Schedule
-                            direction="horizontal"
-                            type="write"
-                            pxSize="650"
-                            views={getSelectedView() ? [getSelectedView()] : []}
-                            updateView={updateView}
-                        />
-                    </Box>
-                </Container>
-            </Box>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 3,
-                    gridRowStart: 5,
-                    gridRowEnd: 8,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        {" "}
+                        <Typography variant="h2" margin="5px 0 10px 0">
+                            Event Types
+                        </Typography>
+                        <EventTypes />
+                    </Container>
+                </Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 3,
+                        gridColumnEnd: 6,
+                        gridRowStart: 1,
+                        gridRowEnd: 2,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "left",
+                        alignItems: "end",
+                    }}
+                >
+                    {view._id ? (
+                        <Box
+                            display="flex"
+                            paddingLeft="20px"
+                            width="100%"
+                            justifyContent="space-between"
+                            alignItems="center"
+                        >
+                            <div
+                                onClick={() => {
+                                    setPrevView();
+                                }}
+                                onMouseOver={() => setLeftArrowHovered(true)}
+                                onMouseLeave={() => setLeftArrowHovered(false)}
+                                style={{
+                                    width: "30px",
+                                    cursor: "pointer",
+                                    height: "43.2px",
+                                }}
+                            >
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "45deg",
+                                        border: leftArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition: "border 0.1s ease",
+                                    }}
+                                ></Box>
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        top: leftArrowHovered
+                                            ? "-12px"
+                                            : "-10px",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "-45deg",
+                                        border: leftArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition:
+                                            "border 0.1s ease, top 0.1s ease",
+                                    }}
+                                ></Box>
+                            </div>
+                            <Box flexGrow="1" paddingLeft="20px">
+                                <Typography variant="h2">
+                                    {view.view_name}
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    fontSize={16}
+                                    color="grey"
+                                >
+                                    {view.view_desc}
+                                </Typography>
+                            </Box>
+                            <div
+                                onClick={() => {
+                                    setNextView();
+                                }}
+                                onMouseOver={() => setRightArrowHovered(true)}
+                                onMouseLeave={() => setRightArrowHovered(false)}
+                                style={{
+                                    width: "30px",
+                                    cursor: "pointer",
+                                    paddingRight: "25px",
+                                    height: "43.2px",
+                                }}
+                            >
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "-45deg",
+                                        border: rightArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition: "border 0.1s ease",
+                                    }}
+                                ></Box>
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        top: rightArrowHovered
+                                            ? "-12px"
+                                            : "-10px",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "45deg",
+                                        border: rightArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition:
+                                            "border 0.1s ease, top 0.1s ease",
+                                    }}
+                                ></Box>
+                            </div>
+                        </Box>
+                    ) : (
+                        <Typography variant="h2" color="grey">
+                            No Views
+                        </Typography>
+                    )}
+                </Box>
+                <Button
                     fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
+                    disabled={!view._id}
+                    variant="contained"
+                    onClick={() => {
+                        handleEditDialogOpen(view);
+                    }}
+                    sx={{
+                        gridColumnStart: 6,
+                        gridColumnEnd: 7,
+                        gridRowStart: 1,
+                        gridRowEnd: 2,
                     }}
                 >
-                    <Typography variant="h2" margin="5px 0 10px 0">
-                        All Views
-                    </Typography>
-                    <Views setShownViews={setShownViews} />
-                </Container>
-            </Box>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 3,
-                    gridColumnEnd: 8,
-                    gridRowStart: 5,
-                    gridRowEnd: 8,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
+                    Edit View
+                </Button>
+                <Button
                     fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
+                    disabled={!view._id}
+                    onClick={() => {
+                        handleDeleteDialogOpen(view);
+                    }}
+                    sx={{
+                        backgroundColor: "white",
+                        gridColumnStart: 7,
+                        gridColumnEnd: 8,
+                        gridRowStart: 1,
+                        gridRowEnd: 2,
                     }}
                 >
-                    <Box height="260px" width="fit-content">
-                        {shownViews.length > 0 ? (
+                    Delete View
+                </Button>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 3,
+                        gridColumnEnd: 8,
+                        gridRowStart: 2,
+                        gridRowEnd: 5,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            display: "flex",
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Box height="260px" width="fit-content">
                             <Schedule
                                 direction="horizontal"
-                                type="read"
+                                type="write"
                                 pxSize="650"
                                 views={
-                                    user.views
-                                        ? user.views.length > 0
-                                            ? user.views.filter((view) =>
-                                                  shownViews.some(
-                                                      (viewid) =>
-                                                          viewid === view._id
-                                                  )
-                                              )
-                                            : getSelectedView()
-                                            ? [getSelectedView()]
-                                            : []
-                                        : []
+                                    getSelectedView() ? [getSelectedView()] : []
                                 }
+                                updateView={updateView}
                             />
-                        ) : user.views ? (
-                            user.views.length <= 0 ? (
-                                <Typography variant="h2" color="grey">
-                                    Create a View!
-                                </Typography>
+                        </Box>
+                    </Container>
+                </Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 1,
+                        gridColumnEnd: 3,
+                        gridRowStart: 5,
+                        gridRowEnd: 8,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Typography variant="h2" margin="5px 0 10px 0">
+                            All Views
+                        </Typography>
+                        <Views setShownViews={setShownViews} />
+                    </Container>
+                </Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 3,
+                        gridColumnEnd: 8,
+                        gridRowStart: 5,
+                        gridRowEnd: 8,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Box height="260px" width="fit-content">
+                            {shownViews.length > 0 ? (
+                                <Schedule
+                                    direction="horizontal"
+                                    type="read"
+                                    pxSize="650"
+                                    views={
+                                        user.views
+                                            ? user.views.length > 0
+                                                ? user.views.filter((view) =>
+                                                      shownViews.some(
+                                                          (viewid) =>
+                                                              viewid ===
+                                                              view._id
+                                                      )
+                                                  )
+                                                : getSelectedView()
+                                                ? [getSelectedView()]
+                                                : []
+                                            : []
+                                    }
+                                />
+                            ) : user.views ? (
+                                user.views.length <= 0 ? (
+                                    <Typography variant="h2" color="grey">
+                                        Create a View!
+                                    </Typography>
+                                ) : (
+                                    <Typography variant="h2" color="grey">
+                                        Select a View
+                                    </Typography>
+                                )
                             ) : (
                                 <Typography variant="h2" color="grey">
-                                    Select a View
+                                    Log In to See Your Views!
                                 </Typography>
-                            )
-                        ) : (
-                            <Typography variant="h2" color="grey">
-                                Log In to See Your Views!
-                            </Typography>
-                        )}
-                    </Box>
-                </Container>
+                            )}
+                        </Box>
+                    </Container>
+                </Box>
+                {showDeleteDialog && (
+                    <DeleteViewDialog
+                        view={showDeleteDialog}
+                        setShowDialog={setShowDeleteDialog}
+                        setShowSnackbar={setShowDeletedSnackbar}
+                    />
+                )}
+                {showEditDialog && (
+                    <EditViewDialog
+                        view={showEditDialog}
+                        setShowDialog={setShowEditDialog}
+                        setShowSnackbar={setShowEditedSnackbar}
+                    />
+                )}
+                <Snackbar
+                    open={showDeletedSnackbar}
+                    autoHideDuration={4000}
+                    onClose={() => {
+                        setShowDeletedSnackbar(false);
+                    }}
+                    message="View deleted!"
+                    // action={} undo
+                />
+                <Snackbar
+                    open={showEditedSnackbar}
+                    autoHideDuration={4000}
+                    onClose={() => {
+                        setShowEditedSnackbar(false);
+                    }}
+                    message="View saved!"
+                    // action={} undo
+                />
             </Box>
-            {showDeleteDialog && (
-                <DeleteViewDialog
-                    view={showDeleteDialog}
-                    setShowDialog={setShowDeleteDialog}
-                    setShowSnackbar={setShowDeletedSnackbar}
-                />
-            )}
-            {showEditDialog && (
-                <EditViewDialog
-                    view={showEditDialog}
-                    setShowDialog={setShowEditDialog}
-                    setShowSnackbar={setShowEditedSnackbar}
-                />
-            )}
-            <Snackbar
-                open={showDeletedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowDeletedSnackbar(false);
-                }}
-                message="View deleted!"
-                // action={} undo
-            />
-            <Snackbar
-                open={showEditedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowEditedSnackbar(false);
-                }}
-                message="View saved!"
-                // action={} undo
-            />
         </Box>
     ) : (
-        <Box
-            display="grid"
-            p="20px"
-            gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
-            gridTemplateRows="100px 100px fit-content 40px 100px 100px 100px 100px 100px 100px 100px"
-            columnGap="20px"
-            rowGap="20px"
-        >
+        <Box marginBottom="30px">
             <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 8,
-                    gridRowStart: 1,
-                    gridRowEnd: 2,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "left",
-                    alignItems: "end",
-                }}
+                display="grid"
+                p="20px"
+                gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
+                gridTemplateRows="100px 100px fit-content 40px 100px 100px 100px 100px 100px 100px 100px"
+                columnGap="20px"
+                rowGap="20px"
             >
-                {view._id ? (
-                    <Box
-                        display="flex"
-                        paddingLeft="20px"
-                        width="100%"
-                        justifyContent="space-between"
-                        alignItems="center"
-                    >
-                        <div
-                            onClick={() => {
-                                setPrevView();
-                            }}
-                            onMouseOver={() => setLeftArrowHovered(true)}
-                            onMouseLeave={() => setLeftArrowHovered(false)}
-                            style={{
-                                width: "30px",
-                                cursor: "pointer",
-                                height: "43.2px",
-                            }}
-                        >
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "45deg",
-                                    border: leftArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition: "border 0.1s ease",
-                                }}
-                            ></Box>
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    top: leftArrowHovered ? "-12px" : "-10px",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "-45deg",
-                                    border: leftArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition:
-                                        "border 0.1s ease, top 0.1s ease",
-                                }}
-                            ></Box>
-                        </div>
-                        <Box flexGrow="1" paddingLeft="20px">
-                            <Typography variant="h2">
-                                {view.view_name}
-                            </Typography>
-                            <Typography
-                                variant="body1"
-                                fontSize={16}
-                                color="grey"
-                            >
-                                {view.view_desc}
-                            </Typography>
-                        </Box>
-                        <div
-                            onClick={() => {
-                                setNextView();
-                            }}
-                            onMouseOver={() => setRightArrowHovered(true)}
-                            onMouseLeave={() => setRightArrowHovered(false)}
-                            style={{
-                                width: "30px",
-                                cursor: "pointer",
-                                paddingRight: "25px",
-                                height: "43.2px",
-                            }}
-                        >
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "-45deg",
-                                    border: rightArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition: "border 0.1s ease",
-                                }}
-                            ></Box>
-                            <Box
-                                backgroundColor={colors.neutralDark[500]}
-                                sx={{
-                                    position: "relative",
-                                    top: rightArrowHovered ? "-12px" : "-10px",
-                                    width: "5px",
-                                    height: "55%",
-                                    rotate: "45deg",
-                                    border: rightArrowHovered
-                                        ? ` 4px solid ${colors.neutralDark[500]}`
-                                        : ` 0px solid ${colors.neutralDark[500]}`,
-                                    transition:
-                                        "border 0.1s ease, top 0.1s ease",
-                                }}
-                            ></Box>
-                        </div>
-                    </Box>
-                ) : (
-                    <Typography variant="h2" color="grey">
-                        No Views
-                    </Typography>
-                )}
-            </Box>
-            <Button
-                fullWidth
-                disabled={!view._id}
-                variant="contained"
-                onClick={() => {
-                    handleEditDialogOpen(view);
-                }}
-                sx={{
-                    gridColumnStart: 1,
-                    gridColumnEnd: 4,
-                    gridRowStart: 2,
-                    gridRowEnd: 3,
-                }}
-            >
-                Edit View
-            </Button>
-            <Button
-                fullWidth
-                disabled={!view._id}
-                onClick={() => {
-                    handleDeleteDialogOpen(view);
-                }}
-                sx={{
-                    backgroundColor: "white",
-                    gridColumnStart: 5,
-                    gridColumnEnd: 8,
-                    gridRowStart: 2,
-                    gridRowEnd: 3,
-                }}
-            >
-                Delete View
-            </Button>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 8,
-                    gridRowStart: 3,
-                    gridRowEnd: 5,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
-                    fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
-                        padding: "30px",
+                <Box
+                    sx={{
+                        width: "100%",
                         height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
-                    }}
-                >
-                    {" "}
-                    <Typography variant="h2" margin="5px 0 10px 0">
-                        Event Types
-                    </Typography>
-                    <EventTypes />
-                </Container>
-            </Box>
-
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 8,
-                    gridRowStart: 5,
-                    gridRowEnd: 7,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
-                    fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
+                        gridColumnStart: 1,
+                        gridColumnEnd: 8,
+                        gridRowStart: 1,
+                        gridRowEnd: 2,
+                        justifySelf: "center",
+                        alignSelf: "center",
                         display: "flex",
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
+                        flexDirection: "row",
+                        justifyContent: "left",
+                        alignItems: "end",
                     }}
                 >
-                    <Box height="260px" width="fit-content">
-                        <Schedule
-                            direction="horizontal"
-                            type="write"
-                            pxSize="650"
-                            views={getSelectedView() ? [getSelectedView()] : []}
-                            updateView={updateView}
-                        />
-                    </Box>
-                </Container>
-            </Box>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 8,
-                    gridRowStart: 7,
-                    gridRowEnd: 9,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
+                    {view._id ? (
+                        <Box
+                            display="flex"
+                            paddingLeft="20px"
+                            width="100%"
+                            justifyContent="space-between"
+                            alignItems="center"
+                        >
+                            <div
+                                onClick={() => {
+                                    setPrevView();
+                                }}
+                                onMouseOver={() => setLeftArrowHovered(true)}
+                                onMouseLeave={() => setLeftArrowHovered(false)}
+                                style={{
+                                    width: "30px",
+                                    cursor: "pointer",
+                                    height: "43.2px",
+                                }}
+                            >
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "45deg",
+                                        border: leftArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition: "border 0.1s ease",
+                                    }}
+                                ></Box>
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        top: leftArrowHovered
+                                            ? "-12px"
+                                            : "-10px",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "-45deg",
+                                        border: leftArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition:
+                                            "border 0.1s ease, top 0.1s ease",
+                                    }}
+                                ></Box>
+                            </div>
+                            <Box flexGrow="1" paddingLeft="20px">
+                                <Typography variant="h2">
+                                    {view.view_name}
+                                </Typography>
+                                <Typography
+                                    variant="body1"
+                                    fontSize={16}
+                                    color="grey"
+                                >
+                                    {view.view_desc}
+                                </Typography>
+                            </Box>
+                            <div
+                                onClick={() => {
+                                    setNextView();
+                                }}
+                                onMouseOver={() => setRightArrowHovered(true)}
+                                onMouseLeave={() => setRightArrowHovered(false)}
+                                style={{
+                                    width: "30px",
+                                    cursor: "pointer",
+                                    paddingRight: "25px",
+                                    height: "43.2px",
+                                }}
+                            >
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "-45deg",
+                                        border: rightArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition: "border 0.1s ease",
+                                    }}
+                                ></Box>
+                                <Box
+                                    backgroundColor={colors.neutralDark[500]}
+                                    sx={{
+                                        position: "relative",
+                                        top: rightArrowHovered
+                                            ? "-12px"
+                                            : "-10px",
+                                        width: "5px",
+                                        height: "55%",
+                                        rotate: "45deg",
+                                        border: rightArrowHovered
+                                            ? ` 4px solid ${colors.neutralDark[500]}`
+                                            : ` 0px solid ${colors.neutralDark[500]}`,
+                                        transition:
+                                            "border 0.1s ease, top 0.1s ease",
+                                    }}
+                                ></Box>
+                            </div>
+                        </Box>
+                    ) : (
+                        <Typography variant="h2" color="grey">
+                            No Views
+                        </Typography>
+                    )}
+                </Box>
+                <Button
                     fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
+                    disabled={!view._id}
+                    variant="contained"
+                    onClick={() => {
+                        handleEditDialogOpen(view);
+                    }}
+                    sx={{
+                        gridColumnStart: 1,
+                        gridColumnEnd: 4,
+                        gridRowStart: 2,
+                        gridRowEnd: 3,
                     }}
                 >
-                    <Typography variant="h2" margin="5px 0 10px 0">
-                        All Views
-                    </Typography>
-                    <Views setShownViews={setShownViews} />
-                </Container>
-            </Box>
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "100%",
-                    gridColumnStart: 1,
-                    gridColumnEnd: 8,
-                    gridRowStart: 9,
-                    gridRowEnd: 11,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                }}
-            >
-                <Container
+                    Edit View
+                </Button>
+                <Button
                     fullWidth
-                    fullHeight
-                    button={false}
-                    style={{
-                        padding: "30px",
-                        height: "100%",
-                        backgroundColor: "#fff",
-                        textAlign: "center",
+                    disabled={!view._id}
+                    onClick={() => {
+                        handleDeleteDialogOpen(view);
+                    }}
+                    sx={{
+                        backgroundColor: "white",
+                        gridColumnStart: 5,
+                        gridColumnEnd: 8,
+                        gridRowStart: 2,
+                        gridRowEnd: 3,
                     }}
                 >
-                    <Box height="260px" width="fit-content">
-                        {shownViews.length > 0 ? (
+                    Delete View
+                </Button>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 1,
+                        gridColumnEnd: 8,
+                        gridRowStart: 3,
+                        gridRowEnd: 5,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        {" "}
+                        <Typography variant="h2" margin="5px 0 10px 0">
+                            Event Types
+                        </Typography>
+                        <EventTypes />
+                    </Container>
+                </Box>
+
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 1,
+                        gridColumnEnd: 8,
+                        gridRowStart: 5,
+                        gridRowEnd: 7,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            display: "flex",
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Box height="260px" width="fit-content">
                             <Schedule
                                 direction="horizontal"
-                                type="read"
+                                type="write"
                                 pxSize="650"
                                 views={
-                                    user.views
-                                        ? user.views.length > 0
-                                            ? user.views.filter((view) =>
-                                                  shownViews.some(
-                                                      (viewid) =>
-                                                          viewid === view._id
-                                                  )
-                                              )
-                                            : getSelectedView()
-                                            ? [getSelectedView()]
-                                            : []
-                                        : []
+                                    getSelectedView() ? [getSelectedView()] : []
                                 }
+                                updateView={updateView}
                             />
-                        ) : user.views ? (
-                            user.views.length <= 0 ? (
-                                <Typography variant="h2" color="grey">
-                                    Create a View!
-                                </Typography>
+                        </Box>
+                    </Container>
+                </Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 1,
+                        gridColumnEnd: 8,
+                        gridRowStart: 7,
+                        gridRowEnd: 9,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Typography variant="h2" margin="5px 0 10px 0">
+                            All Views
+                        </Typography>
+                        <Views setShownViews={setShownViews} />
+                    </Container>
+                </Box>
+                <Box
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gridColumnStart: 1,
+                        gridColumnEnd: 8,
+                        gridRowStart: 9,
+                        gridRowEnd: 11,
+                        justifySelf: "center",
+                        alignSelf: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "30px",
+                            height: "100%",
+                            backgroundColor: "#fff",
+                            textAlign: "center",
+                        }}
+                    >
+                        <Box height="260px" width="fit-content">
+                            {shownViews.length > 0 ? (
+                                <Schedule
+                                    direction="horizontal"
+                                    type="read"
+                                    pxSize="650"
+                                    views={
+                                        user.views
+                                            ? user.views.length > 0
+                                                ? user.views.filter((view) =>
+                                                      shownViews.some(
+                                                          (viewid) =>
+                                                              viewid ===
+                                                              view._id
+                                                      )
+                                                  )
+                                                : getSelectedView()
+                                                ? [getSelectedView()]
+                                                : []
+                                            : []
+                                    }
+                                />
+                            ) : user.views ? (
+                                user.views.length <= 0 ? (
+                                    <Typography variant="h2" color="grey">
+                                        Create a View!
+                                    </Typography>
+                                ) : (
+                                    <Typography variant="h2" color="grey">
+                                        Select a View
+                                    </Typography>
+                                )
                             ) : (
                                 <Typography variant="h2" color="grey">
-                                    Select a View
+                                    Log In to See Your Views!
                                 </Typography>
-                            )
-                        ) : (
-                            <Typography variant="h2" color="grey">
-                                Log In to See Your Views!
-                            </Typography>
-                        )}
-                    </Box>
-                </Container>
+                            )}
+                        </Box>
+                    </Container>
+                </Box>
+                {showDeleteDialog && (
+                    <DeleteViewDialog
+                        view={showDeleteDialog}
+                        setShowDialog={setShowDeleteDialog}
+                        setShowSnackbar={setShowDeletedSnackbar}
+                    />
+                )}
+                {showEditDialog && (
+                    <EditViewDialog
+                        view={showEditDialog}
+                        setShowDialog={setShowEditDialog}
+                        setShowSnackbar={setShowEditedSnackbar}
+                    />
+                )}
+                <Snackbar
+                    open={showDeletedSnackbar}
+                    autoHideDuration={4000}
+                    onClose={() => {
+                        setShowDeletedSnackbar(false);
+                    }}
+                    message="View deleted!"
+                    // action={} undo
+                />
+                <Snackbar
+                    open={showEditedSnackbar}
+                    autoHideDuration={4000}
+                    onClose={() => {
+                        setShowEditedSnackbar(false);
+                    }}
+                    message="View saved!"
+                    // action={} undo
+                />
             </Box>
-            {showDeleteDialog && (
-                <DeleteViewDialog
-                    view={showDeleteDialog}
-                    setShowDialog={setShowDeleteDialog}
-                    setShowSnackbar={setShowDeletedSnackbar}
-                />
-            )}
-            {showEditDialog && (
-                <EditViewDialog
-                    view={showEditDialog}
-                    setShowDialog={setShowEditDialog}
-                    setShowSnackbar={setShowEditedSnackbar}
-                />
-            )}
-            <Snackbar
-                open={showDeletedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowDeletedSnackbar(false);
-                }}
-                message="View deleted!"
-                // action={} undo
-            />
-            <Snackbar
-                open={showEditedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowEditedSnackbar(false);
-                }}
-                message="View saved!"
-                // action={} undo
-            />
         </Box>
     );
 };

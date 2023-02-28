@@ -140,6 +140,25 @@ const CRUDFunctionsContextProvider = (props) => {
 
         return firstFourUsers;
     };
+    const getAttendeesInfo = async (eventid) => {
+        const attendeesInfoResponse = await fetch(
+            `${userURL}/getAttendeesInfo/${eventid}`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const attendeesInfo = await attendeesInfoResponse.json();
+
+        if (!attendeesInfo) {
+            console.log("Error");
+            return;
+        }
+
+        return attendeesInfo;
+    };
 
     // VIEWS
     const getSelectedView = () => {
@@ -366,6 +385,7 @@ const CRUDFunctionsContextProvider = (props) => {
         <CRUDFunctionsContext.Provider
             value={{
                 user,
+                getAttendeesInfo,
                 getRecievingUser,
                 getFirstFourUsers,
                 createEventType,

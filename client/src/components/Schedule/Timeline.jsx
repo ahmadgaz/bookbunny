@@ -1,8 +1,15 @@
-import { Box, Button, Popover } from "@mui/material";
+import { LocationOn, Notes } from "@mui/icons-material";
+import { Box, Button, Popover, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { CRUDFunctionsContext } from "App";
+import Container from "components/Container";
+import dayjs from "dayjs";
+import { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { tokens } from "theme";
 import { v4 } from "uuid";
 import { getTime, getPosAndSize } from "./convertData";
+import Event from "./Event";
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -45,6 +52,7 @@ const useStyles = makeStyles({
 });
 
 const Timeline = (props) => {
+    const { getAttendeesInfo } = useContext(CRUDFunctionsContext);
     const {
         direction,
         type,
@@ -57,7 +65,6 @@ const Timeline = (props) => {
         acceptEvent,
     } = props;
     const classes = useStyles();
-    console.log(views);
 
     class TimeslotData {
         constructor(color, time, event) {
@@ -92,15 +99,24 @@ const Timeline = (props) => {
                         : "0px",
                 width:
                     this.direction === "horizontal"
-                        ? `calc(${this.size}px - 4px)`
+                        ? `calc(${this.size}px - 1px)`
+                        : this.event
+                        ? "90%"
                         : "100%",
                 height:
                     this.direction === "vertical"
-                        ? `calc(${this.size}px - 4px)`
+                        ? `calc(${this.size}px - 1px)`
+                        : this.event
+                        ? "90%"
                         : "100%",
                 borderRadius: "5px",
                 border: this.size > 0 ? `1.5px solid ${this.borderColor}` : "",
-                background: this.color,
+                background:
+                    type === "read" &&
+                    // views.some((view) => view.view_event) &&
+                    !this.event
+                        ? `repeating-linear-gradient(45deg, ${this.color}AA, ${this.color}AA 1px,  ${this.color}7F 2.5px,  ${this.color}7F 10px)`
+                        : this.color,
                 WebkitUserSelect: "none",
                 KhtmlUserSelect: "none",
                 MozUserSelect: "none",
@@ -348,6 +364,9 @@ const Timeline = (props) => {
             // let linearGradient = `linear-gradient(${direction === "horizontal" ? "90deg" : "180deg"}, ${color} 0%${opaqueParts.join("")}, ${color} 100%)`
 
             data.forEach((timeslot, idx) => {
+                if (this.event) {
+                    return;
+                }
                 if (this.key === timeslot.key) {
                     // console.log('same slot');
                     return;
@@ -396,7 +415,10 @@ const Timeline = (props) => {
                     // timeslot.position + timeslot.size - this.position --- ((timeslot.position + timeslot.size - this.position)/(this.size))%
                     let opaqueStart = 0;
                     let opaqueEnd =
-                        ((timeslot.position + timeslot.size - this.position) /
+                        ((timeslot.position +
+                            timeslot.size -
+                            this.position -
+                            1) /
                             this.size) *
                         100;
                     opaqueParts.push({
@@ -418,7 +440,8 @@ const Timeline = (props) => {
                     // timeslot.position - this.position --- ((timeslot.position - this.position)/(this.size))%
                     // this.position + this.size --- 100%
                     let opaqueStart =
-                        ((timeslot.position - this.position) / this.size) * 100;
+                        ((timeslot.position - this.position + 1) / this.size) *
+                        100;
                     let opaqueEnd = 100;
                     opaqueParts.push({
                         percentages: [opaqueStart, opaqueEnd],
@@ -439,9 +462,13 @@ const Timeline = (props) => {
                     // timeslot.position
                     // thimeSlot.position + timeslot.size
                     let opaqueStart =
-                        ((timeslot.position - this.position) / this.size) * 100;
+                        ((timeslot.position - this.position + 1) / this.size) *
+                        100;
                     let opaqueEnd =
-                        ((timeslot.position + timeslot.size - this.position) /
+                        ((timeslot.position +
+                            timeslot.size -
+                            this.position -
+                            1) /
                             this.size) *
                         100;
                     opaqueParts.push({
@@ -521,9 +548,9 @@ const Timeline = (props) => {
                         data[data.length - 1].setIncrement(cell.current);
                         data[data.length - 1].setPosition();
                         data[data.length - 1].setSize();
-                        data[data.length - 1].correctOverlapsForReadComponents(
-                            data
-                        );
+                        // data[data.length - 1].correctOverlapsForReadComponents(
+                        //     data
+                        // );
                     });
                 }
             });
@@ -634,7 +661,6 @@ const Timeline = (props) => {
                                 timeslot.event.event_status === "denied" ||
                                 timeslot.event.event_status === "canceled"
                             ) {
-                                console.log();
                                 deleteEvent(timeslot.event);
                             }
                         }
@@ -659,6 +685,9 @@ const Timeline = (props) => {
                             }}
                             PaperProps={{
                                 style: {
+                                    boxShadow: "0px 0px 0px rgba(0,0,0,0)",
+                                    overflow: "visible",
+                                    backgroundColor: "rgba(0,0,0,0)",
                                     marginTop: "10px",
                                 },
                             }}
@@ -666,55 +695,7 @@ const Timeline = (props) => {
                                 timeslot.handlePopoverClose();
                             }}
                         >
-                            {timeslot.event.event_name}
-                            <br />
-                            {timeslot.event.event_location}
-                            <br />
-                            {timeslot.event.event_date}
-                            <br />
-                            {timeslot.event.event_duration}
-                            <br />
-                            {timeslot.event.event_notes}
-                            <br />
-                            {timeslot.event.event_attendees}
-                            <br />
-                            {timeslot.event.event_status}
-                            <br />
-                            {timeslot.event.event_attending.toString()}
-                            <br />
-                            {((timeslot.event.event_status === "pending" &&
-                                timeslot.event.event_attending) ||
-                                (timeslot.event.event_status === "confirmed" &&
-                                    timeslot.event.event_attending)) && (
-                                <Box>
-                                    <Button
-                                        onClick={() => {
-                                            deleteEvent(timeslot.event);
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </Box>
-                            )}
-                            {timeslot.event.event_status === "pending" &&
-                                !timeslot.event.event_attending && (
-                                    <Box>
-                                        <Button
-                                            onClick={() => {
-                                                acceptEvent(timeslot.event);
-                                            }}
-                                        >
-                                            Accept
-                                        </Button>
-                                        <Button
-                                            onClick={() => {
-                                                deleteEvent(timeslot.event);
-                                            }}
-                                        >
-                                            Deny
-                                        </Button>
-                                    </Box>
-                                )}
+                            <Event timeslot={timeslot} />
                         </Popover>
                     )}
                 </div>

@@ -448,6 +448,8 @@ const Container = (props) => {
         >
             <Box
                 style={{
+                    width: "calc(100% - 5px)",
+                    height: fullHeight ? "calc(100% - 5px)" : "",
                     maxHeight: "100%",
                     overflow: "scroll",
                     border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,

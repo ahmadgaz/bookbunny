@@ -19,7 +19,6 @@ const Schedule = (props) => {
         deleteEvent = () => {},
         acceptEvent = () => {},
     } = props;
-    console.log(views);
     const dividers = [];
     for (let i = 0; i < 24; i++) {
         dividers.push(

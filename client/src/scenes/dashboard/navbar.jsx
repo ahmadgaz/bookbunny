@@ -561,8 +561,140 @@ const Navbar = (props) => {
     };
     const dispatch = useDispatch();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    const View = () => {
+        return (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="50px"
+                height="50px"
+            >
+                <Box
+                    display="flex"
+                    padding="5px"
+                    justifyContent="center"
+                    alignItems="center"
+                    position="absolute"
+                    width={tab === 0 ? "80px" : "40px"}
+                    height="40px"
+                    borderRadius="10px"
+                    border="1.5px solid gray"
+                    backgroundColor="#fff"
+                    transition="width 0.5s ease"
+                    zIndex="-1"
+                >
+                    <ViewDayIcon />
+                    {tab === 0 && (
+                        <Typography variant="body1" paddingLeft="5px">
+                            <b>View</b>
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+        );
+    };
+    const Calendar = () => {
+        return (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="50px"
+                height="50px"
+            >
+                <Box
+                    display="flex"
+                    padding="5px"
+                    justifyContent="center"
+                    alignItems="center"
+                    position="absolute"
+                    width={tab === 1 ? "100px" : "40px"}
+                    height="40px"
+                    borderRadius="10px"
+                    border="1.5px solid gray"
+                    backgroundColor="#fff"
+                    transition="width 0.5s ease"
+                    zIndex="-1"
+                >
+                    <TodayIcon />
+                    {tab === 1 && (
+                        <Typography variant="body1" paddingLeft="5px">
+                            <b>Calendar</b>
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+        );
+    };
+    const Help = () => {
+        return (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="50px"
+                height="50px"
+            >
+                <Box
+                    display="flex"
+                    padding="5px"
+                    justifyContent="center"
+                    alignItems="center"
+                    position="absolute"
+                    width={tab === 2 ? "80px" : "40px"}
+                    height="40px"
+                    borderRadius="10px"
+                    border="1.5px solid gray"
+                    backgroundColor="#fff"
+                    transition="width 0.5s ease"
+                    zIndex="-1"
+                >
+                    <SupportIcon />
+                    {tab === 2 && (
+                        <Typography variant="body1" paddingLeft="5px">
+                            <b>Help</b>
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+        );
+    };
+    const Account = () => {
+        return (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="50px"
+                height="50px"
+            >
+                <Box
+                    display="flex"
+                    padding="5px"
+                    justifyContent="center"
+                    alignItems="center"
+                    position="absolute"
+                    width={tab === 3 ? "95px" : "40px"}
+                    height="40px"
+                    borderRadius="10px"
+                    border="1.5px solid gray"
+                    backgroundColor="#fff"
+                    transition="width 0.5s ease"
+                    zIndex="-1"
+                >
+                    <PersonIcon />
+                    {tab === 3 && (
+                        <Typography variant="body1" paddingLeft="5px">
+                            <b>Account</b>
+                        </Typography>
+                    )}
+                </Box>
+            </Box>
+        );
+    };
 
-    return (
+    return isNonMobileScreens ? (
         <StyledAppBar>
             <Toolbar
                 sx={{
@@ -590,6 +722,25 @@ const Navbar = (props) => {
                     sx={{
                         position: "absolute",
                         left: "50%",
+                        display: "flex",
+                        justifyContent: "center",
+                        transform: "translateX(-50%)",
+                    }}
+                >
+                    <Tab icon={<View />} />
+                    <Tab icon={<Calendar />} />
+                    <Tab icon={<Help />} />
+                    <Tab icon={<Account />} />
+                </Tabs>
+                {/* <Tabs
+                    value={tab}
+                    onChange={handleTabChange}
+                    indicatorColor="secondary"
+                    textColor="inherit"
+                    variant="fullWidth"
+                    sx={{
+                        position: "absolute",
+                        left: "50%",
                         transform: "translateX(-50%)",
                     }}
                 >
@@ -597,7 +748,39 @@ const Navbar = (props) => {
                     <Tab label="Calendar" />
                     <Tab label="Help" />
                     <Tab label="Account" />
-                </Tabs>
+                </Tabs> */}
+
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => {
+                        dispatch(setLogout());
+                    }}
+                    sx={{ marginLeft: "30px" }}
+                >
+                    Log out
+                </Button>
+            </Toolbar>
+        </StyledAppBar>
+    ) : (
+        <StyledAppBar>
+            <Toolbar
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                }}
+            >
+                <Box display="flex" alignItems="center">
+                    <img
+                        src={Logo}
+                        alt="Logo"
+                        style={{ height: "50px", margin: "0 30px 0 0" }}
+                    />
+                    <Box>
+                        <ViewsDropdown />
+                    </Box>
+                </Box>
 
                 <Button
                     variant="contained"

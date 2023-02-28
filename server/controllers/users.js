@@ -337,7 +337,6 @@ export const createEvent = async (req, res) => {
         const { event_date, event_duration, event_notes, event_attendees } =
             req.body;
 
-        console.log(req.body);
         req.params.user = mongoose.Types.ObjectId(req.params.user);
         req.params.eventType = mongoose.Types.ObjectId(req.params.eventType);
         const eventType = await EventType.findOne({
@@ -398,6 +397,17 @@ export const createEvent = async (req, res) => {
         }
 
         res.status(201).json(newEvents);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const getAttendeesInfo = async (req, res) => {
+    try {
+        req.params.event = mongoose.Types.ObjectId(req.params.event);
+        const users = await User.find({
+            "events.event_id": req.params.event,
+        }).exec();
+        res.status(201).json(users);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

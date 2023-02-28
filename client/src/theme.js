@@ -284,6 +284,9 @@ export const themeSettings = (mode) => {
                     root: {
                         backgroundColor: `${colors.neutralLight[500]}7F`,
                     },
+                    invisible: {
+                        backgroundColor: `rgba(0,0,0,0)`,
+                    },
                 },
             },
             MuiAppBar: {
@@ -355,9 +358,24 @@ export const themeSettings = (mode) => {
                 },
             },
             MuiTab: {
+                defaultProps: {
+                    disableRipple: true,
+                    disableFocusRipple: true,
+                },
                 styleOverrides: {
                     root: {
+                        width: "100px",
                         textTransform: "none",
+                    },
+                },
+            },
+            MuiTabs: {
+                styleOverrides: {
+                    indicator: {
+                        minWidth: "0",
+                        maxWidth: "0",
+                        minHeight: "0",
+                        maxHeight: "0",
                     },
                 },
             },

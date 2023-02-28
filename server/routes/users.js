@@ -3,6 +3,7 @@ import {
     getUser,
     getRecievingUser,
     getFirstFourUsers,
+    getAttendeesInfo,
     createEvent,
     getEvent,
     acceptEvent,
@@ -24,6 +25,7 @@ const router = express.Router();
 router.get("/:user", verifyToken, getUser);
 router.get("/getRecievingUser/:eventType", getRecievingUser);
 router.get("/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers);
+router.get("/getAttendeesInfo/:event", verifyToken, getAttendeesInfo);
 
 // EVENTS
 router.post("/:user/:eventType/createEvent", verifyToken, createEvent);

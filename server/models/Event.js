@@ -41,6 +41,7 @@ export const EventSchema = new mongoose.Schema(
                 ref: "User",
             },
         ],
+        attendees_info: { type: Object },
         event_status: { type: String, required: true },
         event_attending: { type: Boolean, required: true },
     },

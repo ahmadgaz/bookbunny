@@ -195,3 +195,6 @@ body,
 ::-webkit-scrollbar-thumb:hover {
     background: #99987a77;
 }
+::-webkit-scrollbar-corner {
+    background: transparent;
+}

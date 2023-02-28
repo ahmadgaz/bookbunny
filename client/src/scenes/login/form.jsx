@@ -54,7 +54,6 @@ const Form = () => {
                     token: loggedIn.token,
                 })
             );
-            console.log(previousPage);
             navigate(previousPage);
         } else if (loggedIn.msg) {
             setError(loggedIn.msg);
