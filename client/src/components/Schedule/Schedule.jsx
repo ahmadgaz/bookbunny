@@ -1,3 +1,5 @@
+import { useRef, useState } from "react";
+import { v4 } from "uuid";
 import Timeline from "./Timeline";
 
 const Schedule = (props) => {
@@ -62,8 +64,37 @@ const Schedule = (props) => {
             </div>
         );
     }
+
+    const [touchAction, setTouchAction] = useState("none");
+    const key = useRef(v4());
+
     return (
         <div
+            onTouchStart={() => {
+                console.log("auto");
+                key.current = v4();
+                setTouchAction("auto");
+            }}
+            onTouchEnd={() => {
+                console.log("none");
+                key.current = v4();
+                setTouchAction("none");
+            }}
+            onTouchEndCapture={() => {
+                console.log("none");
+                key.current = v4();
+                setTouchAction("none");
+            }}
+            onTouchCancel={() => {
+                console.log("none");
+                key.current = v4();
+                setTouchAction("none");
+            }}
+            onTouchCancelCapture={() => {
+                console.log("none");
+                key.current = v4();
+                setTouchAction("none");
+            }}
             style={{
                 position: "relative",
                 width:
@@ -74,7 +105,6 @@ const Schedule = (props) => {
                     direction === "vertical"
                         ? `${parseInt(pxSize) + 60}px`
                         : "100%",
-                touchAction: "none",
                 WebkitTapHighlightColor: "transparent",
                 WebkitTouchCallout: "none",
                 WebkitUserSelect: "none",
@@ -85,29 +115,9 @@ const Schedule = (props) => {
             }}
         >
             <div
-                style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    display: "flex",
-                    flexDirection: direction === "vertical" ? "column" : "row",
-                    flexWrap: "nowrap",
-                    width: direction === "horizontal" ? pxSize + "px" : "100%",
-                    height: direction === "vertical" ? pxSize + "px" : "100%",
-                }}
-            >
-                {dividers}
-            </div>
-            <div
+                key={key.current}
                 style={{
                     position: "relative",
-                    left: direction === "horizontal" ? 0 : "50px",
-                    top: direction === "vertical" ? 0 : "50px",
-                    display: "flex",
-                    flexDirection: direction === "vertical" ? "row" : "column",
-                    flexWrap: "nowrap",
-                    bottom: "0px",
-                    right: "0px",
                     width:
                         direction === "horizontal"
                             ? `${parseInt(pxSize) + 60}px`
@@ -115,86 +125,126 @@ const Schedule = (props) => {
                     height:
                         direction === "vertical"
                             ? `${parseInt(pxSize) + 60}px`
-                            : "80%",
+                            : "100%",
+                    touchAction: type === "write" ? touchAction : "auto",
                 }}
             >
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Sunday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Monday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Tuesday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Wednesday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Thursday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Friday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
-                <Timeline
-                    direction={direction}
-                    type={type}
-                    pxSize={pxSize + "px"}
-                    label="Saturday"
-                    views={views}
-                    incrementSize={incrementSize}
-                    updateView={updateView}
-                    deleteEvent={deleteEvent}
-                    acceptEvent={acceptEvent}
-                />
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        display: "flex",
+                        flexDirection:
+                            direction === "vertical" ? "column" : "row",
+                        flexWrap: "nowrap",
+                        width:
+                            direction === "horizontal" ? pxSize + "px" : "100%",
+                        height:
+                            direction === "vertical" ? pxSize + "px" : "100%",
+                    }}
+                >
+                    {dividers}
+                </div>
+                <div
+                    style={{
+                        position: "relative",
+                        left: direction === "horizontal" ? 0 : "50px",
+                        top: direction === "vertical" ? 0 : "50px",
+                        display: "flex",
+                        flexDirection:
+                            direction === "vertical" ? "row" : "column",
+                        flexWrap: "nowrap",
+                        bottom: "0px",
+                        right: "0px",
+                        width:
+                            direction === "horizontal"
+                                ? `${parseInt(pxSize) + 60}px`
+                                : "100%",
+                        height:
+                            direction === "vertical"
+                                ? `${parseInt(pxSize) + 60}px`
+                                : "80%",
+                    }}
+                >
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Sunday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Monday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Tuesday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Wednesday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Thursday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Friday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                    <Timeline
+                        direction={direction}
+                        type={type}
+                        pxSize={pxSize + "px"}
+                        label="Saturday"
+                        views={views}
+                        incrementSize={incrementSize}
+                        updateView={updateView}
+                        deleteEvent={deleteEvent}
+                        acceptEvent={acceptEvent}
+                    />
+                </div>
             </div>
         </div>
     );

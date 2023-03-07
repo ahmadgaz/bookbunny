@@ -16,6 +16,7 @@ import {
     useScrollTrigger,
     Slide,
     Typography,
+    Paper,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Formik } from "formik";
@@ -27,10 +28,10 @@ import PersonIcon from "@mui/icons-material/Person";
 import SupportIcon from "@mui/icons-material/Support";
 import Logo from "../../assets/Logo-01.svg";
 import { CRUDFunctionsContext } from "App";
-import { useDispatch } from "react-redux";
-import { setLogout } from "state";
+import { useDispatch, useSelector } from "react-redux";
+import { hideSnackbar, setLogout, showSnackbar } from "state";
 import { Global } from "@emotion/react";
-import { Delete, Edit, Link } from "@mui/icons-material";
+import { Delete, Edit, Link, Logout } from "@mui/icons-material";
 import { tokens } from "theme";
 import Container from "components/Container";
 
@@ -67,7 +68,7 @@ const ColorPickerBtn = (props) => {
                 minWidth: 0,
                 margin: "0 10px",
                 padding: "20px 20px 20px 20px",
-                border: `${error ? "1px solid red" : ""}`,
+                border: `${error ? "2px solid red" : ""}`,
                 backgroundColor: `rgba(${hexToRgb(color).r}, ${
                     hexToRgb(color).g
                 }, ${hexToRgb(color).b}, ${selected ? 1 : 0.5})`,
@@ -81,14 +82,16 @@ const ColorPickerBtn = (props) => {
     );
 };
 const AddViewDialog = (props) => {
-    const { setShowDialog, setShowSnackbar } = props;
+    const { setShowDialog } = props;
+    const dispatch = useDispatch();
     const { createView } = useContext(CRUDFunctionsContext);
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     const ColorPicker = (props) => {
         const { error, value, handleChange, helperText } = props;
 
         return (
-            <>
+            <Box>
                 {colors.map((color, idx) => (
                     <ColorPickerBtn
                         key={idx}
@@ -98,139 +101,271 @@ const AddViewDialog = (props) => {
                         onClick={handleChange}
                     />
                 ))}
-                {helperText}
-            </>
+                <Typography
+                    color="error"
+                    variant="body1"
+                    fontSize={11}
+                    textAlign="left"
+                    padding="10px 40px 0 40px"
+                >
+                    {helperText}
+                </Typography>
+            </Box>
         );
     };
 
     const handleFormSubmit = (values, onSubmitProps) => {
         createView(values.view_name, values.view_desc, values.view_color);
         setShowDialog(false);
-        setShowSnackbar(true);
+        dispatch(showSnackbar({ snackbar: "viewAdded" }));
         onSubmitProps.resetForm();
     };
 
     return (
         <Dialog
+            fullScreen={!isNonMobileScreens}
             open
             onClose={() => {
                 setShowDialog(false);
             }}
         >
-            <Container
-                fullWidth
-                fullHeight
-                button={false}
-                style={{
-                    padding: "30px",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    textAlign: "center",
-                }}
-            >
-                <Typography variant="h1" margin="5px 0 25px 0">
-                    Add View
-                </Typography>
-                <Formik
-                    onSubmit={handleFormSubmit}
-                    initialValues={initialValuesAddView}
-                    validationSchema={addViewSchema}
+            {isNonMobileScreens ? (
+                <Container
+                    fullWidth
+                    fullHeight
+                    button={false}
+                    style={{
+                        padding: "30px",
+                        height: "100%",
+                        backgroundColor: "#fff",
+                        textAlign: "center",
+                    }}
                 >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleBlur,
-                        handleChange,
-                        handleSubmit,
-                        setFieldValue,
-                        resetForm,
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <Box
-                                display="grid"
-                                width="350px"
-                                gap="30px"
-                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                gridTemplateRows="repeat(3, minmax(0, 1fr)"
-                            >
-                                <TextField
-                                    label="View Name"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.view_name}
-                                    name="view_name"
-                                    error={
-                                        Boolean(touched.view_name) &&
-                                        Boolean(errors.view_name)
-                                    }
-                                    helperText={
-                                        touched.view_name && errors.view_name
-                                    }
-                                    sx={{ gridColumn: "span 4" }}
-                                />
-                                <TextField
-                                    label="View Description"
-                                    fullWidth
-                                    multiline
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.view_desc}
-                                    name="view_desc"
-                                    error={
-                                        Boolean(touched.view_desc) &&
-                                        Boolean(errors.view_desc)
-                                    }
-                                    helperText={
-                                        touched.view_desc && errors.view_desc
-                                    }
-                                    sx={{
-                                        gridColumn: "span 4",
-                                    }}
-                                />
-                                <Box sx={{ gridColumn: "span 4" }}>
-                                    <ColorPicker
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Add View
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesAddView}
+                        validationSchema={addViewSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
+                                >
+                                    <TextField
+                                        label="View Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_name}
+                                        name="view_name"
                                         error={
-                                            Boolean(touched.view_color) &&
-                                            Boolean(errors.view_color)
+                                            Boolean(touched.view_name) &&
+                                            Boolean(errors.view_name)
                                         }
-                                        value={values.view_color}
-                                        handleChange={handleChange}
                                         helperText={
-                                            touched.view_color &&
-                                            errors.view_color
+                                            touched.view_name &&
+                                            errors.view_name
                                         }
+                                        sx={{ gridColumn: "span 4" }}
                                     />
+                                    <TextField
+                                        label="View Description"
+                                        fullWidth
+                                        multiline
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_desc}
+                                        name="view_desc"
+                                        error={
+                                            Boolean(touched.view_desc) &&
+                                            Boolean(errors.view_desc)
+                                        }
+                                        helperText={
+                                            touched.view_desc &&
+                                            errors.view_desc
+                                        }
+                                        sx={{
+                                            gridColumn: "span 4",
+                                        }}
+                                    />
+                                    <Box sx={{ gridColumn: "span 4" }}>
+                                        <ColorPicker
+                                            error={
+                                                Boolean(touched.view_color) &&
+                                                Boolean(errors.view_color)
+                                            }
+                                            value={values.view_color}
+                                            handleChange={handleChange}
+                                            helperText={
+                                                touched.view_color &&
+                                                errors.view_color
+                                            }
+                                        />
+                                    </Box>
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                        onClick={() => {
+                                            setShowDialog(null);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                    >
+                                        Create
+                                    </Button>
                                 </Box>
-                                <Button
-                                    variant="outlined"
-                                    color="inherit"
-                                    style={{
-                                        padding: "10px 30px 8px 30px",
-                                        gridColumn: "span 2",
-                                    }}
-                                    onClick={() => {
-                                        setShowDialog(null);
-                                    }}
+                            </form>
+                        )}
+                    </Formik>
+                </Container>
+            ) : (
+                <Paper
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        padding: "20px 0",
+                        overflow: "auto",
+                        textAlign: "center",
+                        alignItems: "center",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Add View
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesAddView}
+                        validationSchema={addViewSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="inherit"
-                                    type="submit"
-                                    style={{
-                                        padding: "10px 30px 8px 30px",
-                                        gridColumn: "span 2",
-                                    }}
-                                >
-                                    Create
-                                </Button>
-                            </Box>
-                        </form>
-                    )}
-                </Formik>
-            </Container>
+                                    <TextField
+                                        label="View Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_name}
+                                        name="view_name"
+                                        error={
+                                            Boolean(touched.view_name) &&
+                                            Boolean(errors.view_name)
+                                        }
+                                        helperText={
+                                            touched.view_name &&
+                                            errors.view_name
+                                        }
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <TextField
+                                        label="View Description"
+                                        fullWidth
+                                        multiline
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_desc}
+                                        name="view_desc"
+                                        error={
+                                            Boolean(touched.view_desc) &&
+                                            Boolean(errors.view_desc)
+                                        }
+                                        helperText={
+                                            touched.view_desc &&
+                                            errors.view_desc
+                                        }
+                                        sx={{
+                                            gridColumn: "span 4",
+                                        }}
+                                    />
+                                    <Box sx={{ gridColumn: "span 4" }}>
+                                        <ColorPicker
+                                            error={
+                                                Boolean(touched.view_color) &&
+                                                Boolean(errors.view_color)
+                                            }
+                                            value={values.view_color}
+                                            handleChange={handleChange}
+                                            helperText={
+                                                touched.view_color &&
+                                                errors.view_color
+                                            }
+                                        />
+                                    </Box>
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                        onClick={() => {
+                                            setShowDialog(null);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                    >
+                                        Create
+                                    </Button>
+                                </Box>
+                            </form>
+                        )}
+                    </Formik>
+                </Paper>
+            )}
         </Dialog>
     );
 };
@@ -421,20 +556,7 @@ const ViewsDropdown = () => {
             >
                 {viewList()}
             </Popover>
-            {showDialog && (
-                <AddViewDialog
-                    setShowDialog={setShowDialog}
-                    setShowSnackbar={setShowAddedSnackbar}
-                />
-            )}
-            <Snackbar
-                open={showAddedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowAddedSnackbar(false);
-                }}
-                message="View added!"
-            />
+            {showDialog && <AddViewDialog setShowDialog={setShowDialog} />}
         </>
     );
 };
@@ -547,7 +669,10 @@ const HideOnScroll = (props) => {
     );
 };
 
-const StyledAppBar = styled(AppBar)({
+const StyledAppBar1 = styled(AppBar)({
+    background: `linear-gradient(${themeColors.neutralLight[500]} 85%, ${themeColors.neutralLight[500]}00);`,
+});
+const StyledAppBar2 = styled(AppBar)({
     background: `linear-gradient(${themeColors.neutralLight[500]} 85%, ${themeColors.neutralLight[500]}00);`,
 });
 
@@ -570,27 +695,12 @@ const Navbar = (props) => {
                 width="50px"
                 height="50px"
             >
-                <Box
-                    display="flex"
-                    padding="5px"
-                    justifyContent="center"
-                    alignItems="center"
-                    position="absolute"
-                    width={tab === 0 ? "80px" : "40px"}
-                    height="40px"
-                    borderRadius="10px"
-                    border="1.5px solid gray"
-                    backgroundColor="#fff"
-                    transition="width 0.5s ease"
-                    zIndex="-1"
-                >
-                    <ViewDayIcon />
-                    {tab === 0 && (
-                        <Typography variant="body1" paddingLeft="5px">
-                            <b>View</b>
-                        </Typography>
-                    )}
-                </Box>
+                <ViewDayIcon />
+                {tab === 0 && (
+                    <Typography variant="" fontSize={14} paddingLeft="7px">
+                        <b>View</b>
+                    </Typography>
+                )}
             </Box>
         );
     };
@@ -603,27 +713,12 @@ const Navbar = (props) => {
                 width="50px"
                 height="50px"
             >
-                <Box
-                    display="flex"
-                    padding="5px"
-                    justifyContent="center"
-                    alignItems="center"
-                    position="absolute"
-                    width={tab === 1 ? "100px" : "40px"}
-                    height="40px"
-                    borderRadius="10px"
-                    border="1.5px solid gray"
-                    backgroundColor="#fff"
-                    transition="width 0.5s ease"
-                    zIndex="-1"
-                >
-                    <TodayIcon />
-                    {tab === 1 && (
-                        <Typography variant="body1" paddingLeft="5px">
-                            <b>Calendar</b>
-                        </Typography>
-                    )}
-                </Box>
+                <TodayIcon />
+                {tab === 1 && (
+                    <Typography variant="" fontSize={14} paddingLeft="7px">
+                        <b>Calendar</b>
+                    </Typography>
+                )}
             </Box>
         );
     };
@@ -636,27 +731,12 @@ const Navbar = (props) => {
                 width="50px"
                 height="50px"
             >
-                <Box
-                    display="flex"
-                    padding="5px"
-                    justifyContent="center"
-                    alignItems="center"
-                    position="absolute"
-                    width={tab === 2 ? "80px" : "40px"}
-                    height="40px"
-                    borderRadius="10px"
-                    border="1.5px solid gray"
-                    backgroundColor="#fff"
-                    transition="width 0.5s ease"
-                    zIndex="-1"
-                >
-                    <SupportIcon />
-                    {tab === 2 && (
-                        <Typography variant="body1" paddingLeft="5px">
-                            <b>Help</b>
-                        </Typography>
-                    )}
-                </Box>
+                <SupportIcon />
+                {tab === 2 && (
+                    <Typography variant="" fontSize={14} paddingLeft="7px">
+                        <b>Help</b>
+                    </Typography>
+                )}
             </Box>
         );
     };
@@ -669,33 +749,18 @@ const Navbar = (props) => {
                 width="50px"
                 height="50px"
             >
-                <Box
-                    display="flex"
-                    padding="5px"
-                    justifyContent="center"
-                    alignItems="center"
-                    position="absolute"
-                    width={tab === 3 ? "95px" : "40px"}
-                    height="40px"
-                    borderRadius="10px"
-                    border="1.5px solid gray"
-                    backgroundColor="#fff"
-                    transition="width 0.5s ease"
-                    zIndex="-1"
-                >
-                    <PersonIcon />
-                    {tab === 3 && (
-                        <Typography variant="body1" paddingLeft="5px">
-                            <b>Account</b>
-                        </Typography>
-                    )}
-                </Box>
+                <PersonIcon />
+                {tab === 3 && (
+                    <Typography variant="" fontSize={14} paddingLeft="7px">
+                        <b>Account</b>
+                    </Typography>
+                )}
             </Box>
         );
     };
 
     return isNonMobileScreens ? (
-        <StyledAppBar>
+        <StyledAppBar1>
             <Toolbar
                 sx={{
                     display: "flex",
@@ -761,39 +826,77 @@ const Navbar = (props) => {
                     Log out
                 </Button>
             </Toolbar>
-        </StyledAppBar>
+        </StyledAppBar1>
     ) : (
-        <StyledAppBar>
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                <Box display="flex" alignItems="center">
+        <>
+            <AppBar sx={{ padding: "0px" }}>
+                <Box
+                    height="70px"
+                    sx={{
+                        position: "absolute",
+                        borderBottomLeftRadius: 12,
+                        borderBottomRightRadius: 12,
+                        color: themeColors.neutralDark[500],
+                        visibility: "visible",
+                        backgroundColor: `${themeColors.neutralLight[200]}d7`,
+                        backdropFilter: "blur(10px)",
+                        // borderTop: `1px solid ${themeColors.neutralDark[100]}`,
+                        boxShadow: "0 -2.5px 7.5px rgba(0, 0, 0, 0.4)",
+                        right: 0,
+                        left: 0,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "0 30px 0 30px",
+                    }}
+                >
                     <img
                         src={Logo}
                         alt="Logo"
                         style={{ height: "50px", margin: "0 30px 0 0" }}
                     />
+
                     <Box>
                         <ViewsDropdown />
                     </Box>
-                </Box>
 
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                        dispatch(setLogout());
+                    <IconButton
+                        onClick={() => {
+                            dispatch(setLogout());
+                        }}
+                        sx={{ marginLeft: "30px" }}
+                    >
+                        <Logout />
+                    </IconButton>
+                </Box>
+            </AppBar>
+            <AppBar sx={{ top: "auto", bottom: 0, padding: "0px" }}>
+                <Box
+                    height={drawerBleeding}
+                    sx={{
+                        position: "absolute",
+                        top: -drawerBleeding,
+                        borderTopLeftRadius: 12,
+                        borderTopRightRadius: 12,
+                        color: themeColors.neutralDark[500],
+                        visibility: "visible",
+                        backgroundColor: `${themeColors.neutralLight[200]}d7`,
+                        backdropFilter: "blur(10px)",
+                        // borderTop: `1px solid ${themeColors.neutralDark[100]}`,
+                        boxShadow: "0 2.5px 7.5px rgba(0, 0, 0, 0.4)",
+                        right: 0,
+                        left: 0,
                     }}
-                    sx={{ marginLeft: "30px" }}
                 >
-                    Log out
-                </Button>
-            </Toolbar>
-        </StyledAppBar>
+                    <StyledTabs value={tab} onChange={handleTabChange}>
+                        <Tab icon={<ViewDayIcon />} />
+                        <Tab icon={<TodayIcon />} />
+                        <Tab icon={<SupportIcon />} />
+                        <Tab icon={<PersonIcon />} />
+                    </StyledTabs>
+                </Box>
+            </AppBar>
+        </>
     );
 };
 

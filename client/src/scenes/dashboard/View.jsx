@@ -5,6 +5,7 @@ import {
     Dialog,
     FormControlLabel,
     IconButton,
+    Paper,
     Popover,
     Snackbar,
     TextField,
@@ -12,8 +13,10 @@ import {
     useMediaQuery,
 } from "@mui/material";
 import { useContext, useState } from "react";
+import { showSnackbar, hideSnackbar } from "state";
 import { CRUDFunctionsContext } from "App";
 import Schedule from "components/Schedule/Schedule";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import * as yup from "yup";
 import { Formik } from "formik";
 import Container from "components/Container";
@@ -21,79 +24,137 @@ import { useRef } from "react";
 import { CheckBox, ChevronLeft, Delete, Edit, Link } from "@mui/icons-material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { tokens } from "theme";
+import { useDispatch, useSelector } from "react-redux";
 
 const DeleteEventTypeDialog = (props) => {
-    const { eventType, setShowDialog, setShowSnackbar } = props;
+    const { eventType, setShowDialog } = props;
     const { getSelectedView, deleteEventType } =
         useContext(CRUDFunctionsContext);
     let view = { ...getSelectedView() };
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    const dispatch = useDispatch();
 
     const handleOnDelete = () => {
         deleteEventType(view, eventType);
         setShowDialog(null);
-        setShowSnackbar(true);
+        dispatch(showSnackbar({ snackbar: "eventTypeDeleted" }));
     };
 
     return (
         <Dialog
+            fullScreen={!isNonMobileScreens}
             open
             onClose={() => {
                 setShowDialog(null);
             }}
         >
-            <Container
-                fullWidth
-                fullHeight
-                button={false}
-                style={{
-                    padding: "30px",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    textAlign: "center",
-                }}
-            >
-                <Box
-                    display="grid"
-                    width="350px"
-                    gap="30px"
-                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            {isNonMobileScreens ? (
+                <Container
+                    fullWidth
+                    fullHeight
+                    button={false}
+                    style={{
+                        padding: "30px",
+                        height: "100%",
+                        width: "max-content",
+                        backgroundColor: "#fff",
+                        textAlign: "center",
+                    }}
                 >
-                    <Typography
-                        variant="body1"
-                        fontSize={24}
-                        color="grey"
-                        sx={{ gridColumn: "span 4" }}
+                    <Box
+                        display="grid"
+                        width="350px"
+                        gap="30px"
+                        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                     >
-                        Are you sure you want to delete{" "}
-                        {eventType.event_type_name}?
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        color="inherit"
-                        style={{
-                            padding: "10px 30px 8px 30px",
-                            gridColumn: "span 2",
-                        }}
-                        onClick={() => {
-                            setShowDialog(null);
-                        }}
+                        <Typography
+                            variant="body1"
+                            fontSize={24}
+                            color="grey"
+                            sx={{ gridColumn: "span 4" }}
+                        >
+                            Are you sure you want to delete{" "}
+                            {eventType.event_type_name}?
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                            }}
+                            onClick={() => {
+                                setShowDialog(null);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="inherit"
+                            onClick={handleOnDelete}
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                                backgroundColor: "red",
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Box>
+                </Container>
+            ) : (
+                <Paper
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        padding: "20px 0",
+                        overflow: "auto",
+                        textAlign: "center",
+                        alignItems: "center",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <Box
+                        display="grid"
+                        width="350px"
+                        gap="30px"
+                        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                     >
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="inherit"
-                        onClick={handleOnDelete}
-                        style={{
-                            padding: "10px 30px 8px 30px",
-                            gridColumn: "span 2",
-                            backgroundColor: "red",
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </Box>
-            </Container>
+                        <Typography variant="h3" sx={{ gridColumn: "span 4" }}>
+                            Are you sure you want to delete{" "}
+                            {eventType.event_type_name}?
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                            }}
+                            onClick={() => {
+                                setShowDialog(null);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="inherit"
+                            onClick={handleOnDelete}
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                                backgroundColor: "red",
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Box>
+                </Paper>
+            )}
         </Dialog>
     );
 };
@@ -106,10 +167,12 @@ const eventTypeFormValidationSchema = yup.object().shape({
     event_type_location: yup.string().notRequired(),
 });
 const EditEventTypeDialog = (props) => {
-    const { eventType, setShowDialog, setShowSnackbar } = props;
+    const { eventType, setShowDialog } = props;
     const { getSelectedView, updateEventType } =
         useContext(CRUDFunctionsContext);
     let view = { ...getSelectedView() };
+    const dispatch = useDispatch();
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     const initialValuesEditEventType = {
         event_type_name: eventType.event_type_name,
@@ -124,135 +187,267 @@ const EditEventTypeDialog = (props) => {
         et.event_type_location = values.event_type_location;
         updateEventType(view, et);
         setShowDialog(null);
-        setShowSnackbar(true);
+        dispatch(showSnackbar({ snackbar: "eventTypeEdited" }));
         onSubmitProps.resetForm();
     };
 
     return (
         <Dialog
+            fullScreen={!isNonMobileScreens}
             open
             onClose={() => {
                 setShowDialog(null);
             }}
         >
-            <Container
-                fullWidth
-                fullHeight
-                button={false}
-                style={{
-                    padding: "30px",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    textAlign: "center",
-                }}
-            >
-                <Typography variant="h1" margin="5px 0 25px 0">
-                    Edit Event Type
-                </Typography>
-                <Formik
-                    onSubmit={handleFormSubmit}
-                    initialValues={initialValuesEditEventType}
-                    validationSchema={eventTypeFormValidationSchema}
+            {isNonMobileScreens ? (
+                <Container
+                    fullWidth
+                    fullHeight
+                    button={false}
+                    style={{
+                        padding: "30px",
+                        height: "100%",
+                        backgroundColor: "#fff",
+                        textAlign: "center",
+                    }}
                 >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleBlur,
-                        handleChange,
-                        handleSubmit,
-                        setFieldValue,
-                        resetForm,
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <Box
-                                display="grid"
-                                width="350px"
-                                gap="30px"
-                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                gridTemplateRows="repeat(3, minmax(0, 1fr)"
-                            >
-                                <TextField
-                                    label="Event Type Name"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.event_type_name}
-                                    name="event_type_name"
-                                    error={
-                                        Boolean(touched.event_type_name) &&
-                                        Boolean(errors.event_type_name)
-                                    }
-                                    helperText={
-                                        touched.event_type_name &&
-                                        errors.event_type_name
-                                    }
-                                    sx={{ gridColumn: "span 2" }}
-                                />
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Edit Event Type
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesEditEventType}
+                        validationSchema={eventTypeFormValidationSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
+                                >
+                                    <TextField
+                                        label="Event Type Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_name}
+                                        name="event_type_name"
+                                        error={
+                                            Boolean(touched.event_type_name) &&
+                                            Boolean(errors.event_type_name)
+                                        }
+                                        helperText={
+                                            touched.event_type_name &&
+                                            errors.event_type_name
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
 
-                                <TextField
-                                    label="Event Type Duration"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    inputProps={{
-                                        min: "00:00",
-                                        max: "23:59",
-                                    }}
-                                    value={values.event_type_duration}
-                                    name="event_type_duration"
-                                    error={
-                                        Boolean(touched.event_type_duration) &&
-                                        Boolean(errors.event_type_duration)
-                                    }
-                                    helperText={
-                                        touched.event_type_duration &&
-                                        errors.event_type_duration
-                                    }
-                                    sx={{ gridColumn: "span 2" }}
-                                />
-                                <TextField
-                                    label="Event Type Location"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.event_type_location}
-                                    name="event_type_location"
-                                    error={
-                                        Boolean(touched.event_type_location) &&
-                                        Boolean(errors.event_type_location)
-                                    }
-                                    helperText={
-                                        touched.event_type_location &&
-                                        errors.event_type_location
-                                    }
-                                    sx={{ gridColumn: "span 4" }}
-                                />
-                                <Button
-                                    variant="outlined"
-                                    color="inherit"
-                                    style={{}}
-                                    onClick={() => {
-                                        setShowDialog(null);
-                                    }}
-                                    sx={{ gridColumn: "span 2" }}
+                                    <TextField
+                                        label="Event Type Duration"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        inputProps={{
+                                            min: "00:00",
+                                            max: "23:59",
+                                        }}
+                                        value={values.event_type_duration}
+                                        name="event_type_duration"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_duration
+                                            ) &&
+                                            Boolean(errors.event_type_duration)
+                                        }
+                                        helperText={
+                                            touched.event_type_duration &&
+                                            errors.event_type_duration
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        label="Event Type Location"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_location}
+                                        name="event_type_location"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_location
+                                            ) &&
+                                            Boolean(errors.event_type_location)
+                                        }
+                                        helperText={
+                                            touched.event_type_location &&
+                                            errors.event_type_location
+                                        }
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{}}
+                                        onClick={() => {
+                                            setShowDialog(null);
+                                        }}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{}}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Save
+                                    </Button>
+                                </Box>
+                            </form>
+                        )}
+                    </Formik>
+                </Container>
+            ) : (
+                <Paper
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        padding: "20px 0",
+                        overflow: "auto",
+                        textAlign: "center",
+                        alignItems: "center",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Edit Event Type
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesEditEventType}
+                        validationSchema={eventTypeFormValidationSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="inherit"
-                                    type="submit"
-                                    style={{}}
-                                    sx={{ gridColumn: "span 2" }}
-                                >
-                                    Save
-                                </Button>
-                            </Box>
-                        </form>
-                    )}
-                </Formik>
-            </Container>
+                                    <TextField
+                                        label="Event Type Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_name}
+                                        name="event_type_name"
+                                        error={
+                                            Boolean(touched.event_type_name) &&
+                                            Boolean(errors.event_type_name)
+                                        }
+                                        helperText={
+                                            touched.event_type_name &&
+                                            errors.event_type_name
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+
+                                    <TextField
+                                        label="Event Type Duration"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        inputProps={{
+                                            min: "00:00",
+                                            max: "23:59",
+                                        }}
+                                        value={values.event_type_duration}
+                                        name="event_type_duration"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_duration
+                                            ) &&
+                                            Boolean(errors.event_type_duration)
+                                        }
+                                        helperText={
+                                            touched.event_type_duration &&
+                                            errors.event_type_duration
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        label="Event Type Location"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_location}
+                                        name="event_type_location"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_location
+                                            ) &&
+                                            Boolean(errors.event_type_location)
+                                        }
+                                        helperText={
+                                            touched.event_type_location &&
+                                            errors.event_type_location
+                                        }
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{}}
+                                        onClick={() => {
+                                            setShowDialog(null);
+                                        }}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{}}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Save
+                                    </Button>
+                                </Box>
+                            </form>
+                        )}
+                    </Formik>
+                </Paper>
+            )}
         </Dialog>
     );
 };
@@ -262,9 +457,12 @@ const initialValuesAddEventType = {
     event_type_location: "",
 };
 const AddEventTypeDialog = (props) => {
-    const { setShowDialog, setShowSnackbar } = props;
+    const { setShowDialog } = props;
     const { getSelectedView, createEventType } =
         useContext(CRUDFunctionsContext);
+    const dispatch = useDispatch();
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
     let view = { ...getSelectedView() };
 
     const handleFormSubmit = (values, onSubmitProps) => {
@@ -275,139 +473,270 @@ const AddEventTypeDialog = (props) => {
             values.event_type_location
         );
         setShowDialog(false);
-        setShowSnackbar(true);
+        dispatch(showSnackbar({ snackbar: "eventTypeAdded" }));
         onSubmitProps.resetForm();
     };
 
     return (
         <Dialog
+            fullScreen={!isNonMobileScreens}
             open
             onClose={() => {
                 setShowDialog(false);
             }}
         >
-            <Container
-                fullWidth
-                fullHeight
-                button={false}
-                style={{
-                    padding: "30px",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    textAlign: "center",
-                }}
-            >
-                <Typography variant="h1" margin="5px 0 25px 0">
-                    Add Event Type
-                </Typography>
-                <Formik
-                    onSubmit={handleFormSubmit}
-                    initialValues={initialValuesAddEventType}
-                    validationSchema={eventTypeFormValidationSchema}
+            {isNonMobileScreens ? (
+                <Container
+                    fullWidth
+                    fullHeight
+                    button={false}
+                    style={{
+                        padding: "30px",
+                        height: "100%",
+                        backgroundColor: "#fff",
+                        textAlign: "center",
+                    }}
                 >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleBlur,
-                        handleChange,
-                        handleSubmit,
-                        setFieldValue,
-                        resetForm,
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <Box
-                                display="grid"
-                                width="350px"
-                                gap="30px"
-                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                gridTemplateRows="repeat(3, minmax(0, 1fr)"
-                            >
-                                <TextField
-                                    label="Event Type Name"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.event_type_name}
-                                    name="event_type_name"
-                                    error={
-                                        Boolean(touched.event_type_name) &&
-                                        Boolean(errors.event_type_name)
-                                    }
-                                    helperText={
-                                        touched.event_type_name &&
-                                        errors.event_type_name
-                                    }
-                                    sx={{ gridColumn: "span 2" }}
-                                />
-                                <TextField
-                                    label="Event Type Duration"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    inputProps={{
-                                        placeholder: "HH:MM",
-                                    }}
-                                    value={values.event_type_duration}
-                                    name="event_type_duration"
-                                    error={
-                                        Boolean(touched.event_type_duration) &&
-                                        Boolean(errors.event_type_duration)
-                                    }
-                                    helperText={
-                                        touched.event_type_duration &&
-                                        errors.event_type_duration
-                                    }
-                                    sx={{ gridColumn: "span 2" }}
-                                />
-                                <TextField
-                                    label="Event Type Location"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.event_type_location}
-                                    name="event_type_location"
-                                    error={
-                                        Boolean(touched.event_type_location) &&
-                                        Boolean(errors.event_type_location)
-                                    }
-                                    helperText={
-                                        touched.event_type_location &&
-                                        errors.event_type_location
-                                    }
-                                    sx={{ gridColumn: "span 4" }}
-                                />
-                                <Button
-                                    variant="outlined"
-                                    color="inherit"
-                                    style={{}}
-                                    onClick={() => {
-                                        setShowDialog(false);
-                                    }}
-                                    sx={{ gridColumn: "span 2" }}
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Add Event Type
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesAddEventType}
+                        validationSchema={eventTypeFormValidationSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="inherit"
-                                    type="submit"
-                                    style={{}}
-                                    sx={{ gridColumn: "span 2" }}
+                                    <TextField
+                                        label="Event Type Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_name}
+                                        name="event_type_name"
+                                        error={
+                                            Boolean(touched.event_type_name) &&
+                                            Boolean(errors.event_type_name)
+                                        }
+                                        helperText={
+                                            touched.event_type_name &&
+                                            errors.event_type_name
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        label="Event Type Duration"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        inputProps={{
+                                            placeholder: "HH:MM",
+                                        }}
+                                        value={values.event_type_duration}
+                                        name="event_type_duration"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_duration
+                                            ) &&
+                                            Boolean(errors.event_type_duration)
+                                        }
+                                        helperText={
+                                            touched.event_type_duration &&
+                                            errors.event_type_duration
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        label="Event Type Location"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_location}
+                                        name="event_type_location"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_location
+                                            ) &&
+                                            Boolean(errors.event_type_location)
+                                        }
+                                        helperText={
+                                            touched.event_type_location &&
+                                            errors.event_type_location
+                                        }
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{}}
+                                        onClick={() => {
+                                            setShowDialog(false);
+                                        }}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{}}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Create
+                                    </Button>
+                                </Box>
+                            </form>
+                        )}
+                    </Formik>
+                </Container>
+            ) : (
+                <Paper
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        padding: "20px 0",
+                        overflow: "auto",
+                        textAlign: "center",
+                        alignItems: "center",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Add Event Type
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesAddEventType}
+                        validationSchema={eventTypeFormValidationSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
                                 >
-                                    Create
-                                </Button>
-                            </Box>
-                        </form>
-                    )}
-                </Formik>
-            </Container>
+                                    <TextField
+                                        label="Event Type Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_name}
+                                        name="event_type_name"
+                                        error={
+                                            Boolean(touched.event_type_name) &&
+                                            Boolean(errors.event_type_name)
+                                        }
+                                        helperText={
+                                            touched.event_type_name &&
+                                            errors.event_type_name
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        label="Event Type Duration"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        InputLabelProps={{
+                                            shrink: true,
+                                        }}
+                                        inputProps={{
+                                            placeholder: "HH:MM",
+                                        }}
+                                        value={values.event_type_duration}
+                                        name="event_type_duration"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_duration
+                                            ) &&
+                                            Boolean(errors.event_type_duration)
+                                        }
+                                        helperText={
+                                            touched.event_type_duration &&
+                                            errors.event_type_duration
+                                        }
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        label="Event Type Location"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.event_type_location}
+                                        name="event_type_location"
+                                        error={
+                                            Boolean(
+                                                touched.event_type_location
+                                            ) &&
+                                            Boolean(errors.event_type_location)
+                                        }
+                                        helperText={
+                                            touched.event_type_location &&
+                                            errors.event_type_location
+                                        }
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{}}
+                                        onClick={() => {
+                                            setShowDialog(false);
+                                        }}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{}}
+                                        sx={{ gridColumn: "span 2" }}
+                                    >
+                                        Create
+                                    </Button>
+                                </Box>
+                            </form>
+                        )}
+                    </Formik>
+                </Paper>
+            )}
         </Dialog>
     );
 };
 const eventTypeURL = `${process.env.REACT_APP_CLIENT_BASE_URL}/newEvent`;
 const EventTypes = () => {
     const { getSelectedView } = useContext(CRUDFunctionsContext);
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState(null);
     const [showEditDialog, setShowEditDialog] = useState(null);
@@ -527,8 +856,11 @@ const EventTypes = () => {
                                                         navigator.clipboard.writeText(
                                                             `${eventTypeURL}/${et._id}`
                                                         );
-                                                        setShowCopiedSnackbar(
-                                                            true
+                                                        dispatch(
+                                                            showSnackbar({
+                                                                snackbar:
+                                                                    "eventTypeCopied",
+                                                            })
                                                         );
                                                     }}
                                                 >
@@ -566,129 +898,146 @@ const EventTypes = () => {
                 <DeleteEventTypeDialog
                     eventType={showDeleteDialog}
                     setShowDialog={setShowDeleteDialog}
-                    setShowSnackbar={setShowDeletedSnackbar}
                 />
             )}
             {showEditDialog && (
                 <EditEventTypeDialog
                     eventType={showEditDialog}
                     setShowDialog={setShowEditDialog}
-                    setShowSnackbar={setShowEditedSnackbar}
                 />
             )}
             {showAddDialog && (
-                <AddEventTypeDialog
-                    setShowDialog={setShowAddDialog}
-                    setShowSnackbar={setShowAddedSnackbar}
-                />
+                <AddEventTypeDialog setShowDialog={setShowAddDialog} />
             )}
-            <Snackbar
-                open={showCopiedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowCopiedSnackbar(false);
-                }}
-                message="Link copied!"
-            />
-            <Snackbar
-                open={showDeletedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowDeletedSnackbar(false);
-                }}
-                message="Event type deleted!"
-                // action={} undo
-            />
-            <Snackbar
-                open={showEditedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowEditedSnackbar(false);
-                }}
-                message="Event type saved!"
-                // action={} undo
-            />
-            <Snackbar
-                open={showAddedSnackbar}
-                autoHideDuration={4000}
-                onClose={() => {
-                    setShowAddedSnackbar(false);
-                }}
-                message="Event type added!"
-            />
         </>
     );
 };
 
 const DeleteViewDialog = (props) => {
-    const { view, setShowDialog, setShowSnackbar } = props;
+    const { view, setShowDialog } = props;
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { deleteView } = useContext(CRUDFunctionsContext);
+    const dispatch = useDispatch();
 
     const handleOnDelete = () => {
         deleteView(view);
         setShowDialog(null);
-        setShowSnackbar(true);
+        dispatch(showSnackbar({ snackbar: "viewDeleted" }));
     };
 
     return (
         <Dialog
+            fullScreen={!isNonMobileScreens}
             open
             onClose={() => {
                 setShowDialog(null);
             }}
         >
-            <Container
-                fullWidth
-                fullHeight
-                button={false}
-                style={{
-                    padding: "30px",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    textAlign: "center",
-                }}
-            >
-                <Box
-                    display="grid"
-                    width="350px"
-                    gap="30px"
-                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            {isNonMobileScreens ? (
+                <Container
+                    fullWidth
+                    fullHeight
+                    button={false}
+                    style={{
+                        padding: "30px",
+                        height: "100%",
+                        width: "max-content",
+                        backgroundColor: "#fff",
+                        textAlign: "center",
+                    }}
                 >
-                    <Typography
-                        variant="body1"
-                        fontSize={24}
-                        color="grey"
-                        sx={{ gridColumn: "span 4" }}
+                    <Box
+                        display="grid"
+                        width="350px"
+                        gap="30px"
+                        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                     >
-                        Are you sure you want to delete {view.view_name}?
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        color="inherit"
-                        style={{
-                            padding: "10px 30px 8px 30px",
-                            gridColumn: "span 2",
-                        }}
-                        onClick={() => {
-                            setShowDialog(null);
-                        }}
+                        <Typography
+                            variant="body1"
+                            fontSize={24}
+                            color="grey"
+                            sx={{ gridColumn: "span 4" }}
+                        >
+                            Are you sure you want to delete {view.view_name}?
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                            }}
+                            onClick={() => {
+                                setShowDialog(null);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="inherit"
+                            onClick={handleOnDelete}
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                                backgroundColor: "red",
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Box>
+                </Container>
+            ) : (
+                <Paper
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        padding: "20px 0",
+                        overflow: "auto",
+                        textAlign: "center",
+                        alignItems: "center",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <Box
+                        display="grid"
+                        width="350px"
+                        gap="30px"
+                        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                     >
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="inherit"
-                        onClick={handleOnDelete}
-                        style={{
-                            padding: "10px 30px 8px 30px",
-                            gridColumn: "span 2",
-                            backgroundColor: "red",
-                        }}
-                    >
-                        Delete
-                    </Button>
-                </Box>
-            </Container>
+                        <Typography variant="h3" sx={{ gridColumn: "span 4" }}>
+                            Are you sure you want to delete {view.view_name}?
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            color="inherit"
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                            }}
+                            onClick={() => {
+                                setShowDialog(null);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="inherit"
+                            onClick={handleOnDelete}
+                            style={{
+                                padding: "10px 30px 8px 30px",
+                                gridColumn: "span 2",
+                                backgroundColor: "red",
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Box>
+                </Paper>
+            )}
         </Dialog>
     );
 };
@@ -733,8 +1082,10 @@ const ColorPickerBtn = (props) => {
     );
 };
 const EditViewDialog = (props) => {
-    const { view, setShowDialog, setShowSnackbar } = props;
+    const { view, setShowDialog } = props;
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { updateView } = useContext(CRUDFunctionsContext);
+    const dispatch = useDispatch();
 
     const initialValuesAddView = {
         view_name: view.view_name,
@@ -768,131 +1119,254 @@ const EditViewDialog = (props) => {
         v.view_color = values.view_color;
         updateView(v);
         setShowDialog(null);
-        setShowSnackbar(true);
+        dispatch(showSnackbar({ snackbar: "viewEdited" }));
         onSubmitProps.resetForm();
     };
 
     return (
         <Dialog
+            fullScreen={!isNonMobileScreens}
             open
             onClose={() => {
                 setShowDialog(null);
             }}
         >
-            <Container
-                fullWidth
-                fullHeight
-                button={false}
-                style={{
-                    padding: "30px",
-                    height: "100%",
-                    backgroundColor: "#fff",
-                    textAlign: "center",
-                }}
-            >
-                <Typography variant="h1" margin="5px 0 25px 0">
-                    Edit View
-                </Typography>
-                <Formik
-                    onSubmit={handleFormSubmit}
-                    initialValues={initialValuesAddView}
-                    validationSchema={addViewSchema}
+            {isNonMobileScreens ? (
+                <Container
+                    fullWidth
+                    fullHeight
+                    button={false}
+                    style={{
+                        padding: "30px",
+                        height: "100%",
+                        backgroundColor: "#fff",
+                        textAlign: "center",
+                    }}
                 >
-                    {({
-                        values,
-                        errors,
-                        touched,
-                        handleBlur,
-                        handleChange,
-                        handleSubmit,
-                        setFieldValue,
-                        resetForm,
-                    }) => (
-                        <form onSubmit={handleSubmit}>
-                            <Box
-                                display="grid"
-                                width="350px"
-                                gap="30px"
-                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                                gridTemplateRows="repeat(3, minmax(0, 1fr)"
-                            >
-                                <TextField
-                                    label="View Name"
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.view_name}
-                                    name="view_name"
-                                    error={
-                                        Boolean(touched.view_name) &&
-                                        Boolean(errors.view_name)
-                                    }
-                                    helperText={
-                                        touched.view_name && errors.view_name
-                                    }
-                                    sx={{ gridColumn: "span 4" }}
-                                />
-                                <TextField
-                                    label="View Description"
-                                    fullWidth
-                                    multiline
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={values.view_desc}
-                                    name="view_desc"
-                                    error={
-                                        Boolean(touched.view_desc) &&
-                                        Boolean(errors.view_desc)
-                                    }
-                                    helperText={
-                                        touched.view_desc && errors.view_desc
-                                    }
-                                    sx={{
-                                        gridColumn: "span 4",
-                                    }}
-                                />
-                                <Box sx={{ gridColumn: "span 4" }}>
-                                    <ColorPicker
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Edit View
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesAddView}
+                        validationSchema={addViewSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
+                                >
+                                    <TextField
+                                        label="View Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_name}
+                                        name="view_name"
                                         error={
-                                            Boolean(touched.view_color) &&
-                                            Boolean(errors.view_color)
+                                            Boolean(touched.view_name) &&
+                                            Boolean(errors.view_name)
                                         }
-                                        value={values.view_color}
-                                        handleChange={handleChange}
                                         helperText={
-                                            touched.view_color &&
-                                            errors.view_color
+                                            touched.view_name &&
+                                            errors.view_name
                                         }
+                                        sx={{ gridColumn: "span 4" }}
                                     />
+                                    <TextField
+                                        label="View Description"
+                                        fullWidth
+                                        multiline
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_desc}
+                                        name="view_desc"
+                                        error={
+                                            Boolean(touched.view_desc) &&
+                                            Boolean(errors.view_desc)
+                                        }
+                                        helperText={
+                                            touched.view_desc &&
+                                            errors.view_desc
+                                        }
+                                        sx={{
+                                            gridColumn: "span 4",
+                                        }}
+                                    />
+                                    <Box sx={{ gridColumn: "span 4" }}>
+                                        <ColorPicker
+                                            error={
+                                                Boolean(touched.view_color) &&
+                                                Boolean(errors.view_color)
+                                            }
+                                            value={values.view_color}
+                                            handleChange={handleChange}
+                                            helperText={
+                                                touched.view_color &&
+                                                errors.view_color
+                                            }
+                                        />
+                                    </Box>
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                        onClick={() => {
+                                            setShowDialog(null);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                    >
+                                        Save
+                                    </Button>
                                 </Box>
-                                <Button
-                                    variant="outlined"
-                                    color="inherit"
-                                    style={{
-                                        padding: "10px 30px 8px 30px",
-                                        gridColumn: "span 2",
-                                    }}
-                                    onClick={() => {
-                                        setShowDialog(null);
-                                    }}
+                            </form>
+                        )}
+                    </Formik>
+                </Container>
+            ) : (
+                <Paper
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        padding: "20px 0",
+                        overflow: "auto",
+                        alignItems: "center",
+                        width: "100vw",
+                        height: "100vh",
+                    }}
+                >
+                    <Typography variant="h1" margin="5px 0 25px 0">
+                        Edit View
+                    </Typography>
+                    <Formik
+                        onSubmit={handleFormSubmit}
+                        initialValues={initialValuesAddView}
+                        validationSchema={addViewSchema}
+                    >
+                        {({
+                            values,
+                            errors,
+                            touched,
+                            handleBlur,
+                            handleChange,
+                            handleSubmit,
+                            setFieldValue,
+                            resetForm,
+                        }) => (
+                            <form onSubmit={handleSubmit}>
+                                <Box
+                                    display="grid"
+                                    width="350px"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    gridTemplateRows="repeat(3, minmax(0, 1fr)"
                                 >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="inherit"
-                                    type="submit"
-                                    style={{
-                                        padding: "10px 30px 8px 30px",
-                                        gridColumn: "span 2",
-                                    }}
-                                >
-                                    Save
-                                </Button>
-                            </Box>
-                        </form>
-                    )}
-                </Formik>
-            </Container>
+                                    <TextField
+                                        label="View Name"
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_name}
+                                        name="view_name"
+                                        error={
+                                            Boolean(touched.view_name) &&
+                                            Boolean(errors.view_name)
+                                        }
+                                        helperText={
+                                            touched.view_name &&
+                                            errors.view_name
+                                        }
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <TextField
+                                        label="View Description"
+                                        fullWidth
+                                        multiline
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={values.view_desc}
+                                        name="view_desc"
+                                        error={
+                                            Boolean(touched.view_desc) &&
+                                            Boolean(errors.view_desc)
+                                        }
+                                        helperText={
+                                            touched.view_desc &&
+                                            errors.view_desc
+                                        }
+                                        sx={{
+                                            gridColumn: "span 4",
+                                        }}
+                                    />
+                                    <Box sx={{ gridColumn: "span 4" }}>
+                                        <ColorPicker
+                                            error={
+                                                Boolean(touched.view_color) &&
+                                                Boolean(errors.view_color)
+                                            }
+                                            value={values.view_color}
+                                            handleChange={handleChange}
+                                            helperText={
+                                                touched.view_color &&
+                                                errors.view_color
+                                            }
+                                        />
+                                    </Box>
+                                    <Button
+                                        variant="outlined"
+                                        color="inherit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                        onClick={() => {
+                                            setShowDialog(null);
+                                        }}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="inherit"
+                                        type="submit"
+                                        style={{
+                                            padding: "10px 30px 8px 30px",
+                                            gridColumn: "span 2",
+                                        }}
+                                    >
+                                        Save
+                                    </Button>
+                                </Box>
+                            </form>
+                        )}
+                    </Formik>
+                </Paper>
+            )}
         </Dialog>
     );
 };
@@ -981,20 +1455,28 @@ const View = () => {
         let selectedView = {
             ...user.views[cur === 0 ? user.views.length - 1 : cur - 1],
         };
-        view.view_selected = false;
-        selectedView.view_selected = true;
-        updateView(view);
-        updateView(selectedView);
+        if (view._id === selectedView._id) {
+            return;
+        } else {
+            view.view_selected = false;
+            selectedView.view_selected = true;
+            updateView(view);
+            updateView(selectedView);
+        }
     };
     const setNextView = () => {
         let cur = user.views.findIndex((v) => v._id === view._id);
         let selectedView = {
             ...user.views[cur === user.views.length - 1 ? 0 : cur + 1],
         };
-        view.view_selected = false;
-        selectedView.view_selected = true;
-        updateView(view);
-        updateView(selectedView);
+        if (view._id === selectedView._id) {
+            return;
+        } else {
+            view.view_selected = false;
+            selectedView.view_selected = true;
+            updateView(view);
+            updateView(selectedView);
+        }
     };
 
     return isNonMobileScreens ? (
@@ -1230,6 +1712,8 @@ const View = () => {
                             textAlign: "center",
                         }}
                     >
+                        {/* <TransformWrapper>
+                            <TransformComponent> */}
                         <Box height="260px" width="fit-content">
                             <Schedule
                                 direction="horizontal"
@@ -1241,6 +1725,8 @@ const View = () => {
                                 updateView={updateView}
                             />
                         </Box>
+                        {/* </TransformComponent>
+                        </TransformWrapper> */}
                     </Container>
                 </Box>
                 <Box
@@ -1345,34 +1831,14 @@ const View = () => {
                     <DeleteViewDialog
                         view={showDeleteDialog}
                         setShowDialog={setShowDeleteDialog}
-                        setShowSnackbar={setShowDeletedSnackbar}
                     />
                 )}
                 {showEditDialog && (
                     <EditViewDialog
                         view={showEditDialog}
                         setShowDialog={setShowEditDialog}
-                        setShowSnackbar={setShowEditedSnackbar}
                     />
                 )}
-                <Snackbar
-                    open={showDeletedSnackbar}
-                    autoHideDuration={4000}
-                    onClose={() => {
-                        setShowDeletedSnackbar(false);
-                    }}
-                    message="View deleted!"
-                    // action={} undo
-                />
-                <Snackbar
-                    open={showEditedSnackbar}
-                    autoHideDuration={4000}
-                    onClose={() => {
-                        setShowEditedSnackbar(false);
-                    }}
-                    message="View saved!"
-                    // action={} undo
-                />
             </Box>
         </Box>
     ) : (
@@ -1380,7 +1846,7 @@ const View = () => {
             <Box
                 display="grid"
                 p="20px"
-                gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
+                gridTemplateColumns="8vw 8vw 8vw 8vw 8vw 8vw 8vw"
                 gridTemplateRows="100px 100px fit-content 40px 100px 100px 100px 100px 100px 100px 100px"
                 columnGap="20px"
                 rowGap="20px"
@@ -1453,7 +1919,7 @@ const View = () => {
                                 ></Box>
                             </div>
                             <Box flexGrow="1" paddingLeft="20px">
-                                <Typography variant="h2">
+                                <Typography variant="h2" fontSize={28}>
                                     {view.view_name}
                                 </Typography>
                                 <Typography
@@ -1574,7 +2040,11 @@ const View = () => {
                         }}
                     >
                         {" "}
-                        <Typography variant="h2" margin="5px 0 10px 0">
+                        <Typography
+                            variant="h2"
+                            margin="5px 0 10px 0"
+                            fontSize={28}
+                        >
                             Event Types
                         </Typography>
                         <EventTypes />
@@ -1601,6 +2071,8 @@ const View = () => {
                         fullHeight
                         button={false}
                         style={{
+                            scrollbars: "",
+                            // touchAction: "none",
                             display: "flex",
                             padding: "30px",
                             height: "100%",
@@ -1608,7 +2080,13 @@ const View = () => {
                             textAlign: "center",
                         }}
                     >
-                        <Box height="260px" width="fit-content">
+                        <Box
+                            height="260px"
+                            width="fit-content"
+                            sx={{
+                                overflow: "none",
+                            }}
+                        >
                             <Schedule
                                 direction="horizontal"
                                 type="write"
@@ -1647,7 +2125,11 @@ const View = () => {
                             textAlign: "center",
                         }}
                     >
-                        <Typography variant="h2" margin="5px 0 10px 0">
+                        <Typography
+                            variant="h2"
+                            margin="5px 0 10px 0"
+                            fontSize={28}
+                        >
                             All Views
                         </Typography>
                         <Views setShownViews={setShownViews} />
@@ -1723,34 +2205,14 @@ const View = () => {
                     <DeleteViewDialog
                         view={showDeleteDialog}
                         setShowDialog={setShowDeleteDialog}
-                        setShowSnackbar={setShowDeletedSnackbar}
                     />
                 )}
                 {showEditDialog && (
                     <EditViewDialog
                         view={showEditDialog}
                         setShowDialog={setShowEditDialog}
-                        setShowSnackbar={setShowEditedSnackbar}
                     />
                 )}
-                <Snackbar
-                    open={showDeletedSnackbar}
-                    autoHideDuration={4000}
-                    onClose={() => {
-                        setShowDeletedSnackbar(false);
-                    }}
-                    message="View deleted!"
-                    // action={} undo
-                />
-                <Snackbar
-                    open={showEditedSnackbar}
-                    autoHideDuration={4000}
-                    onClose={() => {
-                        setShowEditedSnackbar(false);
-                    }}
-                    message="View saved!"
-                    // action={} undo
-                />
             </Box>
         </Box>
     );

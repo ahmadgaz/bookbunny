@@ -5,6 +5,18 @@ const initialState = {
     mode: "light",
     token: null,
     routeBeforeLogInOrSignUp: null,
+    snackbars: {
+        viewAdded: false,
+        viewDeleted: false,
+        viewEdited: false,
+        eventTypeCopied: false,
+        eventTypeDeleted: false,
+        eventTypeEdited: false,
+        eventTypeAdded: false,
+        eventAccepted: false,
+        eventDenied: false,
+        eventCanceled: false,
+    },
 };
 
 export const authSlice = createSlice({
@@ -31,6 +43,12 @@ export const authSlice = createSlice({
             state.routeBeforeLogInOrSignUp =
                 action.payload.routeBeforeLogInOrSignUp;
         },
+        showSnackbar: (state, action) => {
+            state.snackbars[action.payload.snackbar] = true;
+        },
+        hideSnackbar: (state, action) => {
+            state.snackbars[action.payload.snackbar] = false;
+        },
     },
 });
 
@@ -40,5 +58,7 @@ export const {
     setLogout,
     setUser,
     setRouteBeforeLogInOrSignUp,
+    showSnackbar,
+    hideSnackbar,
 } = authSlice.actions;
 export default authSlice.reducer;

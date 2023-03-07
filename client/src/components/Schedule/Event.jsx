@@ -1,4 +1,4 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, useMediaQuery } from "@mui/material";
 import dayjs from "dayjs";
 import { LocationOn, Notes } from "@mui/icons-material";
 import Container from "components/Container";
@@ -7,13 +7,17 @@ import { useContext } from "react";
 import { CRUDFunctionsContext } from "App";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showSnackbar } from "state";
 
 const Event = (props) => {
     const { timeslot } = props;
     const colors = tokens("light");
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { deleteEvent, acceptEvent, getAttendeesInfo } =
         useContext(CRUDFunctionsContext);
     const [attendees, setAttendees] = useState(null);
+    const dispatch = useDispatch();
     useEffect(() => {
         async function fetchAttendeesInfo() {
             const users = await getAttendeesInfo(timeslot.event.event_id);
@@ -22,14 +26,20 @@ const Event = (props) => {
         fetchAttendeesInfo();
     }, []);
     return (
-        <Container
-            fullWidth
-            button={false}
-            style={{
-                padding: "0",
-                backgroundColor: "#fff",
-            }}
+        <Box
+            sx={
+                isNonMobileScreens
+                    ? {}
+                    : {
+                          display: "flex",
+                          flexDirection: "column",
+                          flexWrap: "nowrap",
+                          width: "100%",
+                          height: "100%",
+                      }
+            }
         >
+            {" "}
             <Box
                 paddingLeft="10px"
                 paddingTop="10px"
@@ -138,6 +148,7 @@ const Event = (props) => {
                 </Box>
             </Box>
             <Box
+                flexGrow={isNonMobileScreens ? "" : "1"}
                 display="flex"
                 flexDirection="column"
                 flexWrap="nowrap"
@@ -146,7 +157,7 @@ const Event = (props) => {
                 <Box
                     sx={{
                         width: "100%",
-                        height: "125px",
+                        height: isNonMobileScreens ? "125px" : "100%",
                         padding: "0 25px 10px 25px",
                     }}
                 >
@@ -312,6 +323,9 @@ const Event = (props) => {
                     <Button
                         onClick={() => {
                             deleteEvent(timeslot.event);
+                            dispatch(
+                                showSnackbar({ snackbar: "eventCanceled" })
+                            );
                         }}
                     >
                         Cancel
@@ -329,6 +343,9 @@ const Event = (props) => {
                             variant="contained"
                             onClick={() => {
                                 acceptEvent(timeslot.event);
+                                dispatch(
+                                    showSnackbar({ snackbar: "eventAccepted" })
+                                );
                             }}
                         >
                             Accept
@@ -336,13 +353,16 @@ const Event = (props) => {
                         <Button
                             onClick={() => {
                                 deleteEvent(timeslot.event);
+                                dispatch(
+                                    showSnackbar({ snackbar: "eventDenied" })
+                                );
                             }}
                         >
                             Deny
                         </Button>
                     </Box>
                 )}
-        </Container>
+        </Box>
     );
 };
 export default Event;

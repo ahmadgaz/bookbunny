@@ -1,5 +1,14 @@
-import { LocationOn, Notes } from "@mui/icons-material";
-import { Box, Button, Popover, Typography } from "@mui/material";
+import { Close, LocationOn, Notes } from "@mui/icons-material";
+import {
+    Box,
+    Button,
+    Dialog,
+    IconButton,
+    Paper,
+    Popover,
+    Typography,
+    useMediaQuery,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { CRUDFunctionsContext } from "App";
 import Container from "components/Container";
@@ -637,6 +646,8 @@ const Timeline = (props) => {
         data.splice(idx, 1);
         return data;
     };
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+
     const updateTimeslots = () => {
         setTimeslots([
             ...timeslotsData.current.map((timeslot, idx) => (
@@ -675,7 +686,7 @@ const Timeline = (props) => {
                                 : ""
                         }
                     ></div>
-                    {timeslot.event && (
+                    {timeslot.event && isNonMobileScreens ? (
                         <Popover
                             open={Boolean(timeslot.popoverAnchorEl)}
                             anchorEl={timeslot.popoverAnchorEl}
@@ -695,8 +706,53 @@ const Timeline = (props) => {
                                 timeslot.handlePopoverClose();
                             }}
                         >
-                            <Event timeslot={timeslot} />
+                            <Container
+                                fullWidth
+                                button={false}
+                                style={{
+                                    padding: "0",
+                                    backgroundColor: "#fff",
+                                }}
+                            >
+                                <Event timeslot={timeslot} />
+                            </Container>
                         </Popover>
+                    ) : (
+                        <Dialog
+                            fullScreen
+                            open={Boolean(timeslot.popoverAnchorEl)}
+                            onClose={() => {
+                                timeslot.handlePopoverClose();
+                            }}
+                        >
+                            <Paper
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    flexWrap: "nowrap",
+                                    padding: "20px 0",
+                                    overflow: "auto",
+                                    textAlign: "center",
+                                    alignItems: "center",
+                                    width: "100vw",
+                                    height: "100vh",
+                                }}
+                            >
+                                <IconButton
+                                    onClick={() => {
+                                        timeslot.handlePopoverClose();
+                                    }}
+                                    sx={{
+                                        position: "absolute",
+                                        right: "10px",
+                                        top: "5px",
+                                    }}
+                                >
+                                    <Close />
+                                </IconButton>
+                                <Event timeslot={timeslot} />
+                            </Paper>
+                        </Dialog>
                     )}
                 </div>
             )),

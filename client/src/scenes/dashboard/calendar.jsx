@@ -104,15 +104,22 @@ const Calendar = () => {
                 alignItems="center"
             >
                 <Box padding="10px 20px">
-                    <Typography variant="h2">
+                    <Typography
+                        variant="h2"
+                        fontSize={isNonMobileScreens ? 36 : 28}
+                    >
                         {startOfCurrentWeek.month() ===
                         startOfCurrentWeek.add(7, "days").month()
-                            ? startOfCurrentWeek.format("MMMM")
+                            ? `${startOfCurrentWeek.format(
+                                  "MMMM"
+                              )} ${startOfCurrentWeek.format("YYYY")}`
                             : `${startOfCurrentWeek.format(
                                   "MMMM"
                               )} - ${startOfCurrentWeek
                                   .add(7, "days")
-                                  .format("MMMM")}`}
+                                  .format("MMMM")} ${startOfCurrentWeek.format(
+                                  "YYYY"
+                              )}`}
                     </Typography>
                 </Box>
             </Box>
