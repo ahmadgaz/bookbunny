@@ -16,7 +16,6 @@ import { useContext, useState } from "react";
 import { showSnackbar, hideSnackbar } from "state";
 import { CRUDFunctionsContext } from "App";
 import Schedule from "components/Schedule/Schedule";
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import * as yup from "yup";
 import { Formik } from "formik";
 import Container from "components/Container";
@@ -1846,6 +1845,7 @@ const View = () => {
             <Box
                 display="grid"
                 p="20px"
+                paddingBottom="80px"
                 gridTemplateColumns="8vw 8vw 8vw 8vw 8vw 8vw 8vw"
                 gridTemplateRows="100px 100px fit-content 40px 100px 100px 100px 100px 100px 100px 100px"
                 columnGap="20px"

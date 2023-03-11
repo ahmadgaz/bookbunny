@@ -16,8 +16,8 @@ const Login = () => {
                 sx={{
                     margin: "30px 0 0 0",
                     width: "100%",
-                    gridColumnStart: 5,
-                    gridColumnEnd: 9,
+                    gridColumnStart: 4,
+                    gridColumnEnd: 10,
                     justifySelf: "center",
                     alignSelf: "center",
                     display: "flex",

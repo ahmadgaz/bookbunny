@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
 import Container from "components/Container";
 import { tokens } from "theme";
+import { useGoogleLogin } from "@react-oauth/google";
+import jwtDecode from "jwt-decode";
 
 const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
@@ -54,6 +56,73 @@ const Form = () => {
     const colors = tokens("light");
     const [showPasswordRequirements, setShowPasswordRequirements] = useState();
 
+    const googleRegister = useGoogleLogin({
+        onSuccess: async (codeResponse) => {
+            const savedUserResponse = await fetch(`${authURL}/register`, {
+                method: "POST",
+                body: JSON.stringify({
+                    googleCode: codeResponse.code,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const savedUser = await savedUserResponse.json();
+
+            if (savedUser.token !== undefined && savedUser.user !== undefined) {
+                console.log(savedUser);
+                dispatch(
+                    setLogin({
+                        user: savedUser.user,
+                        token: savedUser.token,
+                    })
+                );
+                navigate(previousPage);
+            } else if (savedUser.msg) {
+                setError(savedUser.msg);
+            } else {
+                setError("There has been an error on our end.");
+            }
+        },
+        onError: (err) => setError(err),
+        scope: [
+            "openid",
+            "email",
+            "profile",
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.events",
+        ].join(" "),
+        flow: "auth-code",
+    });
+
+    // const googleLogin = async (codeResponse) => {
+    //     const loggedInResponse = await fetch(`${authURL}/login`, {
+    //         method: "POST",
+    //         body: JSON.stringify({
+    //             googleCode: codeResponse.code,
+    //         }),
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //         },
+    //     });
+    //     const loggedIn = await loggedInResponse.json();
+
+    //     if (loggedIn.token !== undefined && loggedIn.user !== undefined) {
+    //         dispatch(
+    //             setLogin({
+    //                 user: loggedIn.user,
+    //                 token: loggedIn.token,
+    //             })
+    //         );
+    //         navigate(previousPage);
+    //     } else if (loggedIn.msg) {
+    //         setError(loggedIn.msg);
+    //     } else {
+    //         setError("There has been an error on our end.");
+    //     }
+    // };
     const register = async (values, onSubmitProps) => {
         const savedUserResponse = await fetch(`${authURL}/register`, {
             method: "POST",
@@ -65,13 +134,11 @@ const Form = () => {
         const savedUser = await savedUserResponse.json();
 
         if (!savedUser) {
+            setError("There has been an error in the server.");
             return;
         } else if (savedUser.msg) {
             setError(savedUser.msg);
             return;
-        } else {
-            console.log(savedUser);
-            setError("There has been an error in the server.");
         }
 
         login(values, onSubmitProps);
@@ -96,8 +163,9 @@ const Form = () => {
                     token: loggedIn.token,
                 })
             );
-            console.log(previousPage);
             navigate(previousPage);
+        } else if (loggedIn.msg) {
+            setError(loggedIn.msg);
         } else {
             setError("There has been an error on our end.");
         }
@@ -275,7 +343,32 @@ const Form = () => {
                                 variant="contained"
                                 type="submit"
                             >
-                                Register
+                                Sign up
+                            </Container>
+                            <Typography variant="h5" margin="10px">
+                                OR
+                            </Typography>
+                            {/* <GoogleLogin
+                                size="large"
+                                onSuccess={googleLogin}
+                                onError={(err) => console.log(err)}
+                            /> */}
+                            <Container
+                                size="m"
+                                fullWidth
+                                variant="contained"
+                                onClick={googleRegister}
+                                style={{
+                                    backgroundColor: "#fff",
+                                    // fontFamily: "Product Sans",
+                                }}
+                            >
+                                Sign up with <b color="#4285f4">G</b>
+                                <b color="#EA4335">o</b>
+                                <b color="#FBBC05">o</b>
+                                <b color="#4285f4">g</b>
+                                <b color="#34A853">l</b>
+                                <b color="#EA4335">e</b>
                             </Container>
                         </Box>
 

@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { useRef, useState } from "react";
 import { v4 } from "uuid";
 import Timeline from "./Timeline";
@@ -13,10 +14,11 @@ const Schedule = (props) => {
 
     const {
         direction,
+        week,
         type,
         pxSize,
         views = [],
-        incrementSize = 30,
+        incrementDuration = 30,
         updateView = () => {},
         deleteEvent = () => {},
         acceptEvent = () => {},
@@ -133,13 +135,16 @@ const Schedule = (props) => {
                     style={{
                         position: "absolute",
                         bottom: 0,
-                        right: 0,
+                        right: direction === "horizontal" ? 0 : "",
+                        left: direction === "horizontal" ? "" : 0,
                         display: "flex",
                         flexDirection:
                             direction === "vertical" ? "column" : "row",
                         flexWrap: "nowrap",
                         width:
-                            direction === "horizontal" ? pxSize + "px" : "100%",
+                            direction === "horizontal"
+                                ? pxSize + "px"
+                                : "calc(100% + 50px)",
                         height:
                             direction === "vertical" ? pxSize + "px" : "100%",
                     }}
@@ -168,78 +173,127 @@ const Schedule = (props) => {
                     }}
                 >
                     <Timeline
+                        ticker={
+                            week
+                                ? week.isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Sunday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}
                     />
                     <Timeline
+                        ticker={
+                            week
+                                ? week.add(1, "days").isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Monday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}
                     />
                     <Timeline
+                        ticker={
+                            week
+                                ? week.add(2, "days").isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Tuesday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}
                     />
                     <Timeline
+                        ticker={
+                            week
+                                ? week.add(3, "days").isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Wednesday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}
                     />
                     <Timeline
+                        ticker={
+                            week
+                                ? week.add(4, "days").isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Thursday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}
                     />
                     <Timeline
+                        ticker={
+                            week
+                                ? week.add(5, "days").isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Friday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}
                     />
                     <Timeline
+                        ticker={
+                            week
+                                ? week.add(6, "days").isSame(dayjs(), "day")
+                                    ? true
+                                    : false
+                                : false
+                        }
                         direction={direction}
                         type={type}
                         pxSize={pxSize + "px"}
                         label="Saturday"
                         views={views}
-                        incrementSize={incrementSize}
+                        incrementDuration={incrementDuration}
                         updateView={updateView}
                         deleteEvent={deleteEvent}
                         acceptEvent={acceptEvent}

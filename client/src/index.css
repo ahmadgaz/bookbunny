@@ -1,4 +1,10 @@
 @font-face {
+    font-family: "Product Sans";
+    src: url("fonts/Product Sans Bold.ttf") format("ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
     font-family: "ProspectusProXL";
     src: url("fonts/ProspectusProXLDEMO-Black.woff2") format("woff2"),
         url("fonts/ProspectusProXLDEMO-Black.woff") format("woff");

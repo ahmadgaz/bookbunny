@@ -1,27 +1,91 @@
 import { Box, Typography } from "@mui/material";
-import { useEffect } from "react";
+import { isValidElement, useEffect } from "react";
+import jsxToString from "jsx-to-string";
 import { useState } from "react";
 import { tokens } from "theme";
 
 const Text = (props) => {
     const { translation, height, italicized, children } = props;
 
-    return children.split("").map((letter, idx) => (
-        <p
-            key={idx}
-            style={{
-                margin: 0,
-                whiteSpace: "pre",
-                height: height,
-                lineHeight: parseInt(height) + 2 + "px",
-                textAlign: "center",
-                transform: translation,
-                transition: `transform ${(idx / 5 + 1) * 200}ms ease`,
-            }}
-        >
-            {italicized ? <i>{letter}</i> : letter}
-        </p>
-    ));
+    const displayChildren = (c) => {
+        if (Array.isArray(c)) {
+            let colorRegex = /color='([^"]*)'/;
+            let fontFamilyRegex = /fontFamily='([^"]*)'/;
+            let color = [];
+            let fontFamily = [];
+            return c
+                .map((item) => {
+                    if (isValidElement(item)) {
+                        if (jsxToString(item).match(colorRegex)) {
+                            color.push(jsxToString(item).match(colorRegex)[1]);
+                        } else {
+                            color.push("");
+                        }
+                        if (jsxToString(item).match(fontFamilyRegex)) {
+                            fontFamily.push(
+                                jsxToString(item).match(fontFamilyRegex)[1]
+                            );
+                        } else {
+                            fontFamily.push("");
+                        }
+                        let replaceHTMLTagsRegex = /(<([^>]+)>)/gi;
+                        return jsxToString(item)
+                            .replace(replaceHTMLTagsRegex, "")
+                            .substring(3);
+                    } else {
+                        for (const char in item) {
+                            color.push("");
+                            fontFamily.push("");
+                        }
+                        return item;
+                    }
+                })
+                .join("")
+                .replace(/(\r\n|\n|\r)/gm, "")
+                .split("")
+                .map((letter, idx) => {
+                    return (
+                        <p
+                            key={idx}
+                            style={{
+                                color: color[idx],
+                                fontFamily: fontFamily[idx],
+                                margin: 0,
+                                whiteSpace: "pre",
+                                height: height,
+                                lineHeight: parseInt(height) + 2 + "px",
+                                textAlign: "center",
+                                transform: translation,
+                                transition: `transform ${
+                                    (idx / 5 + 1) * 200
+                                }ms ease`,
+                            }}
+                        >
+                            {italicized ? <i>{letter}</i> : letter}
+                        </p>
+                    );
+                });
+        } else {
+            return c.split("").map((letter, idx) => (
+                <p
+                    key={idx}
+                    style={{
+                        margin: 0,
+                        whiteSpace: "pre",
+                        height: height,
+                        lineHeight: parseInt(height) + 2 + "px",
+                        textAlign: "center",
+                        transform: translation,
+                        transition: `transform ${(idx / 5 + 1) * 200}ms ease`,
+                    }}
+                >
+                    {italicized ? <i>{letter}</i> : letter}
+                </p>
+            ));
+        }
+    };
+
+    return displayChildren(children);
 };
 
 const Container = (props) => {
@@ -98,7 +162,6 @@ const Container = (props) => {
                         flexWrap: "nowrap",
                         alignItems: "center",
                         zIndex: "-1",
-                        ...style,
                     }}
                 >
                     <div

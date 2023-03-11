@@ -45,6 +45,7 @@ function move(input, from, to) {
 }
 const useStyles = makeStyles({
     timeslotHoverAnimation: {
+        position: "absolute",
         width: "100%",
         height: "100%",
         borderRadius: "2px",
@@ -64,11 +65,12 @@ const Timeline = (props) => {
     const { getAttendeesInfo } = useContext(CRUDFunctionsContext);
     const {
         direction,
+        ticker,
         type,
         pxSize,
         label,
         views,
-        incrementSize,
+        incrementDuration,
         updateView,
         deleteEvent,
         acceptEvent,
@@ -89,6 +91,7 @@ const Timeline = (props) => {
         getStyle() {
             return {
                 position: "absolute",
+                overflow: "hidden",
                 cursor:
                     type === "write"
                         ? "no-drop"
@@ -157,8 +160,8 @@ const Timeline = (props) => {
         setIncrement(target) {
             this.increment =
                 this.direction === "vertical"
-                    ? target.clientHeight / ((60 / incrementSize) * 24)
-                    : target.clientWidth / ((60 / incrementSize) * 24);
+                    ? target.clientHeight / ((60 / incrementDuration) * 24)
+                    : target.clientWidth / ((60 / incrementDuration) * 24);
         }
         IsNearIncrementMark() {
             return this.rawPosition % this.increment < this.increment / 5 ||
@@ -203,14 +206,14 @@ const Timeline = (props) => {
             this.position = getPosAndSize(
                 this.time,
                 this.increment,
-                incrementSize
+                incrementDuration
             ).pos;
         }
         setSize() {
             this.size = getPosAndSize(
                 this.time,
                 this.increment,
-                incrementSize
+                incrementDuration
             ).size;
         }
         correctOverlapsForWriteComponents(timeslotsDataCurrent) {
@@ -566,6 +569,7 @@ const Timeline = (props) => {
         }
         return data;
     };
+    const [timeTicker, setTimeTicker] = useState(<div></div>);
     useEffect(() => {
         if (!views[0]) {
             view.current = [];
@@ -580,6 +584,62 @@ const Timeline = (props) => {
             timeslotsData.current = handleMouseUpMouseLeave();
             updateTimeslots();
         }
+        setTimeTicker(
+            <div
+                style={{
+                    position: "absolute",
+                    left:
+                        direction === "horizontal"
+                            ? getPosAndSize(
+                                  {
+                                      start_time: dayjs().format("HH:mm"),
+                                      end_time: dayjs()
+                                          .add(1, "minutes")
+                                          .format("HH:mm"),
+                                  },
+                                  cell.current.clientWidth /
+                                      ((60 / incrementDuration) * 24),
+                                  incrementDuration
+                              ).pos + "px"
+                            : "0px",
+                    top:
+                        direction === "vertical"
+                            ? getPosAndSize(
+                                  {
+                                      start_time: dayjs().format("HH:mm"),
+                                      end_time: dayjs()
+                                          .add(1, "minutes")
+                                          .format("HH:mm"),
+                                  },
+                                  cell.current.clientHeight /
+                                      ((60 / incrementDuration) * 24),
+                                  incrementDuration
+                              ).pos + "px"
+                            : "0px",
+                    display: "flex",
+                    justifyContent: "right",
+                    alignItems: "center",
+                    WebkitUserSelect: "none",
+                    KhtmlUserSelect: "none",
+                    MozUserSelect: "none",
+                    MsUserSelect: "none",
+                    userSelect: "none",
+                    backgroundColor: "gray",
+                    height: "1px",
+                    width: "100%",
+                }}
+            >
+                <div
+                    style={{
+                        width: "3px",
+                        height: "3px",
+                        borderRadius: "50%",
+                        backgroundColor: "gray",
+                        marginRight: "-3px",
+                    }}
+                ></div>
+            </div>
+        );
     }, [direction, type, pxSize, label, views]);
 
     const handleOnMouseDown = (e) => {
@@ -677,6 +737,19 @@ const Timeline = (props) => {
                         }
                     }}
                 >
+                    {timeslot.event && (
+                        <div
+                            style={{
+                                width: "100%",
+                                position: "absolute",
+                                padding: "3px 0 0 5px",
+                                fontSize: "0.5rem",
+                                opacity: "40%",
+                            }}
+                        >
+                            <b>{timeslot.event.event_name}</b>
+                        </div>
+                    )}
                     <div
                         className={
                             type === "write"
@@ -762,6 +835,7 @@ const Timeline = (props) => {
     return (
         <div
             style={{
+                flex: "1 1 0px",
                 display: "grid",
                 alignContent: "center",
                 gridTemplateColumns:
@@ -853,6 +927,7 @@ const Timeline = (props) => {
                     }
                 }}
             >
+                {ticker && timeTicker}
                 {timeslots}
             </div>
         </div>

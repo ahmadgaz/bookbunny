@@ -95,6 +95,7 @@ const Calendar = () => {
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
+                marginBottom: "120px",
             }}
         >
             <Box
@@ -125,7 +126,7 @@ const Calendar = () => {
             </Box>
             <Box
                 display="grid"
-                gridTemplateColumns="7.5vmin min(690px, 70vw) 7.5vmin"
+                gridTemplateColumns="7.5vmin min(710px, 70vw) 7.5vmin"
             >
                 <div
                     onClick={() => {
@@ -186,86 +187,138 @@ const Calendar = () => {
                             position="relative"
                             paddingTop="20px"
                             display="grid"
-                            gridTemplateColumns="50px 78.5px 78.5px 78.5px 78.5px 78.5px 78.5px 78.5px"
+                            gridTemplateColumns="50px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px"
                             gridTemplateRows="fit-content"
                         >
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
                             ></Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
+                                backgroundColor={
+                                    startOfCurrentWeek.isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
                             >
-                                <i>{startOfCurrentWeek.format("D")}</i>
+                                {startOfCurrentWeek.format("D")}
                             </Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
-                            >
-                                <i>
-                                    {startOfCurrentWeek
+                                backgroundColor={
+                                    startOfCurrentWeek
                                         .add(1, "days")
-                                        .format("D")}
-                                </i>
+                                        .isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
+                            >
+                                {startOfCurrentWeek.add(1, "days").format("D")}
                             </Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
-                            >
-                                <i>
-                                    {startOfCurrentWeek
+                                backgroundColor={
+                                    startOfCurrentWeek
                                         .add(2, "days")
-                                        .format("D")}
-                                </i>
+                                        .isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
+                            >
+                                {startOfCurrentWeek.add(2, "days").format("D")}
                             </Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
-                            >
-                                <i>
-                                    {startOfCurrentWeek
+                                backgroundColor={
+                                    startOfCurrentWeek
                                         .add(3, "days")
-                                        .format("D")}
-                                </i>
+                                        .isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
+                            >
+                                {startOfCurrentWeek.add(3, "days").format("D")}
                             </Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
-                            >
-                                <i>
-                                    {startOfCurrentWeek
+                                backgroundColor={
+                                    startOfCurrentWeek
                                         .add(4, "days")
-                                        .format("D")}
-                                </i>
+                                        .isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
+                            >
+                                {startOfCurrentWeek.add(4, "days").format("D")}
                             </Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
-                            >
-                                <i>
-                                    {startOfCurrentWeek
+                                backgroundColor={
+                                    startOfCurrentWeek
                                         .add(5, "days")
-                                        .format("D")}
-                                </i>
+                                        .isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
+                            >
+                                {startOfCurrentWeek.add(5, "days").format("D")}
                             </Typography>
                             <Typography
-                                variant="h4"
+                                variant="h5"
+                                lineHeight={1.7}
                                 textAlign="center"
                                 color="gray"
-                            >
-                                <i>
-                                    {startOfCurrentWeek
+                                backgroundColor={
+                                    startOfCurrentWeek
                                         .add(6, "days")
-                                        .format("D")}
-                                </i>
+                                        .isSame(dayjs(), "day")
+                                        ? "#eeeeee"
+                                        : ""
+                                }
+                                sx={{
+                                    clipPath: "circle(14px at 50% 45%)",
+                                }}
+                            >
+                                {startOfCurrentWeek.add(6, "days").format("D")}
                             </Typography>
                         </Box>
                         <Box
@@ -276,10 +329,11 @@ const Calendar = () => {
                         >
                             <Schedule
                                 key={randomKey}
+                                week={startOfCurrentWeek}
                                 direction="vertical"
                                 type="read"
                                 pxSize="750"
-                                incrementSize="1"
+                                incrementDuration="1"
                                 views={[...selectedView, ...userEvents]}
                                 deleteEvent={deleteEvent}
                                 acceptEvent={acceptEvent}

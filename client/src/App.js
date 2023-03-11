@@ -11,6 +11,8 @@ import Login from "scenes/login";
 import Register from "scenes/register";
 import Dashboard from "scenes/dashboard";
 import NewEvent from "scenes/newEvent";
+import { gapi } from "gapi-script";
+import { googleLogout } from "@react-oauth/google";
 
 function App() {
     const mode = useSelector((state) => state.mode);

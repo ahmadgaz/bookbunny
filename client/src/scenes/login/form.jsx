@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import {
     Box,
     Button,
@@ -13,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLogin } from "state";
 import { tokens } from "theme";
 import Container from "components/Container";
+import jwtDecode from "jwt-decode";
 
 const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
@@ -33,6 +35,48 @@ const Form = () => {
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
     const colors = tokens("light");
+
+    const googleLogin = useGoogleLogin({
+        onSuccess: async (codeResponse) => {
+            const loggedInResponse = await fetch(`${authURL}/login`, {
+                method: "POST",
+                body: JSON.stringify({
+                    googleCode: codeResponse.code,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const loggedIn = await loggedInResponse.json();
+
+            console.log(loggedIn);
+
+            if (loggedIn.token !== undefined && loggedIn.user !== undefined) {
+                dispatch(
+                    setLogin({
+                        user: loggedIn.user,
+                        token: loggedIn.token,
+                    })
+                );
+                navigate(previousPage);
+            } else if (loggedIn.msg) {
+                setError(loggedIn.msg);
+            } else {
+                setError("There has been an error on our end.");
+            }
+        },
+        onError: (err) => setError(err),
+        scope: [
+            "openid",
+            "email",
+            "profile",
+            "https://www.googleapis.com/auth/userinfo.profile",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.events",
+        ].join(" "),
+        flow: "auth-code",
+    });
 
     const login = async (values, onSubmitProps) => {
         const loggedInResponse = await fetch(`${authURL}/login`, {
@@ -131,7 +175,12 @@ const Form = () => {
 
                     {/* BUTTONS */}
                     <Box>
-                        <Box sx={{ m: "2rem 0", p: "2px" }}>
+                        <Box
+                            sx={{
+                                m: "2rem 0",
+                                p: "2px",
+                            }}
+                        >
                             <Container
                                 size="m"
                                 fullWidth
@@ -140,8 +189,32 @@ const Form = () => {
                             >
                                 Log in
                             </Container>
+                            <Typography variant="h5" margin="10px">
+                                OR
+                            </Typography>
+                            {/* <GoogleLogin
+                                size="large"
+                                onSuccess={googleLogin}
+                                onError={(err) => console.log(err)}
+                            /> */}
+                            <Container
+                                size="m"
+                                fullWidth
+                                variant="contained"
+                                onClick={() => googleLogin()}
+                                style={{
+                                    backgroundColor: "#fff",
+                                    // fontFamily: "Product Sans",
+                                }}
+                            >
+                                Log in with <b color="#4285f4">G</b>
+                                <b color="#EA4335">o</b>
+                                <b color="#FBBC05">o</b>
+                                <b color="#4285f4">g</b>
+                                <b color="#34A853">l</b>
+                                <b color="#EA4335">e</b>
+                            </Container>
                         </Box>
-
                         {/* QUESTION */}
                         <Typography>Don't have an account?</Typography>
                         <Typography

@@ -1,5 +1,5 @@
-export const getTime = (cur, thirtyMinSize) => {
-    const thirtyMinIncrementsMultiple = 30 / thirtyMinSize;
+export const getTime = (cur, incrementPxSize) => {
+    const thirtyMinIncrementsMultiple = 30 / incrementPxSize;
     const numOfThirtyMinIncrements = cur * thirtyMinIncrementsMultiple;
     const hr = Math.floor(numOfThirtyMinIncrements / 60);
     const min = ((numOfThirtyMinIncrements / 30) % 2) * 30;
@@ -10,7 +10,7 @@ export const getTime = (cur, thirtyMinSize) => {
     // min: 00-59
 };
 
-export const getPosAndSize = (cur, thirtyMinSize, incrementSize) => {
+export const getPosAndSize = (cur, incrementPxSize, incrementDuration) => {
     if (cur === undefined) return { pos: 0, size: 0 };
 
     const { start_time, end_time } = cur;
@@ -27,28 +27,31 @@ export const getPosAndSize = (cur, thirtyMinSize, incrementSize) => {
     // 5:56 - 7:23
 
     let iteration = 0;
-    for (let i = 0; i < 60; i += parseInt(incrementSize)) {
-        if (startMinutes >= i && startMinutes < i + parseInt(incrementSize)) {
+    for (let i = 0; i < 60; i += parseInt(incrementDuration)) {
+        if (
+            startMinutes >= i &&
+            startMinutes < i + parseInt(incrementDuration)
+        ) {
             pos =
-                thirtyMinSize *
-                ((60 / parseInt(incrementSize)) * startHours + iteration);
+                incrementPxSize *
+                ((60 / parseInt(incrementDuration)) * startHours + iteration);
         }
         iteration++;
     }
 
     iteration = 0;
-    for (let i = 0; i < 60; i += parseInt(incrementSize)) {
-        if (endMinutes >= i && endMinutes < i + parseInt(incrementSize)) {
+    for (let i = 0; i < 60; i += parseInt(incrementDuration)) {
+        if (endMinutes >= i && endMinutes < i + parseInt(incrementDuration)) {
             if (endMinutes === 59) {
                 size =
-                    thirtyMinSize *
-                        ((60 / parseInt(incrementSize)) * endHours +
-                            60 / parseInt(incrementSize)) -
+                    incrementPxSize *
+                        ((60 / parseInt(incrementDuration)) * endHours +
+                            60 / parseInt(incrementDuration)) -
                     pos;
             } else {
                 size =
-                    thirtyMinSize *
-                        ((60 / parseInt(incrementSize)) * endHours +
+                    incrementPxSize *
+                        ((60 / parseInt(incrementDuration)) * endHours +
                             iteration) -
                     pos;
             }

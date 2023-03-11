@@ -77,17 +77,18 @@ const Home = () => {
                         }}
                     />
                     <Box display="flex" alignItems="center">
-                        <Button
-                            size="m"
-                            variant="contained"
-                            onClick={() => {
-                                setPrevPageToHome();
-                                navigate("/register");
-                            }}
-                            style={{ marginRight: "50px" }}
-                        >
-                            Try Free
-                        </Button>
+                        <Box sx={{ marginRight: "20px" }}>
+                            <Button
+                                size="m"
+                                variant="contained"
+                                onClick={() => {
+                                    setPrevPageToHome();
+                                    navigate("/register");
+                                }}
+                            >
+                                Try Free
+                            </Button>
+                        </Box>
                         <Button italicized size="m" variant="outlined">
                             See how it works
                         </Button>

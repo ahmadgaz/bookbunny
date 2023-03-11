@@ -37,86 +37,177 @@ const Dashboard = () => {
     return (
         <Box width="100vw" height="100vh" sx={{ touchAction: "pan-y" }}>
             <Navbar tab={tab} handleTabChange={handleTabChange} />
-            <div
-                className="embla"
-                ref={emblaRef}
-                style={{
-                    overflowX: "hidden",
-                    height: "100%",
-                    touchAction: "pan-y",
-                }}
-            >
+            {isNonMobileScreens ? (
                 <div
-                    className="embla__container"
+                    className="embla"
+                    ref={emblaRef}
                     style={{
-                        display: "flex",
-                        flexDirection: "row",
+                        overflowX: "hidden",
                         height: "100%",
                         touchAction: "pan-y",
                     }}
                 >
                     <div
-                        className="embla__slide"
-                        key="0"
+                        className="embla__container"
                         style={{
-                            overflowY: "auto",
-                            paddingTop: "70px",
-                            flex: "0 0 100%",
                             display: "flex",
-                            justifyContent: "center",
-                            minWidth: 0,
+                            flexDirection: "row",
+                            height: "100%",
                             touchAction: "pan-y",
                         }}
                     >
-                        <View />
-                    </div>
-                    <div
-                        className="embla__slide"
-                        key="1"
-                        style={{
-                            overflowY: "auto",
-                            paddingTop: "70px",
-                            flex: "0 0 100%",
-                            display: "flex",
-                            justifyContent: "center",
-                            touchAction: "pan-y",
-                            minWidth: 0,
-                        }}
-                    >
-                        <Calendar />
-                    </div>
-                    <div
-                        className="embla__slide"
-                        key="2"
-                        style={{
-                            overflowY: "auto",
-                            paddingTop: "70px",
-                            flex: "0 0 100%",
-                            display: "flex",
-                            justifyContent: "center",
-                            touchAction: "pan-y",
-                            minWidth: 0,
-                        }}
-                    >
-                        <Help />
-                    </div>
-                    <div
-                        className="embla__slide"
-                        key="3"
-                        style={{
-                            overflowY: "auto",
-                            paddingTop: "70px",
-                            flex: "0 0 100%",
-                            display: "flex",
-                            justifyContent: "center",
-                            touchAction: "pan-y",
-                            minWidth: 0,
-                        }}
-                    >
-                        <Account />
+                        <div
+                            className="embla__slide"
+                            key="0"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                minWidth: 0,
+                                touchAction: "pan-y",
+                            }}
+                        >
+                            <View />
+                        </div>
+                        <div
+                            className="embla__slide"
+                            key="1"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                touchAction: "pan-y",
+                                minWidth: 0,
+                            }}
+                        >
+                            <Calendar />
+                        </div>
+                        <div
+                            className="embla__slide"
+                            key="2"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                touchAction: "pan-y",
+                                minWidth: 0,
+                            }}
+                        >
+                            <Help />
+                        </div>
+                        <div
+                            className="embla__slide"
+                            key="3"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                touchAction: "pan-y",
+                                minWidth: 0,
+                            }}
+                        >
+                            <Account />
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div
+                    className="embla"
+                    ref={emblaRef}
+                    style={{
+                        overflowX: "hidden",
+                        height: "100%",
+                        touchAction: "pan-y",
+                    }}
+                >
+                    <div
+                        className="embla__container"
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            height: "100%",
+                            touchAction: "pan-y",
+                        }}
+                    >
+                        <div
+                            className="embla__slide"
+                            key="0"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                paddingBottom: "60px",
+                                boxSizing: "border-box",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                minWidth: 0,
+                                touchAction: "pan-y",
+                            }}
+                        >
+                            <View />
+                        </div>
+                        <div
+                            className="embla__slide"
+                            key="1"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                paddingBottom: "60px",
+                                boxSizing: "border-box",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                touchAction: "pan-y",
+                                minWidth: 0,
+                            }}
+                        >
+                            <Calendar />
+                        </div>
+                        <div
+                            className="embla__slide"
+                            key="2"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                paddingBottom: "60px",
+                                boxSizing: "border-box",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                touchAction: "pan-y",
+                                minWidth: 0,
+                            }}
+                        >
+                            <Help />
+                        </div>
+                        <div
+                            className="embla__slide"
+                            key="3"
+                            style={{
+                                overflowY: "auto",
+                                paddingTop: "70px",
+                                paddingBottom: "60px",
+                                boxSizing: "border-box",
+                                flex: "0 0 100%",
+                                display: "flex",
+                                justifyContent: "center",
+                                touchAction: "pan-y",
+                                minWidth: 0,
+                            }}
+                        >
+                            <Account />
+                        </div>
+                    </div>
+                </div>
+            )}
             <Snackbar
                 open={snackbars.eventTypeCopied}
                 autoHideDuration={4000}
