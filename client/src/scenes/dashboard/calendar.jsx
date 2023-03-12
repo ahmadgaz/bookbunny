@@ -8,16 +8,28 @@ import Container from "components/Container";
 import { useState } from "react";
 import { tokens } from "theme";
 import { v4 } from "uuid";
+import { useEffect } from "react";
 
 const Calendar = () => {
-    const { user, getSelectedView, deleteEvent, acceptEvent } =
+    const { user, getSelectedView, deleteEvent, acceptEvent, getGoogleEvents } =
         useContext(CRUDFunctionsContext);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const selectedView = getSelectedView() ? [getSelectedView()] : [];
     const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(
         dayjs().startOf("week")
     );
+    const [googleEvents, setGoogleEvents] = useState([]);
+    console.log(googleEvents);
     dayjs.extend(isBetween);
+    useEffect(() => {
+        async function getEvents() {
+            const events = await getGoogleEvents(
+                startOfCurrentWeek.toISOString()
+            );
+            setGoogleEvents(events);
+        }
+        getEvents();
+    }, [startOfCurrentWeek]);
     const userEvents = user.views
         ? [
               ...user.events

@@ -77,7 +77,7 @@ const Home = () => {
                         }}
                     />
                     <Box display="flex" alignItems="center">
-                        <Box sx={{ marginRight: "20px" }}>
+                        <Box sx={{ marginRight: "50px" }}>
                             <Button
                                 size="m"
                                 variant="contained"

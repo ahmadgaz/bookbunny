@@ -3,6 +3,61 @@ import User from "../models/User.js";
 import View from "../models/View.js";
 import EventType from "../models/EventType.js";
 import Event from "../models/Event.js";
+import { authenticate } from "@google-cloud/local-auth";
+import { google } from "googleapis";
+
+// GOOGLE
+export const getGoogleEvents = async (req, res) => {
+    req.params.user = mongoose.Types.ObjectId(req.params.user);
+    const user = await User.findOne({
+        _id: req.params.user,
+    }).exec();
+    if (user.tokens) {
+        const credentials = {
+            type: "authorized_user",
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            refresh_token: user.tokens.refresh_token,
+        };
+        // 2023-03-12T18:10:23.906Z
+        const client = google.auth.fromJSON(credentials);
+        const maxDate = (date, days) => {
+            let d = new Date(date);
+            d.setDate(d.getDate() + days);
+            return d;
+        };
+        const calendar = google.calendar({ version: "v3", auth: client });
+        const calendarList = await calendar.calendarList.list({
+            showHidden: true,
+        });
+        const calendarListResults = calendarList.data.items.map(
+            (item) => item.id
+        );
+        const events = [];
+        for (let i = 0; i < calendarListResults.length; i++) {
+            const result = await calendar.events.list({
+                calendarId: calendarListResults[i],
+                timeMin: req.body.date,
+                timeMax: maxDate(req.body.date, 7).toISOString(),
+                singleEvents: true,
+                orderBy: "startTime",
+            });
+            events.push(result.data.items);
+        }
+        if (events.length < 1) {
+            res.status(201).json("No upcoming events!");
+        } else {
+            res.status(201).json(events);
+        }
+        // res.status(201).json(calendarListResults);
+    } else {
+        res.status(204).json([]);
+    }
+    try {
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 // USER
 export const getUser = async (req, res) => {
@@ -11,7 +66,12 @@ export const getUser = async (req, res) => {
         const user = await User.findOne({
             _id: req.params.user,
         }).exec();
-        res.status(201).json(user);
+
+        let secureUser = user._doc;
+        delete secureUser.tokens;
+        delete secureUser.password;
+
+        res.status(201).json(secureUser);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -27,7 +87,12 @@ export const getRecievingUser = async (req, res) => {
             _id: eventType.owner_id,
         }).exec();
         if (!user) return res.status(500).json("User not found!");
-        res.status(201).json(user);
+
+        let secureUser = user._doc;
+        delete secureUser.tokens;
+        delete secureUser.password;
+
+        res.status(201).json(secureUser);
     } catch (err) {
         console.log(err.message);
         res.status(500).json({ error: err.message });
@@ -42,7 +107,15 @@ export const getFirstFourUsers = async (req, res) => {
                   .limit(4)
                   .exec()
             : [];
-        res.status(201).json(users);
+
+        let secureUsers = users.map((user) => {
+            let secureUser = user._doc;
+            delete secureUser.tokens;
+            delete secureUser.password;
+            return secureUser;
+        });
+
+        res.status(201).json(secureUsers);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

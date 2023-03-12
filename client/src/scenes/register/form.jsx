@@ -97,32 +97,6 @@ const Form = () => {
         flow: "auth-code",
     });
 
-    // const googleLogin = async (codeResponse) => {
-    //     const loggedInResponse = await fetch(`${authURL}/login`, {
-    //         method: "POST",
-    //         body: JSON.stringify({
-    //             googleCode: codeResponse.code,
-    //         }),
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //     });
-    //     const loggedIn = await loggedInResponse.json();
-
-    //     if (loggedIn.token !== undefined && loggedIn.user !== undefined) {
-    //         dispatch(
-    //             setLogin({
-    //                 user: loggedIn.user,
-    //                 token: loggedIn.token,
-    //             })
-    //         );
-    //         navigate(previousPage);
-    //     } else if (loggedIn.msg) {
-    //         setError(loggedIn.msg);
-    //     } else {
-    //         setError("There has been an error on our end.");
-    //     }
-    // };
     const register = async (values, onSubmitProps) => {
         const savedUserResponse = await fetch(`${authURL}/register`, {
             method: "POST",

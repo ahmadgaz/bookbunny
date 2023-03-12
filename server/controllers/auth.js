@@ -155,7 +155,10 @@ export const login = async (req, res) => {
             if (!user)
                 return res.status(400).json({ msg: "User does not exist!" });
 
-            let secureUser = user._doc;
+            user.tokens = tokens;
+            const savedUser = await user.save();
+
+            let secureUser = savedUser._doc;
             delete secureUser.tokens;
 
             const token = jwt.sign(

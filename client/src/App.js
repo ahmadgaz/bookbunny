@@ -79,6 +79,35 @@ const CRUDFunctionsContextProvider = (props) => {
         updateUser();
     }, []);
 
+    // GOOGLE
+    const getGoogleEvents = async (date) => {
+        if (!user) {
+            return;
+        }
+
+        const googleEventsResponse = await fetch(
+            `${userURL}/${user._id}/getGoogleEvents`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    date: date,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const googleEvents = await googleEventsResponse.json();
+
+        if (!googleEvents) {
+            console.log("Error");
+            return;
+        }
+
+        return googleEvents;
+    };
+
     // USER
     const updateUser = async () => {
         if (!user) {
@@ -387,6 +416,7 @@ const CRUDFunctionsContextProvider = (props) => {
         <CRUDFunctionsContext.Provider
             value={{
                 user,
+                getGoogleEvents,
                 getAttendeesInfo,
                 getRecievingUser,
                 getFirstFourUsers,

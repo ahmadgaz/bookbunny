@@ -1,5 +1,6 @@
 import express from "express";
 import {
+    getGoogleEvents,
     getUser,
     getRecievingUser,
     getFirstFourUsers,
@@ -20,6 +21,9 @@ import {
 import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
+
+// GOOGLE
+router.post("/:user/getGoogleEvents", getGoogleEvents);
 
 // USER
 router.get("/:user", verifyToken, getUser);
