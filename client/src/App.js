@@ -18,6 +18,8 @@ function App() {
     const mode = useSelector((state) => state.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
     const isAuth = Boolean(useSelector((state) => state.token));
+    // const tok = useSelector((state) => state.token);
+    // console.log(tok);
 
     return (
         <div className="app">
@@ -81,7 +83,7 @@ const CRUDFunctionsContextProvider = (props) => {
 
     // GOOGLE
     const getGoogleEvents = async (date) => {
-        if (!user) {
+        if (!user || !token) {
             return;
         }
 
@@ -91,6 +93,7 @@ const CRUDFunctionsContextProvider = (props) => {
                 method: "POST",
                 body: JSON.stringify({
                     date: date,
+                    token: token,
                 }),
                 headers: {
                     "Content-Type": "application/json",
@@ -355,6 +358,7 @@ const CRUDFunctionsContextProvider = (props) => {
                     event_duration: event.event_duration,
                     event_notes: event.event_notes,
                     event_attendees: event.event_attendees,
+                    token: token,
                 }),
                 headers: {
                     "Content-Type": "application/json",

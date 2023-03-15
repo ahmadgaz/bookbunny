@@ -78,7 +78,7 @@ const Timeline = (props) => {
     const classes = useStyles();
 
     class TimeslotData {
-        constructor(color, time, event) {
+        constructor(color, time, event, googleEvent) {
             this.key = v4();
             this.direction = direction;
             this.color = color;
@@ -87,6 +87,10 @@ const Timeline = (props) => {
             }, ${hexToRgb(color).b - 100}, 1)`;
             this.time = time;
             this.event = event;
+            this.googleEvent = googleEvent;
+            this.eventWidth = "90%";
+            this.eventHeight = "90%";
+            this.opacity = "100%";
         }
         getStyle() {
             return {
@@ -112,17 +116,18 @@ const Timeline = (props) => {
                 width:
                     this.direction === "horizontal"
                         ? `calc(${this.size}px - 1px)`
-                        : this.event
-                        ? "90%"
+                        : this.event || this.googleEvent
+                        ? this.eventWidth
                         : "100%",
                 height:
                     this.direction === "vertical"
                         ? `calc(${this.size}px - 1px)`
-                        : this.event
-                        ? "90%"
+                        : this.event || this.googleEvent
+                        ? this.eventHeight
                         : "100%",
                 borderRadius: "5px",
                 border: this.size > 0 ? `1.5px solid ${this.borderColor}` : "",
+                opacity: this.opacity,
                 background:
                     type === "read" &&
                     // views.some((view) => view.view_event) &&
@@ -359,24 +364,12 @@ const Timeline = (props) => {
         }
         correctOverlapsForReadComponents(timeslotsDataCurrent) {
             let data = [...timeslotsDataCurrent];
-            const color = `rgba(${hexToRgb(this.color).r}, ${
-                hexToRgb(this.color).g
-            }, ${hexToRgb(this.color).b}, 1)`;
-            const opaqueColor = ` rgba(${hexToRgb(this.color).r}, ${
-                hexToRgb(this.color).g
-            }, ${hexToRgb(this.color).b}, 0.5)`;
-            let opaqueParts = [];
-            let linearGradient = `linear-gradient(${
-                direction === "horizontal" ? "90deg" : "180deg"
-            }, ${color} 0%, ${color} 100%)`;
-
-            // HOW IT WORKS:
-            // let opaqueParts = [`, ${color} 32%, ${opaqueColor} 32%, ${opaqueColor} 60%, ${color} 60%`]
-            // let opaqueParts = [`, ${color} 32%, ${opaqueColor} 32%, ${opaqueColor} 60%, ${color} 60%`, `,  ${color} 80%, ${opaqueColor} 80%, ${opaqueColor} 90%, ${color} 90%`]
-            // let linearGradient = `linear-gradient(${direction === "horizontal" ? "90deg" : "180deg"}, ${color} 0%${opaqueParts.join("")}, ${color} 100%)`
 
             data.forEach((timeslot, idx) => {
-                if (this.event) {
+                if (
+                    !(this.googleEvent || this.event) ||
+                    !(timeslot.googleEvent || timeslot.event)
+                ) {
                     return;
                 }
                 if (this.key === timeslot.key) {
@@ -384,13 +377,16 @@ const Timeline = (props) => {
                     return;
                 }
                 let checks = {
+                    // ----[----    ]
                     thisEndIsBetweenTimeslot:
                         this.position + this.size > timeslot.position &&
                         this.position + this.size <=
                             timeslot.position + timeslot.size,
+                    // [   ----]----
                     thisStartIsBetweenTimeslot:
                         this.position >= timeslot.position &&
                         this.position < timeslot.position + timeslot.size,
+                    // ---[----]----
                     timeslotIsInsideThis:
                         timeslot.position >= this.position &&
                         timeslot.position < this.position + this.size &&
@@ -403,99 +399,24 @@ const Timeline = (props) => {
                     checks.thisStartIsBetweenTimeslot
                 ) {
                     // console.log("inside slot");
-                    // this.position --- 0%
-                    // this.position + this.size --- 100%
-                    let opaqueStart = 0;
-                    let opaqueEnd = 100;
-                    opaqueParts.push({
-                        percentages: [opaqueStart, opaqueEnd],
-                        str: `, ${color} ${opaqueStart}%, ${opaqueColor} ${opaqueStart}%, ${opaqueColor} ${opaqueEnd}%, ${color} ${opaqueEnd}%`,
-                    });
-                    opaqueParts = this.sortOpaqueParts(opaqueParts);
-                    linearGradient = `linear-gradient(${
-                        direction === "horizontal" ? "90deg" : "180deg"
-                    }, ${color} 0%${opaqueParts
-                        .map((part) => {
-                            return part.str;
-                        })
-                        .join("")}, ${color} 100%)`;
-                    this.color = linearGradient;
+                    if (this.event) {
+                        this.opacity = "70%";
+                    }
+                    this.eventWidth = `${parseInt(this.eventWidth) - 10}%`;
+                    this.eventHeight = `${parseInt(this.eventHeight) - 10}%`;
+                    return;
                 }
                 if (checks.thisStartIsBetweenTimeslot) {
                     // console.log("start overlaps slot");
-                    // this.position --- 0%
-                    // timeslot.position + timeslot.size - this.position --- ((timeslot.position + timeslot.size - this.position)/(this.size))%
-                    let opaqueStart = 0;
-                    let opaqueEnd =
-                        ((timeslot.position +
-                            timeslot.size -
-                            this.position -
-                            1) /
-                            this.size) *
-                        100;
-                    opaqueParts.push({
-                        percentages: [opaqueStart, opaqueEnd],
-                        str: `, ${color} ${opaqueStart}%, ${opaqueColor} ${opaqueStart}%, ${opaqueColor} ${opaqueEnd}%, ${color} ${opaqueEnd}%`,
-                    });
-                    opaqueParts = this.sortOpaqueParts(opaqueParts);
-                    linearGradient = `linear-gradient(${
-                        direction === "horizontal" ? "90deg" : "180deg"
-                    }, ${color} 0%${opaqueParts
-                        .map((part) => {
-                            return part.str;
-                        })
-                        .join("")}, ${color} 100%)`;
-                    this.color = linearGradient;
-                }
-                if (checks.thisEndIsBetweenTimeslot) {
-                    // console.log("end overlaps slot");
-                    // timeslot.position - this.position --- ((timeslot.position - this.position)/(this.size))%
-                    // this.position + this.size --- 100%
-                    let opaqueStart =
-                        ((timeslot.position - this.position + 1) / this.size) *
-                        100;
-                    let opaqueEnd = 100;
-                    opaqueParts.push({
-                        percentages: [opaqueStart, opaqueEnd],
-                        str: `, ${color} ${opaqueStart}%, ${opaqueColor} ${opaqueStart}%, ${opaqueColor} ${opaqueEnd}%, ${color} ${opaqueEnd}%`,
-                    });
-                    opaqueParts = this.sortOpaqueParts(opaqueParts);
-                    linearGradient = `linear-gradient(${
-                        direction === "horizontal" ? "90deg" : "180deg"
-                    }, ${color} 0%${opaqueParts
-                        .map((part) => {
-                            return part.str;
-                        })
-                        .join("")}, ${color} 100%)`;
-                    this.color = linearGradient;
+                    if (this.event) {
+                        this.opacity = "70%";
+                    }
+                    this.eventWidth = `${parseInt(this.eventWidth) - 10}%`;
+                    this.eventHeight = `${parseInt(this.eventHeight) - 10}%`;
+                    return;
                 }
                 if (checks.timeslotIsInsideThis) {
                     // console.log("overtakes slot");
-                    // timeslot.position
-                    // thimeSlot.position + timeslot.size
-                    let opaqueStart =
-                        ((timeslot.position - this.position + 1) / this.size) *
-                        100;
-                    let opaqueEnd =
-                        ((timeslot.position +
-                            timeslot.size -
-                            this.position -
-                            1) /
-                            this.size) *
-                        100;
-                    opaqueParts.push({
-                        percentages: [opaqueStart, opaqueEnd],
-                        str: `, ${color} ${opaqueStart}%, ${opaqueColor} ${opaqueStart}%, ${opaqueColor} ${opaqueEnd}%, ${color} ${opaqueEnd}%`,
-                    });
-                    opaqueParts = this.sortOpaqueParts(opaqueParts);
-                    linearGradient = `linear-gradient(${
-                        direction === "horizontal" ? "90deg" : "180deg"
-                    }, ${color} 0%${opaqueParts
-                        .map((part) => {
-                            return part.str;
-                        })
-                        .join("")}, ${color} 100%)`;
-                    this.color = linearGradient;
                 }
             });
             // console.log(opaqueParts.map((part) => part.percentages));
@@ -526,7 +447,8 @@ const Timeline = (props) => {
                     new TimeslotData(
                         view.current.view_color,
                         timeslot,
-                        view.current.view_event ? view.current.view_event : null
+                        null,
+                        null
                     )
                 );
                 data[data.length - 1].setCellDistFromBoundingClient(
@@ -551,7 +473,10 @@ const Timeline = (props) => {
                             new TimeslotData(
                                 view.view_color,
                                 timeslot,
-                                view.view_event ? view.view_event : null
+                                view.view_event ? view.view_event : null,
+                                view.view_google_event
+                                    ? view.view_google_event
+                                    : null
                             )
                         );
                         data[data.length - 1].setCellDistFromBoundingClient(
@@ -560,9 +485,11 @@ const Timeline = (props) => {
                         data[data.length - 1].setIncrement(cell.current);
                         data[data.length - 1].setPosition();
                         data[data.length - 1].setSize();
-                        // data[data.length - 1].correctOverlapsForReadComponents(
-                        //     data
-                        // );
+                        if (view.view_google_event || view.view_event) {
+                            data[
+                                data.length - 1
+                            ].correctOverlapsForReadComponents(data);
+                        }
                     });
                 }
             });
@@ -585,60 +512,64 @@ const Timeline = (props) => {
             updateTimeslots();
         }
         setTimeTicker(
-            <div
-                style={{
-                    position: "absolute",
-                    left:
-                        direction === "horizontal"
-                            ? getPosAndSize(
-                                  {
-                                      start_time: dayjs().format("HH:mm"),
-                                      end_time: dayjs()
-                                          .add(1, "minutes")
-                                          .format("HH:mm"),
-                                  },
-                                  cell.current.clientWidth /
-                                      ((60 / incrementDuration) * 24),
-                                  incrementDuration
-                              ).pos + "px"
-                            : "0px",
-                    top:
-                        direction === "vertical"
-                            ? getPosAndSize(
-                                  {
-                                      start_time: dayjs().format("HH:mm"),
-                                      end_time: dayjs()
-                                          .add(1, "minutes")
-                                          .format("HH:mm"),
-                                  },
-                                  cell.current.clientHeight /
-                                      ((60 / incrementDuration) * 24),
-                                  incrementDuration
-                              ).pos + "px"
-                            : "0px",
-                    display: "flex",
-                    justifyContent: "right",
-                    alignItems: "center",
-                    WebkitUserSelect: "none",
-                    KhtmlUserSelect: "none",
-                    MozUserSelect: "none",
-                    MsUserSelect: "none",
-                    userSelect: "none",
-                    backgroundColor: "gray",
-                    height: "1px",
-                    width: "100%",
-                }}
-            >
+            views.length > 0 ? (
                 <div
                     style={{
-                        width: "3px",
-                        height: "3px",
-                        borderRadius: "50%",
-                        backgroundColor: "gray",
-                        marginRight: "-3px",
+                        position: "absolute",
+                        left:
+                            direction === "horizontal"
+                                ? getPosAndSize(
+                                      {
+                                          start_time: dayjs().format("HH:mm"),
+                                          end_time: dayjs()
+                                              .add(1, "minutes")
+                                              .format("HH:mm"),
+                                      },
+                                      cell.current.clientWidth /
+                                          ((60 / incrementDuration) * 24),
+                                      incrementDuration
+                                  ).pos + "px"
+                                : "0px",
+                        top:
+                            direction === "vertical"
+                                ? getPosAndSize(
+                                      {
+                                          start_time: dayjs().format("HH:mm"),
+                                          end_time: dayjs()
+                                              .add(1, "minutes")
+                                              .format("HH:mm"),
+                                      },
+                                      cell.current.clientHeight /
+                                          ((60 / incrementDuration) * 24),
+                                      incrementDuration
+                                  ).pos + "px"
+                                : "0px",
+                        display: "flex",
+                        justifyContent: "right",
+                        alignItems: "center",
+                        WebkitUserSelect: "none",
+                        KhtmlUserSelect: "none",
+                        MozUserSelect: "none",
+                        MsUserSelect: "none",
+                        userSelect: "none",
+                        backgroundColor: "red",
+                        height: "1px",
+                        width: "100%",
                     }}
-                ></div>
-            </div>
+                >
+                    <div
+                        style={{
+                            width: "3px",
+                            height: "3px",
+                            borderRadius: "50%",
+                            backgroundColor: "red",
+                            marginRight: "-3px",
+                        }}
+                    ></div>
+                </div>
+            ) : (
+                <div></div>
+            )
         );
     }, [direction, type, pxSize, label, views]);
 
@@ -732,7 +663,15 @@ const Timeline = (props) => {
                                 timeslot.event.event_status === "denied" ||
                                 timeslot.event.event_status === "canceled"
                             ) {
+                                timeslotsData.current =
+                                    handleOnTimeslotClick(idx);
+                                view.current.view_schedule[
+                                    label.toLowerCase()
+                                ] = timeslotsData.current.map(
+                                    (timeslot) => timeslot.time
+                                );
                                 deleteEvent(timeslot.event);
+                                updateTimeslots();
                             }
                         }
                     }}
@@ -748,6 +687,19 @@ const Timeline = (props) => {
                             }}
                         >
                             <b>{timeslot.event.event_name}</b>
+                        </div>
+                    )}
+                    {timeslot.googleEvent && (
+                        <div
+                            style={{
+                                width: "100%",
+                                position: "absolute",
+                                padding: "3px 0 0 5px",
+                                fontSize: "0.5rem",
+                                opacity: "40%",
+                            }}
+                        >
+                            <b>{timeslot.googleEvent.event_name}</b>
                         </div>
                     )}
                     <div

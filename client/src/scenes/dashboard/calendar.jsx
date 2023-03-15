@@ -19,14 +19,77 @@ const Calendar = () => {
         dayjs().startOf("week")
     );
     const [googleEvents, setGoogleEvents] = useState([]);
-    console.log(googleEvents);
+    const [loading, setLoading] = useState("");
     dayjs.extend(isBetween);
     useEffect(() => {
         async function getEvents() {
-            const events = await getGoogleEvents(
+            const calendars = await getGoogleEvents(
                 startOfCurrentWeek.toISOString()
             );
+            let events = [];
+            if (calendars.length) {
+                calendars.forEach((calendar) => {
+                    calendar.forEach((event) => {
+                        if (!event.start.dateTime || !event.end.dateTime) {
+                            return;
+                        }
+                        if (
+                            !dayjs(event.start.dateTime).isSame(
+                                event.end.dateTime,
+                                "day"
+                            )
+                        ) {
+                            return;
+                        }
+                        let dayOfWeek = dayjs(event.start.dateTime).format(
+                            "dddd"
+                        );
+                        let start = dayjs(event.start.dateTime).format("HH:mm");
+                        let end = dayjs(event.end.dateTime).format("HH:mm");
+                        if (end == "00:00") {
+                            end = "24:00";
+                        }
+
+                        events.push({
+                            view_google_event: { event_name: event.summary },
+                            view_color: "#808080",
+                            view_schedule: {
+                                sunday:
+                                    dayOfWeek === "Sunday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                monday:
+                                    dayOfWeek === "Monday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                tuesday:
+                                    dayOfWeek === "Tuesday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                wednesday:
+                                    dayOfWeek === "Wednesday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                thursday:
+                                    dayOfWeek === "Thursday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                friday:
+                                    dayOfWeek === "Friday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                saturday:
+                                    dayOfWeek === "Saturday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                            },
+                        });
+                    });
+                });
+            }
             setGoogleEvents(events);
+            setLoading("");
+            setRandomKey(v4());
         }
         getEvents();
     }, [startOfCurrentWeek]);
@@ -143,6 +206,7 @@ const Calendar = () => {
                 <div
                     onClick={() => {
                         setRandomKey(v4());
+                        setLoading("Loading...");
                         setStartOfCurrentWeek(
                             startOfCurrentWeek.subtract(7, "days")
                         );
@@ -195,167 +259,289 @@ const Calendar = () => {
                             backgroundColor: "#fff",
                         }}
                     >
-                        <Box
-                            position="relative"
-                            paddingTop="20px"
-                            display="grid"
-                            gridTemplateColumns="50px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px"
-                            gridTemplateRows="fit-content"
-                        >
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                            ></Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek.isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
+                        {loading ? (
+                            <Box
+                                position="relative"
+                                width="100%"
+                                height="fit-content"
                             >
-                                {startOfCurrentWeek.format("D")}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek
-                                        .add(1, "days")
-                                        .isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
-                            >
-                                {startOfCurrentWeek.add(1, "days").format("D")}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek
-                                        .add(2, "days")
-                                        .isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
-                            >
-                                {startOfCurrentWeek.add(2, "days").format("D")}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek
-                                        .add(3, "days")
-                                        .isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
-                            >
-                                {startOfCurrentWeek.add(3, "days").format("D")}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek
-                                        .add(4, "days")
-                                        .isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
-                            >
-                                {startOfCurrentWeek.add(4, "days").format("D")}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek
-                                        .add(5, "days")
-                                        .isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
-                            >
-                                {startOfCurrentWeek.add(5, "days").format("D")}
-                            </Typography>
-                            <Typography
-                                variant="h5"
-                                lineHeight={1.7}
-                                textAlign="center"
-                                color="gray"
-                                backgroundColor={
-                                    startOfCurrentWeek
-                                        .add(6, "days")
-                                        .isSame(dayjs(), "day")
-                                        ? "#eeeeee"
-                                        : ""
-                                }
-                                sx={{
-                                    clipPath: "circle(14px at 50% 45%)",
-                                }}
-                            >
-                                {startOfCurrentWeek.add(6, "days").format("D")}
-                            </Typography>
-                        </Box>
-                        <Box
-                            position="relative"
-                            top="-10px"
-                            height="750px"
-                            width="600px"
-                        >
-                            <Schedule
-                                key={randomKey}
-                                week={startOfCurrentWeek}
-                                direction="vertical"
-                                type="read"
-                                pxSize="750"
-                                incrementDuration="1"
-                                views={[...selectedView, ...userEvents]}
-                                deleteEvent={deleteEvent}
-                                acceptEvent={acceptEvent}
-                            />
-                        </Box>
+                                <Box position="absolute">
+                                    <Box
+                                        position="relative"
+                                        paddingTop="20px"
+                                        display="grid"
+                                        gridTemplateColumns="50px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px"
+                                        gridTemplateRows="fit-content"
+                                    >
+                                        <Typography
+                                            variant="h5"
+                                            lineHeight={1.7}
+                                            textAlign="center"
+                                            color="gray"
+                                        ></Typography>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor="#eeeeee"
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                    </Box>
+                                    <Box
+                                        position="relative"
+                                        top="-10px"
+                                        height="750px"
+                                        width="600px"
+                                    >
+                                        <Schedule
+                                            key={randomKey}
+                                            week={startOfCurrentWeek}
+                                            direction="vertical"
+                                            type="read"
+                                            pxSize="750"
+                                            incrementDuration="1"
+                                            views={[]}
+                                            deleteEvent={deleteEvent}
+                                            acceptEvent={acceptEvent}
+                                        />
+                                    </Box>
+                                </Box>
+                                <div className="loading-backdrop"></div>
+                            </Box>
+                        ) : (
+                            <>
+                                <Box
+                                    position="relative"
+                                    paddingTop="20px"
+                                    display="grid"
+                                    gridTemplateColumns="50px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px"
+                                    gridTemplateRows="fit-content"
+                                >
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                    ></Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek.isSame(
+                                                dayjs(),
+                                                "day"
+                                            )
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek.format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(1, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(1, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(2, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(2, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(3, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(3, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(4, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(4, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(5, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(5, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color="gray"
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(6, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? "#eeeeee"
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(6, "days")
+                                            .format("D")}
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    position="relative"
+                                    top="-10px"
+                                    height="750px"
+                                    width="600px"
+                                >
+                                    <Schedule
+                                        key={randomKey}
+                                        week={startOfCurrentWeek}
+                                        direction="vertical"
+                                        type="read"
+                                        pxSize="750"
+                                        incrementDuration="1"
+                                        views={[
+                                            ...selectedView,
+                                            ...googleEvents,
+                                            ...userEvents,
+                                        ]}
+                                        deleteEvent={deleteEvent}
+                                        acceptEvent={acceptEvent}
+                                    />
+                                </Box>
+                            </>
+                        )}
                     </Container>
                 </Box>
                 <div
                     onClick={() => {
                         setRandomKey(v4());
+                        setLoading("Loading...");
                         setStartOfCurrentWeek(
                             startOfCurrentWeek.add(7, "days")
                         );

@@ -202,9 +202,10 @@ const Event = (props) => {
                             </Typography>
                         </Box>
                         {attendees ? (
-                            attendees.map((attendee) => {
+                            attendees.map((attendee, idx) => {
                                 return (
                                     <Box
+                                        key={idx}
                                         display="flex"
                                         flexWrap="nowrap"
                                         justifyContent="space-between"

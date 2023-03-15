@@ -130,14 +130,16 @@ const NewEvent = () => {
         dayjs.extend(isBetween);
 
         // Get user and recievingUsers events to prevent event overlap
-        const eventsOfBothUsersTimes = eventsOfBothUsers.map((event) => {
-            let start = dayjs(event.event_date);
-            let end = dayjs(start.add(event.event_duration, "minute"));
-            return {
-                startTime: start,
-                endTime: end,
-            };
-        });
+        const eventsOfBothUsersTimes = [
+            ...eventsOfBothUsers.map((event) => {
+                let start = dayjs(event.event_date);
+                let end = dayjs(start.add(event.event_duration, "minute"));
+                return {
+                    startTime: start,
+                    endTime: end,
+                };
+            }),
+        ];
 
         // Get view which the event_type falls under's timeslots' start_times and lengths (until end_times) for chosen day
         const times = schedule.map((timeslot) => {

@@ -61,20 +61,23 @@ export const register = async (req, res) => {
                 last_name,
                 email,
                 // timezone,
-                tokens: tokens,
+                googleTokens: tokens,
                 views: [],
             });
-            const savedUser = await newUser.save();
-
-            let secureUser = savedUser._doc;
-            delete secureUser.tokens;
-
-            const token = jwt.sign(
-                { id: secureUser._id },
+            newUser.loginToken = jwt.sign(
+                { id: newUser._id },
                 process.env.JWT_SECRET
             );
 
-            res.status(200).json({ token, user: secureUser });
+            const savedUser = await newUser.save();
+
+            let secureUser = savedUser._doc;
+            delete secureUser.googleTokens;
+
+            res.status(200).json({
+                token: secureUser.loginToken,
+                user: secureUser,
+            });
         } else {
             const {
                 first_name,
@@ -155,18 +158,20 @@ export const login = async (req, res) => {
             if (!user)
                 return res.status(400).json({ msg: "User does not exist!" });
 
-            user.tokens = tokens;
+            user.googleTokens = tokens;
+            user.loginToken = jwt.sign(
+                { id: user._id },
+                process.env.JWT_SECRET
+            );
             const savedUser = await user.save();
 
             let secureUser = savedUser._doc;
-            delete secureUser.tokens;
+            delete secureUser.googleTokens;
 
-            const token = jwt.sign(
-                { id: secureUser._id },
-                process.env.JWT_SECRET
-            );
-
-            res.status(200).json({ token, user: secureUser });
+            res.status(200).json({
+                token: secureUser.loginToken,
+                user: secureUser,
+            });
         } else {
             const { email, password } = req.body;
             const user = await User.findOne({
@@ -179,17 +184,19 @@ export const login = async (req, res) => {
             if (!isMatch)
                 return res.status(400).json({ msg: "Invalid credentials!" });
 
-            delete user.password;
-
-            let secureUser = user._doc;
-            delete secureUser.password;
-
-            const token = jwt.sign(
-                { id: secureUser._id },
+            user.loginToken = jwt.sign(
+                { id: user._id },
                 process.env.JWT_SECRET
             );
+            const savedUser = await user.save();
 
-            res.status(200).json({ token, user: secureUser });
+            let secureUser = savedUser._doc;
+            delete secureUser.password;
+
+            res.status(200).json({
+                token: secureUser.loginToken,
+                user: secureUser,
+            });
         }
     } catch (err) {
         res.status(500).json({ error: err.message });

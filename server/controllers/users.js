@@ -12,12 +12,12 @@ export const getGoogleEvents = async (req, res) => {
     const user = await User.findOne({
         _id: req.params.user,
     }).exec();
-    if (user.tokens) {
+    if (user.googleTokens && user.loginToken === req.body.token) {
         const credentials = {
             type: "authorized_user",
             client_id: process.env.GOOGLE_CLIENT_ID,
             client_secret: process.env.GOOGLE_CLIENT_SECRET,
-            refresh_token: user.tokens.refresh_token,
+            refresh_token: user.googleTokens.refresh_token,
         };
         // 2023-03-12T18:10:23.906Z
         const client = google.auth.fromJSON(credentials);
@@ -45,13 +45,13 @@ export const getGoogleEvents = async (req, res) => {
             events.push(result.data.items);
         }
         if (events.length < 1) {
-            res.status(201).json("No upcoming events!");
+            res.status(201).json({ msg: "No upcoming events!" });
         } else {
             res.status(201).json(events);
         }
         // res.status(201).json(calendarListResults);
     } else {
-        res.status(204).json([]);
+        res.status(201).json({ msg: "No account connected..." });
     }
     try {
     } catch (err) {
@@ -68,7 +68,7 @@ export const getUser = async (req, res) => {
         }).exec();
 
         let secureUser = user._doc;
-        delete secureUser.tokens;
+        delete secureUser.googleTokens;
         delete secureUser.password;
 
         res.status(201).json(secureUser);
@@ -89,7 +89,7 @@ export const getRecievingUser = async (req, res) => {
         if (!user) return res.status(500).json("User not found!");
 
         let secureUser = user._doc;
-        delete secureUser.tokens;
+        delete secureUser.googleTokens;
         delete secureUser.password;
 
         res.status(201).json(secureUser);
@@ -110,7 +110,7 @@ export const getFirstFourUsers = async (req, res) => {
 
         let secureUsers = users.map((user) => {
             let secureUser = user._doc;
-            delete secureUser.tokens;
+            delete secureUser.googleTokens;
             delete secureUser.password;
             return secureUser;
         });
@@ -409,7 +409,6 @@ export const createEvent = async (req, res) => {
     try {
         const { event_date, event_duration, event_notes, event_attendees } =
             req.body;
-
         req.params.user = mongoose.Types.ObjectId(req.params.user);
         req.params.eventType = mongoose.Types.ObjectId(req.params.eventType);
         const eventType = await EventType.findOne({
@@ -435,6 +434,7 @@ export const createEvent = async (req, res) => {
         ];
         newEvents[0].event_id = newEvents[0]._id;
         let users = [await User.findOne({ _id: req.params.user }).exec()];
+        let emails = [{ email: users[0].email }];
         users[0].events.push(newEvents[0]);
         await newEvents[0].save();
         await users[0].save();
@@ -459,14 +459,71 @@ export const createEvent = async (req, res) => {
                         event_attending: false,
                     }),
                 ];
+                let user = await User.findOne({ _id: attendee }).exec();
+                emails = [...emails, { email: user.email }];
                 users = [
                     ...users,
-                    await User.findOne({ _id: attendee }).exec(),
+                    user, //CHECK
                 ];
                 users[idx].events.push(newEvents[idx]);
                 await newEvents[idx].save();
                 await users[idx].save();
             }
+        }
+
+        // If the user is connected to google, create a google event
+        if (users[0].googleTokens && users[0].loginToken === req.body.token) {
+            const credentials = {
+                type: "authorized_user",
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                refresh_token: users[0].googleTokens.refresh_token,
+            };
+            const client = google.auth.fromJSON(credentials);
+            const calendar = google.calendar({ version: "v3", auth: client });
+            const endDate = (date, mins) => {
+                console.log(date);
+                console.log(mins);
+                let d = new Date(date);
+                console.log("CREATED D");
+                console.log(d);
+                d.setTime(d.getTime() + mins * 60000);
+                console.log("GOT TIME");
+                console.log(d);
+                return d;
+            };
+            console.log(newEvents[0].event_date);
+            console.log("before statement");
+            console.log(
+                endDate(
+                    newEvents[0].event_date.toISOString(),
+                    newEvents[0].event_duration
+                ).toISOString()
+            );
+            console.log("past statement");
+            await calendar.events.insert({
+                calendarId: "primary",
+                requestBody: {
+                    id: newEvents[0].event_id,
+                    summary: newEvents[0].event_name,
+                    description: newEvents[0].event_notes,
+                    location: newEvents[0].event_location,
+                    attendees: emails,
+                    start: {
+                        dateTime: newEvents[0].event_date.toISOString(),
+                    },
+                    end: {
+                        dateTime: endDate(
+                            newEvents[0].event_date.toISOString(),
+                            newEvents[0].event_duration
+                        ).toISOString(),
+                    },
+                    reminders: {
+                        useDefault: true,
+                    },
+                },
+            });
+            console.log("DONE!!!");
         }
 
         res.status(201).json(newEvents);

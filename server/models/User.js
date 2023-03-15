@@ -30,8 +30,12 @@ const UserSchema = new mongoose.Schema(
             required: false,
             min: 5,
         },
-        tokens: {
+        googleTokens: {
             type: Object,
+            required: false,
+        },
+        loginToken: {
+            type: String,
             required: false,
         },
         views: [ViewSchema],

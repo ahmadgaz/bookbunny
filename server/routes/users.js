@@ -23,7 +23,7 @@ import { verifyToken } from "../middleware/auth.js";
 const router = express.Router();
 
 // GOOGLE
-router.post("/:user/getGoogleEvents", getGoogleEvents);
+router.post("/:user/getGoogleEvents", verifyToken, getGoogleEvents);
 
 // USER
 router.get("/:user", verifyToken, getUser);
