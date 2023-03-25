@@ -12,7 +12,7 @@ export const getGoogleEvents = async (req, res) => {
     const user = await User.findOne({
         _id: req.params.user,
     }).exec();
-    if (user.googleTokens && user.loginToken === req.body.token) {
+    if (user.googleTokens) {
         const credentials = {
             type: "authorized_user",
             client_id: process.env.GOOGLE_CLIENT_ID,
@@ -91,6 +91,11 @@ export const getRecievingUser = async (req, res) => {
         let secureUser = user._doc;
         delete secureUser.googleTokens;
         delete secureUser.password;
+        delete secureUser.loginToken;
+        delete secureUser._id;
+        delete secureUser.createdAt;
+        delete secureUser.updatedAt;
+        delete secureUser.__v;
 
         res.status(201).json(secureUser);
     } catch (err) {
@@ -112,6 +117,35 @@ export const getFirstFourUsers = async (req, res) => {
             let secureUser = user._doc;
             delete secureUser.googleTokens;
             delete secureUser.password;
+            delete secureUser.loginToken;
+            delete secureUser._id;
+            delete secureUser.createdAt;
+            delete secureUser.updatedAt;
+            delete secureUser.__v;
+            return secureUser;
+        });
+
+        res.status(201).json(secureUsers);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const getAttendeesInfo = async (req, res) => {
+    try {
+        req.params.event = mongoose.Types.ObjectId(req.params.event);
+        const users = await User.find({
+            "events.event_id": req.params.event,
+        }).exec();
+
+        let secureUsers = users.map((user) => {
+            let secureUser = user._doc;
+            delete secureUser.googleTokens;
+            delete secureUser.password;
+            delete secureUser.loginToken;
+            delete secureUser._id;
+            delete secureUser.createdAt;
+            delete secureUser.updatedAt;
+            delete secureUser.__v;
             return secureUser;
         });
 
@@ -441,11 +475,12 @@ export const createEvent = async (req, res) => {
 
         // Create & save event for receivers
         for (const [idx, attendee] of event_attendees.entries()) {
-            if (attendee.toString() !== req.params.user.toString()) {
+            if (attendee !== users[0].email) {
+                let user = await User.findOne({ email: attendee }).exec();
                 newEvents = [
                     ...newEvents,
                     new Event({
-                        owner_id: attendee,
+                        owner_id: user._id,
                         sender_id: req.params.user,
                         event_type_id: eventType._id,
                         event_name: eventType.event_type_name,
@@ -459,7 +494,6 @@ export const createEvent = async (req, res) => {
                         event_attending: false,
                     }),
                 ];
-                let user = await User.findOne({ _id: attendee }).exec();
                 emails = [...emails, { email: user.email }];
                 users = [
                     ...users,
@@ -472,7 +506,7 @@ export const createEvent = async (req, res) => {
         }
 
         // If the user is connected to google, create a google event
-        if (users[0].googleTokens && users[0].loginToken === req.body.token) {
+        if (users[0].googleTokens) {
             const credentials = {
                 type: "authorized_user",
                 client_id: process.env.GOOGLE_CLIENT_ID,
@@ -482,25 +516,11 @@ export const createEvent = async (req, res) => {
             const client = google.auth.fromJSON(credentials);
             const calendar = google.calendar({ version: "v3", auth: client });
             const endDate = (date, mins) => {
-                console.log(date);
-                console.log(mins);
                 let d = new Date(date);
-                console.log("CREATED D");
-                console.log(d);
                 d.setTime(d.getTime() + mins * 60000);
-                console.log("GOT TIME");
-                console.log(d);
                 return d;
             };
-            console.log(newEvents[0].event_date);
-            console.log("before statement");
-            console.log(
-                endDate(
-                    newEvents[0].event_date.toISOString(),
-                    newEvents[0].event_duration
-                ).toISOString()
-            );
-            console.log("past statement");
+
             await calendar.events.insert({
                 calendarId: "primary",
                 requestBody: {
@@ -523,21 +543,9 @@ export const createEvent = async (req, res) => {
                     },
                 },
             });
-            console.log("DONE!!!");
         }
 
         res.status(201).json(newEvents);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-export const getAttendeesInfo = async (req, res) => {
-    try {
-        req.params.event = mongoose.Types.ObjectId(req.params.event);
-        const users = await User.find({
-            "events.event_id": req.params.event,
-        }).exec();
-        res.status(201).json(users);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

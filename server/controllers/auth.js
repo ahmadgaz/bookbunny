@@ -2,6 +2,55 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import fetch from "node-fetch";
+import path from "path";
+import { promises as fsp } from "fs";
+import { authenticate } from "@google-cloud/local-auth";
+import { google } from "googleapis";
+
+// // GOOGLE OAUTH
+// const SCOPES = [
+//     "openid",
+//     "email",
+//     "profile",
+//     "https://www.googleapis.com/auth/userinfo.profile",
+//     "https://www.googleapis.com/auth/userinfo.email",
+//     "https://www.googleapis.com/auth/calendar",
+//     "https://www.googleapis.com/auth/calendar.events",
+// ].join(" ");
+// const TOKEN_PATH = path.join(process.cwd(), "token.json");
+// async function loadSavedCredentialsIfExist() {
+//     try {
+//         const content = await fs.readFile(TOKEN_PATH);
+//         const credentials = JSON.parse(content);
+//         return google.auth.fromJSON(credentials);
+//     } catch (err) {
+//         return null;
+//     }
+// }
+// async function saveCredentials(tokens) {
+//     const payload = JSON.stringify({
+//         type: "authorized_user",
+//         client_id: process.env.GOOGLE_CLIENT_ID,
+//         client_secret: process.env.GOOGLE_CLIENT_SECRET,
+//         refresh_token: tokens.refresh_token,
+//     });
+//     await fs.writeFile(TOKEN_PATH, payload);
+// }
+// async function authorize() {
+//     let client = await loadSavedCredentialsIfExist();
+//     if (client) {
+//         return client;
+//     }
+
+//     client = await authenticate({
+//         scopes: SCOPES,
+//         keyfilePath: CREDENTIALS_PATH,
+//     });
+//     if (client.credentials) {
+//         await saveCredentials(client);
+//     }
+//     return client;
+// }
 
 // REGISTER USER
 export const register = async (req, res) => {
@@ -25,6 +74,7 @@ export const register = async (req, res) => {
                 }
             );
             const tokens = await tokensResponse.json();
+            // await saveCredentials(tokens);
 
             // Get user
             const googleOAuthResponse = await fetch(
@@ -67,6 +117,31 @@ export const register = async (req, res) => {
             newUser.loginToken = jwt.sign(
                 { id: newUser._id },
                 process.env.JWT_SECRET
+            );
+
+            const credentials = {
+                type: "authorized_user",
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                refresh_token: newUser.googleTokens.refresh_token,
+            };
+            const client = google.auth.fromJSON(credentials);
+            const calendar = google.calendar({ version: "v3", auth: client });
+            calendar.events.watch(
+                {
+                    calendarId: "primary",
+                    requestBody: {
+                        type: "web_hook",
+                        address: `${process.env.SERVER_BASE_URL}/test`,
+                    },
+                },
+                (err, res) => {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    console.log("Subscription response:", res.data);
+                }
             );
 
             const savedUser = await newUser.save();
@@ -163,6 +238,32 @@ export const login = async (req, res) => {
                 { id: user._id },
                 process.env.JWT_SECRET
             );
+
+            // const credentials = {
+            //     type: "authorized_user",
+            //     client_id: process.env.GOOGLE_CLIENT_ID,
+            //     client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            //     refresh_token: user.googleTokens.refresh_token,
+            // };
+            // const client = google.auth.fromJSON(credentials);
+            // const calendar = google.calendar({ version: "v3", auth: client });
+            // calendar.events.watch(
+            //     {
+            //         calendarId: "primary",
+            //         requestBody: {
+            //             type: "web_hook",
+            //             address: `${process.env.SERVER_BASE_URL}/test`,
+            //         },
+            //     },
+            //     (err, res) => {
+            //         if (err) {
+            //             console.error(err);
+            //             return;
+            //         }
+            //         console.log("Subscription response:", res.data);
+            //     }
+            // );
+
             const savedUser = await user.save();
 
             let secureUser = savedUser._doc;

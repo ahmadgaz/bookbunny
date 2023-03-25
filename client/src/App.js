@@ -93,7 +93,6 @@ const CRUDFunctionsContextProvider = (props) => {
                 method: "POST",
                 body: JSON.stringify({
                     date: date,
-                    token: token,
                 }),
                 headers: {
                     "Content-Type": "application/json",
@@ -138,7 +137,7 @@ const CRUDFunctionsContextProvider = (props) => {
     };
     const getRecievingUser = async (eventType) => {
         const receivingUserResponse = await fetch(
-            `${userURL}/getRecievingUser/${eventType}`,
+            `${userURL}/${user._id}/getRecievingUser/${eventType}`,
             {
                 method: "GET",
                 headers: {
@@ -157,7 +156,7 @@ const CRUDFunctionsContextProvider = (props) => {
     };
     const getFirstFourUsers = async (filter) => {
         const firstFourUsersResponse = await fetch(
-            `${userURL}/getFirstFourUsers/${filter ? filter : 0}`,
+            `${userURL}/${user._id}/getFirstFourUsers/${filter ? filter : 0}`,
             {
                 method: "GET",
                 headers: {
@@ -176,7 +175,7 @@ const CRUDFunctionsContextProvider = (props) => {
     };
     const getAttendeesInfo = async (eventid) => {
         const attendeesInfoResponse = await fetch(
-            `${userURL}/getAttendeesInfo/${eventid}`,
+            `${userURL}/${user._id}/getAttendeesInfo/${eventid}`,
             {
                 method: "GET",
                 headers: {
@@ -358,7 +357,6 @@ const CRUDFunctionsContextProvider = (props) => {
                     event_duration: event.event_duration,
                     event_notes: event.event_notes,
                     event_attendees: event.event_attendees,
-                    token: token,
                 }),
                 headers: {
                     "Content-Type": "application/json",

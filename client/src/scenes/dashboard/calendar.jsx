@@ -19,80 +19,8 @@ const Calendar = () => {
         dayjs().startOf("week")
     );
     const [googleEvents, setGoogleEvents] = useState([]);
-    const [loading, setLoading] = useState("");
+    const [loading, setLoading] = useState("Loading...");
     dayjs.extend(isBetween);
-    useEffect(() => {
-        async function getEvents() {
-            const calendars = await getGoogleEvents(
-                startOfCurrentWeek.toISOString()
-            );
-            let events = [];
-            if (calendars.length) {
-                calendars.forEach((calendar) => {
-                    calendar.forEach((event) => {
-                        if (!event.start.dateTime || !event.end.dateTime) {
-                            return;
-                        }
-                        if (
-                            !dayjs(event.start.dateTime).isSame(
-                                event.end.dateTime,
-                                "day"
-                            )
-                        ) {
-                            return;
-                        }
-                        let dayOfWeek = dayjs(event.start.dateTime).format(
-                            "dddd"
-                        );
-                        let start = dayjs(event.start.dateTime).format("HH:mm");
-                        let end = dayjs(event.end.dateTime).format("HH:mm");
-                        if (end == "00:00") {
-                            end = "24:00";
-                        }
-
-                        events.push({
-                            view_google_event: { event_name: event.summary },
-                            view_color: "#808080",
-                            view_schedule: {
-                                sunday:
-                                    dayOfWeek === "Sunday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                                monday:
-                                    dayOfWeek === "Monday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                                tuesday:
-                                    dayOfWeek === "Tuesday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                                wednesday:
-                                    dayOfWeek === "Wednesday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                                thursday:
-                                    dayOfWeek === "Thursday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                                friday:
-                                    dayOfWeek === "Friday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                                saturday:
-                                    dayOfWeek === "Saturday"
-                                        ? [{ start_time: start, end_time: end }]
-                                        : [],
-                            },
-                        });
-                    });
-                });
-            }
-            setGoogleEvents(events);
-            setLoading("");
-            setRandomKey(v4());
-        }
-        getEvents();
-    }, [startOfCurrentWeek]);
     const userEvents = user.views
         ? [
               ...user.events
@@ -158,6 +86,82 @@ const Calendar = () => {
                   }),
           ]
         : [];
+    useEffect(() => {
+        async function getEvents() {
+            const calendars = await getGoogleEvents(
+                startOfCurrentWeek.toISOString()
+            );
+            let events = [];
+            if (calendars.length) {
+                calendars.forEach((calendar) => {
+                    calendar.forEach((event) => {
+                        if (user.events.some((e) => e.event_id === event.id)) {
+                            return;
+                        }
+                        if (!event.start.dateTime || !event.end.dateTime) {
+                            return;
+                        }
+                        if (
+                            !dayjs(event.start.dateTime).isSame(
+                                event.end.dateTime,
+                                "day"
+                            )
+                        ) {
+                            return;
+                        }
+                        let dayOfWeek = dayjs(event.start.dateTime).format(
+                            "dddd"
+                        );
+                        let start = dayjs(event.start.dateTime).format("HH:mm");
+                        let end = dayjs(event.end.dateTime).format("HH:mm");
+                        if (end == "00:00") {
+                            end = "24:00";
+                        }
+
+                        events.push({
+                            view_google_event: { event_name: event.summary },
+                            view_color: "#808080",
+                            view_schedule: {
+                                sunday:
+                                    dayOfWeek === "Sunday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                monday:
+                                    dayOfWeek === "Monday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                tuesday:
+                                    dayOfWeek === "Tuesday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                wednesday:
+                                    dayOfWeek === "Wednesday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                thursday:
+                                    dayOfWeek === "Thursday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                friday:
+                                    dayOfWeek === "Friday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                                saturday:
+                                    dayOfWeek === "Saturday"
+                                        ? [{ start_time: start, end_time: end }]
+                                        : [],
+                            },
+                        });
+                    });
+                });
+            }
+            setGoogleEvents(events);
+            setLoading("");
+            setRandomKey(v4());
+        }
+        getEvents();
+    }, [startOfCurrentWeek]);
+
     const [leftArrowHovered, setLeftArrowHovered] = useState(false);
     const [rightArrowHovered, setRightArrowHovered] = useState(false);
     const [randomKey, setRandomKey] = useState(v4()); // Random key used to remount the Schedule component when needed as it won't remount without changing the key

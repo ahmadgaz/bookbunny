@@ -62,7 +62,6 @@ const useStyles = makeStyles({
 });
 
 const Timeline = (props) => {
-    const { getAttendeesInfo } = useContext(CRUDFunctionsContext);
     const {
         direction,
         ticker,
@@ -400,7 +399,7 @@ const Timeline = (props) => {
                 ) {
                     // console.log("inside slot");
                     if (this.event) {
-                        this.opacity = "70%";
+                        this.opacity = "80%";
                     }
                     this.eventWidth = `${parseInt(this.eventWidth) - 10}%`;
                     this.eventHeight = `${parseInt(this.eventHeight) - 10}%`;
@@ -409,7 +408,7 @@ const Timeline = (props) => {
                 if (checks.thisStartIsBetweenTimeslot) {
                     // console.log("start overlaps slot");
                     if (this.event) {
-                        this.opacity = "70%";
+                        this.opacity = "80%";
                     }
                     this.eventWidth = `${parseInt(this.eventWidth) - 10}%`;
                     this.eventHeight = `${parseInt(this.eventHeight) - 10}%`;

@@ -765,7 +765,7 @@ const NewEvent = () => {
                                                                                     (
                                                                                         attendee
                                                                                     ) =>
-                                                                                        attendee._id
+                                                                                        attendee.email
                                                                                 ),
                                                                         },
                                                                         eventTypeID

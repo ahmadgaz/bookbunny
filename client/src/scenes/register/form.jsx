@@ -344,6 +344,9 @@ const Form = () => {
                                 <b color="#34A853">l</b>
                                 <b color="#EA4335">e</b>
                             </Container>
+                            <Typography variant="h5" margin="10px">
+                                OR
+                            </Typography>
                         </Box>
 
                         {/* QUESTION */}

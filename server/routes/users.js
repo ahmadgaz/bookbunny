@@ -27,9 +27,9 @@ router.post("/:user/getGoogleEvents", verifyToken, getGoogleEvents);
 
 // USER
 router.get("/:user", verifyToken, getUser);
-router.get("/getRecievingUser/:eventType", getRecievingUser);
-router.get("/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers);
-router.get("/getAttendeesInfo/:event", verifyToken, getAttendeesInfo);
+router.get("/:user/getRecievingUser/:eventType", verifyToken, getRecievingUser); //
+router.get("/:user/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers); //
+router.get("/:user/getAttendeesInfo/:event", verifyToken, getAttendeesInfo); //
 
 // EVENTS
 router.post("/:user/:eventType/createEvent", verifyToken, createEvent);

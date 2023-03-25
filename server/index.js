@@ -10,6 +10,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
+// import { createServer } from "http";
+// import { Server } from "socket.io";
 
 // CONFIGURATIONS: Package and Middleware configurations
 const __filename = fileURLToPath(import.meta.url);
@@ -38,16 +40,23 @@ app.use(cors()); // Cross-origin compatibility
 // const upload = multer({ storage });
 
 // ROUTES
+app.post("/test", (req, res) => {
+    try {
+        console.log(req.body);
+        res.status(200).json(req.body);
+    } catch (err) {
+        res.status(500).json({ msg: "error!" });
+    }
+});
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 
-/*
-nested docs data structure:
-UserSchema
-    ViewSchema
-        EventTypeSchema
-            EventSchema
-*/
+// // WEB SOCKET SETUP
+// const httpServer = createServer();
+// const io = new Server(3001);
+// io.on("connection", (socket) => {
+//     console.log(socket.id)
+//   });
 
 // MONGOOSE SETUP
 const PORT = process.env.PORT || 6001;
