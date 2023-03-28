@@ -20,6 +20,7 @@ const Calendar = () => {
     );
     const [googleEvents, setGoogleEvents] = useState([]);
     const [loading, setLoading] = useState("Loading...");
+    const [pendingRequests, setPendingRequests] = useState(0);
     dayjs.extend(isBetween);
     const userEvents = user.views
         ? [
@@ -88,6 +89,11 @@ const Calendar = () => {
         : [];
     useEffect(() => {
         async function getEvents() {
+            setPendingRequests((prev) => {
+                setRandomKey(v4());
+                setLoading("Loading...");
+                return prev + 1;
+            });
             const calendars = await getGoogleEvents(
                 startOfCurrentWeek.toISOString()
             );
@@ -155,9 +161,14 @@ const Calendar = () => {
                     });
                 });
             }
+            setPendingRequests((prev) => {
+                if (prev === 1) {
+                    setLoading("");
+                    setRandomKey(v4());
+                }
+                return prev - 1;
+            });
             setGoogleEvents(events);
-            setLoading("");
-            setRandomKey(v4());
         }
         getEvents();
     }, [startOfCurrentWeek]);
@@ -209,8 +220,8 @@ const Calendar = () => {
             >
                 <div
                     onClick={() => {
-                        setRandomKey(v4());
                         setLoading("Loading...");
+                        setRandomKey(v4());
                         setStartOfCurrentWeek(
                             startOfCurrentWeek.subtract(7, "days")
                         );
@@ -544,8 +555,6 @@ const Calendar = () => {
                 </Box>
                 <div
                     onClick={() => {
-                        setRandomKey(v4());
-                        setLoading("Loading...");
                         setStartOfCurrentWeek(
                             startOfCurrentWeek.add(7, "days")
                         );

@@ -116,7 +116,7 @@ const Event = (props) => {
                         color="gray"
                         alignItems="center"
                     >
-                        <LocationOn />
+                        {timeslot.event.event_location && <LocationOn />}
                         <Typography
                             lineHeight={1}
                             paddingLeft="15px"
@@ -134,7 +134,7 @@ const Event = (props) => {
                         color="gray"
                         alignItems="center"
                     >
-                        <Notes />
+                        {timeslot.event.event_notes && <Notes />}
                         <Typography
                             paddingLeft="15px"
                             lineHeight={1}

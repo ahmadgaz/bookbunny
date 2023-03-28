@@ -36,7 +36,7 @@ export const EventSchema = new mongoose.Schema(
         event_notes: { type: String, max: 1000 },
         event_attendees: [
             {
-                type: mongoose.Schema.Types.ObjectId,
+                type: String,
                 required: true,
                 ref: "User",
             },

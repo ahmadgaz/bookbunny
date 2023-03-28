@@ -119,30 +119,31 @@ export const register = async (req, res) => {
                 process.env.JWT_SECRET
             );
 
-            const credentials = {
-                type: "authorized_user",
-                client_id: process.env.GOOGLE_CLIENT_ID,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                refresh_token: newUser.googleTokens.refresh_token,
-            };
-            const client = google.auth.fromJSON(credentials);
-            const calendar = google.calendar({ version: "v3", auth: client });
-            calendar.events.watch(
-                {
-                    calendarId: "primary",
-                    requestBody: {
-                        type: "web_hook",
-                        address: `${process.env.SERVER_BASE_URL}/test`,
-                    },
-                },
-                (err, res) => {
-                    if (err) {
-                        console.error(err);
-                        return;
-                    }
-                    console.log("Subscription response:", res.data);
-                }
-            );
+            // EVENTS NOTIFICATIONS WEB HOOK
+            // const credentials = {
+            //     type: "authorized_user",
+            //     client_id: process.env.GOOGLE_CLIENT_ID,
+            //     client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            //     refresh_token: newUser.googleTokens.refresh_token,
+            // };
+            // const client = google.auth.fromJSON(credentials);
+            // const calendar = google.calendar({ version: "v3", auth: client });
+            // calendar.events.watch(
+            //     {
+            //         calendarId: "primary",
+            //         requestBody: {
+            //             type: "web_hook",
+            //             address: `${process.env.SERVER_BASE_URL}/test`,
+            //         },
+            //     },
+            //     (err, res) => {
+            //         if (err) {
+            //             console.error(err);
+            //             return;
+            //         }
+            //         console.log("Subscription response:", res.data);
+            //     }
+            // );
 
             const savedUser = await newUser.save();
 
@@ -239,6 +240,7 @@ export const login = async (req, res) => {
                 process.env.JWT_SECRET
             );
 
+            // EVENTS NOTIFICATIONS WEB HOOK
             // const credentials = {
             //     type: "authorized_user",
             //     client_id: process.env.GOOGLE_CLIENT_ID,
@@ -280,6 +282,10 @@ export const login = async (req, res) => {
             });
             if (!user)
                 return res.status(400).json({ msg: "User does not exist!" });
+            if (!user.password)
+                return res
+                    .status(400)
+                    .json({ msg: "Please login with google." });
 
             const isMatch = bcrypt.compare(password, user.password);
             if (!isMatch)

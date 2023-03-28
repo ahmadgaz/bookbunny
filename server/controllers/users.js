@@ -19,14 +19,13 @@ export const getGoogleEvents = async (req, res) => {
             client_secret: process.env.GOOGLE_CLIENT_SECRET,
             refresh_token: user.googleTokens.refresh_token,
         };
-        // 2023-03-12T18:10:23.906Z
         const client = google.auth.fromJSON(credentials);
+        const calendar = google.calendar({ version: "v3", auth: client });
         const maxDate = (date, days) => {
             let d = new Date(date);
             d.setDate(d.getDate() + days);
             return d;
         };
-        const calendar = google.calendar({ version: "v3", auth: client });
         const calendarList = await calendar.calendarList.list({
             showHidden: true,
         });
@@ -468,7 +467,7 @@ export const createEvent = async (req, res) => {
         ];
         newEvents[0].event_id = newEvents[0]._id;
         let users = [await User.findOne({ _id: req.params.user }).exec()];
-        let emails = [{ email: users[0].email }];
+        let emails = [{ email: users[0].email, responseStatus: "accepted" }];
         users[0].events.push(newEvents[0]);
         await newEvents[0].save();
         await users[0].save();
@@ -529,6 +528,7 @@ export const createEvent = async (req, res) => {
                     description: newEvents[0].event_notes,
                     location: newEvents[0].event_location,
                     attendees: emails,
+                    status: "confirmed",
                     start: {
                         dateTime: newEvents[0].event_date.toISOString(),
                     },
@@ -580,6 +580,40 @@ export const acceptEvent = async (req, res) => {
         user.events[eventIndex].event_status = "confirmed";
         event.event_attending = true;
         event.event_status = "confirmed";
+
+        // If the user is connected to google, accept the google event if it's there
+        if (user.googleTokens) {
+            const credentials = {
+                type: "authorized_user",
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                refresh_token: user.googleTokens.refresh_token,
+            };
+            const client = google.auth.fromJSON(credentials);
+            const calendar = google.calendar({ version: "v3", auth: client });
+            const googleEvent = await calendar.events.get({
+                calendarId: "primary",
+                eventId: event.event_id.toString(),
+            });
+
+            if (googleEvent) {
+                await calendar.events.update({
+                    calendarId: "primary",
+                    eventId: event.event_id.toString(),
+                    requestBody: {
+                        ...googleEvent.data,
+                        attendees: [
+                            ...googleEvent.data.attendees,
+                            {
+                                email: user.email,
+                                responseStatus: "accepted",
+                            },
+                        ],
+                    },
+                });
+            }
+        }
+
         await user.save();
         await event.save();
 
@@ -587,8 +621,11 @@ export const acceptEvent = async (req, res) => {
         let allHaveAccepted = true;
         for (const attendee of event.event_attendees) {
             // Skip if the attendee id is the sender id
+            let u = await User.findOne({
+                email: attendee,
+            });
             let e = await Event.findOne({
-                owner_id: attendee,
+                owner_id: u._id,
                 event_id: event.event_id,
             }).exec();
 
@@ -639,19 +676,16 @@ export const deleteEvent = async (req, res) => {
             user._id.toString() === event.sender_id.toString();
 
         // 1
-        console.log("522");
         if (senderCanceled) {
             for (const attendee of event.event_attendees) {
-                console.log(attendee);
-                // Skip if the attendee id is the sender id
-                if (attendee.toString() === event.sender_id.toString()) {
+                // Skip if the attendee email is the sender email
+                if (attendee === user.email) {
                     continue;
                 }
 
-                let u = await User.findOne({ _id: attendee }).exec();
-                console.log("531");
+                let u = await User.findOne({ email: attendee }).exec();
                 let e = await Event.findOne({
-                    owner_id: attendee,
+                    owner_id: u._id,
                     event_id: event.event_id,
                 }).exec();
 
@@ -661,22 +695,15 @@ export const deleteEvent = async (req, res) => {
                 );
                 if (!u.events[eventIndex].event_attending) {
                     u.events.splice(eventIndex, 1);
-                    console.log("542");
                     await Event.deleteOne({
-                        owner_id: attendee,
+                        owner_id: u._id,
                         event_id: event.event_id,
                     });
                     await u.save();
                     continue;
                 }
 
-                // If user is attending, then remove sender from event_attendees, set their event_attending to false, and set their event_status to canceled
-                let cancelersIndex = u.events[
-                    eventIndex
-                ].event_attendees.findIndex(
-                    (attendee) =>
-                        attendee.toString() === event.sender_id.toString()
-                );
+                // If user is attending, then remove attendees, set their event_attending to false, and set their event_status to canceled
                 if (u.events[eventIndex].event_attending) {
                     u.events[eventIndex].event_attendees = [];
                     u.events[eventIndex].event_status = "canceled";
@@ -690,28 +717,51 @@ export const deleteEvent = async (req, res) => {
                 }
             }
 
+            if (user.googleTokens) {
+                const credentials = {
+                    type: "authorized_user",
+                    client_id: process.env.GOOGLE_CLIENT_ID,
+                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    refresh_token: user.googleTokens.refresh_token,
+                };
+                const client = google.auth.fromJSON(credentials);
+                const calendar = google.calendar({
+                    version: "v3",
+                    auth: client,
+                });
+                const googleEvent = await calendar.events.get({
+                    calendarId: "primary",
+                    eventId: event.event_id.toString(),
+                });
+
+                if (googleEvent) {
+                    await calendar.events.delete({
+                        calendarId: "primary",
+                        eventId: event.event_id.toString(),
+                        sendUpdates: "all",
+                    });
+                }
+            }
+
             let senderEventIndex = user.events.findIndex(
                 (e) => e.event_id.toString() === event.event_id.toString()
             );
-            console.log("577");
             user.events.splice(senderEventIndex, 1);
             await Event.deleteOne({
                 owner_id: user._id,
                 event_id: event.event_id,
             }).exec();
-            console.log("583");
             await user.save();
         }
 
         // 2, 3, 4
-        console.log("585");
         if (!senderCanceled) {
             // Remove user from other peoples attendees list
             for (const attendee of event.event_attendees) {
-                if (attendee.toString() !== user._id.toString()) {
-                    let u = await User.findOne({ _id: attendee }).exec();
+                if (attendee !== user.email) {
+                    let u = await User.findOne({ email: attendee }).exec();
                     let e = await Event.findOne({
-                        owner_id: attendee,
+                        owner_id: u._id,
                         event_id: event.event_id,
                     }).exec();
                     let eventIndex = u.events.findIndex(
@@ -721,8 +771,7 @@ export const deleteEvent = async (req, res) => {
                     let cancelersIndex = u.events[
                         eventIndex
                     ].event_attendees.findIndex(
-                        (attendee) =>
-                            attendee.toString() === user._id.toString()
+                        (attendee) => attendee === user.email
                     );
                     u.events[eventIndex].event_attendees.splice(
                         cancelersIndex,
@@ -757,17 +806,40 @@ export const deleteEvent = async (req, res) => {
                 await e.save();
             }
 
+            if (user.googleTokens) {
+                const credentials = {
+                    type: "authorized_user",
+                    client_id: process.env.GOOGLE_CLIENT_ID,
+                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    refresh_token: user.googleTokens.refresh_token,
+                };
+                const client = google.auth.fromJSON(credentials);
+                const calendar = google.calendar({
+                    version: "v3",
+                    auth: client,
+                });
+                const googleEvent = await calendar.events.get({
+                    calendarId: "primary",
+                    eventId: event.event_id.toString(),
+                });
+
+                if (googleEvent) {
+                    await calendar.events.delete({
+                        calendarId: "primary",
+                        eventId: event.event_id.toString(),
+                    });
+                }
+            }
+
             // Delete user event
             let receiverEventIndex = user.events.findIndex(
                 (e) => e.event_id.toString() === event.event_id.toString()
             );
             user.events.splice(receiverEventIndex, 1);
-            console.log("642");
             await Event.deleteOne({
                 owner_id: user._id,
                 event_id: event.event_id,
             }).exec();
-            console.log("647");
             await user.save();
         }
 
@@ -779,7 +851,6 @@ export const deleteEvent = async (req, res) => {
             }, event deleted`
         );
     } catch (err) {
-        console.log(err.message + "\n" + err.stack.split("\n").join("\n"));
         res.status(500).json({ error: err });
     }
 };

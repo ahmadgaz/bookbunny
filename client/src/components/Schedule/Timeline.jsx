@@ -734,6 +734,7 @@ const Timeline = (props) => {
                                 fullWidth
                                 button={false}
                                 style={{
+                                    minWidth: "335px",
                                     padding: "0",
                                     backgroundColor: "#fff",
                                 }}
