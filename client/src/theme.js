@@ -136,6 +136,7 @@ export const themeSettings = (mode) => {
 
     return {
         palette: {
+            mode: mode,
             text: {
                 primary: colors.neutralDark[500],
                 secondary: colors.neutralDark[300],
@@ -145,8 +146,8 @@ export const themeSettings = (mode) => {
                 active: colors.primary[500],
                 hover: colors.neutralDark[500],
                 selected: colors.neutralDark[300],
-                disabled: colors.neutralDark[700],
-                disabledBackground: colors.neutralDark[700],
+                disabled: colors.neutralDark[200],
+                disabledBackground: colors.neutralDark[100],
                 focus: colors.neutralDark[100],
             },
             primary: {

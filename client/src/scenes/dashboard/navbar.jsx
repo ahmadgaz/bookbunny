@@ -398,7 +398,7 @@ const AddViewDialog = (props) => {
     );
 };
 
-const ViewsDropdown = () => {
+const ViewsDropdown = (props) => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
     const themeColors = [
@@ -454,6 +454,7 @@ const ViewsDropdown = () => {
         },
     });
 
+    const { mobile = false } = props;
     const { user, getSelectedView, updateView } =
         useContext(CRUDFunctionsContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -486,6 +487,10 @@ const ViewsDropdown = () => {
                         style={{ margin: 0, padding: 0, listStyleType: "none" }}
                     >
                         {user.views.map((v, idx) => {
+                            let luma =
+                                0.2126 * hexToRgb(v.view_color).r +
+                                0.7152 * hexToRgb(v.view_color).g +
+                                0.0722 * hexToRgb(v.view_color).b;
                             if (v._id !== view._id) {
                                 return (
                                     <li key={idx}>
@@ -503,15 +508,16 @@ const ViewsDropdown = () => {
                                                 borderRadius: "0",
                                                 backgroundColor: v.view_color,
                                                 color:
-                                                    v.view_color.toLowerCase() ===
-                                                        themeColors[0].toLowerCase() ||
-                                                    v.view_color.toLowerCase() ===
-                                                        themeColors[1].toLowerCase() ||
-                                                    v.view_color.toLowerCase() ===
-                                                        themeColors[4].toLowerCase()
-                                                        ? colors
-                                                              .neutralLight[100]
-                                                        : "",
+                                                    luma < 200
+                                                        ? mode === "light"
+                                                            ? colors
+                                                                  .neutralLight[100]
+                                                            : colors
+                                                                  .neutralDark[500]
+                                                        : mode === "light"
+                                                        ? ""
+                                                        : colors
+                                                              .neutralLight[100],
                                                 "&:hover": {
                                                     // backgroundColor: `${v.view_color}F7`,
                                                 },
@@ -552,6 +558,13 @@ const ViewsDropdown = () => {
         updateView(view);
         updateView(selectedView);
     };
+    let luma = 0;
+    if (view._id) {
+        luma =
+            0.2126 * hexToRgb(view.view_color).r +
+            0.7152 * hexToRgb(view.view_color).g +
+            0.0722 * hexToRgb(view.view_color).b;
+    }
     return (
         <>
             {view._id ? (
@@ -566,18 +579,17 @@ const ViewsDropdown = () => {
                         cursor: "pointer",
                         padding: "10px 30px",
                         flexGrow: 1,
-                        borderTopRightRadius: 0,
-                        borderBottomRightRadius: 0,
+                        borderTopRightRadius: mobile ? "" : 0,
+                        borderBottomRightRadius: mobile ? "" : 0,
                         backgroundColor: view.view_color,
                         color:
-                            view.view_color.toLowerCase() ===
-                                themeColors[0].toLowerCase() ||
-                            view.view_color.toLowerCase() ===
-                                themeColors[1].toLowerCase() ||
-                            view.view_color.toLowerCase() ===
-                                themeColors[4].toLowerCase()
-                                ? colors.neutralLight[100]
-                                : "",
+                            luma < 200
+                                ? mode === "light"
+                                    ? colors.neutralLight[100]
+                                    : colors.neutralDark[500]
+                                : mode === "light"
+                                ? ""
+                                : colors.neutralLight[100],
                     }}
                 >
                     {view.view_name}
@@ -591,225 +603,8 @@ const ViewsDropdown = () => {
                     style={{
                         backgroundColor: "",
                         flexGrow: 1,
-                    }}
-                >
-                    Add View +
-                </Button>
-            )}
-            <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                }}
-                onClose={() => {
-                    handlePopoverClose();
-                }}
-                PaperProps={{
-                    style: {
-                        boxShadow: "0px 0px 0px rgba(0,0,0,0)",
-                        overflow: "visible",
-                        backgroundColor: "rgba(0,0,0,0)",
-                        marginTop: "10px",
-                    },
-                }}
-            >
-                {viewList()}
-            </Popover>
-            {showDialog && <AddViewDialog setShowDialog={setShowDialog} />}
-        </>
-    );
-};
-const MobileViewsDropdown = () => {
-    const mode = useSelector((state) => state.mode);
-    const colors = tokens(mode);
-    const themeColors = [
-        colors.neutralDark[500],
-        colors.redAccent[500],
-        colors.primary[500],
-        colors.neutralLight[500],
-        colors.secondary[500],
-    ];
-
-    const StyledButton1 = styled(Button)({
-        border: "none",
-        boxShadow: "none",
-        top: "0",
-        left: "0",
-        borderBottom: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
-        transition: "filter 0.1s ease",
-        "&:hover": {
-            top: "0",
-            left: "0",
-            filter: "brightness(110%)",
-            boxShadow: `none`,
-        },
-        "&:active": {
-            top: "0",
-            left: "0",
-            boxShadow: `none`,
-        },
-    });
-    const StyledButton2 = styled(Button)({
-        border: "none",
-        boxShadow: "none",
-        top: "0",
-        left: "0",
-        transition: "filter 0.1s ease",
-        "&:hover": {
-            top: "0",
-            left: "0",
-            filter: "brightness(110%)",
-            boxShadow: `none`,
-        },
-        "&:active": {
-            top: "0",
-            left: "0",
-            boxShadow: `none`,
-        },
-    });
-    const StyledButton3 = styled(Button)({
-        transition:
-            "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-        "&:hover": {
-            filter: "brightness(110%)",
-        },
-    });
-
-    const { user, getSelectedView, updateView } =
-        useContext(CRUDFunctionsContext);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [showDialog, setShowDialog] = useState(false);
-    const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
-    let view = { ...getSelectedView() };
-
-    const handleDialogOpen = () => {
-        setShowDialog(true);
-    };
-    const handlePopoverOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handlePopoverClose = () => {
-        setAnchorEl(null);
-    };
-    const viewList = () => {
-        if (user.views) {
-            return (
-                <Box
-                    sx={{
-                        border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
-                        boxShadow: `${colors.boxShadowSize}px ${colors.boxShadowSize}px 0px ${colors.neutralDark[500]}`,
-                        borderRadius: `${colors.borderRadius}px`,
-                        overflow: "auto",
-                    }}
-                >
-                    <ul
-                        style={{ margin: 0, padding: 0, listStyleType: "none" }}
-                    >
-                        {user.views.map((v, idx) => {
-                            if (v._id !== view._id) {
-                                return (
-                                    <li key={idx}>
-                                        <StyledButton1
-                                            fullWidth
-                                            variant="contained"
-                                            onClick={() => {
-                                                setSelectedView(v);
-                                                handlePopoverClose();
-                                            }}
-                                            style={{
-                                                cursor: "pointer",
-                                                padding: "10px 30px",
-                                                width: "100%",
-                                                borderRadius: "0",
-                                                backgroundColor: v.view_color,
-                                                color:
-                                                    v.view_color.toLowerCase() ===
-                                                        themeColors[0].toLowerCase() ||
-                                                    v.view_color.toLowerCase() ===
-                                                        themeColors[1].toLowerCase() ||
-                                                    v.view_color.toLowerCase() ===
-                                                        themeColors[4].toLowerCase()
-                                                        ? colors
-                                                              .neutralLight[100]
-                                                        : "",
-                                                "&:hover": {
-                                                    // backgroundColor: `${v.view_color}F7`,
-                                                },
-                                            }}
-                                        >
-                                            {v.view_name}
-                                        </StyledButton1>
-                                    </li>
-                                );
-                            }
-                            return null;
-                        })}
-                        <StyledButton2
-                            fullWidth
-                            variant="contained"
-                            onClick={() => {
-                                handleDialogOpen();
-                                handlePopoverClose();
-                            }}
-                            style={{
-                                borderRadius: "0",
-                                backgroundColor: "",
-                            }}
-                        >
-                            Add view +
-                        </StyledButton2>
-                    </ul>
-                </Box>
-            );
-        }
-        return null;
-    };
-
-    const setSelectedView = (v) => {
-        let selectedView = { ...v };
-        view.view_selected = false;
-        selectedView.view_selected = true;
-        updateView(view);
-        updateView(selectedView);
-    };
-    return (
-        <>
-            {view._id ? (
-                <StyledButton3
-                    variant="contained"
-                    onClick={(e) => {
-                        handlePopoverOpen(e);
-                    }}
-                    endIcon={<ArrowDropDownIcon sx={{ m: "0 0 0 5px" }} />}
-                    style={{
-                        cursor: "pointer",
-                        padding: "10px 30px",
-                        flexGrow: 1,
-                        backgroundColor: view.view_color,
-                        color:
-                            view.view_color.toLowerCase() ===
-                                themeColors[0].toLowerCase() ||
-                            view.view_color.toLowerCase() ===
-                                themeColors[1].toLowerCase() ||
-                            view.view_color.toLowerCase() ===
-                                themeColors[4].toLowerCase()
-                                ? colors.neutralLight[100]
-                                : "",
-                    }}
-                >
-                    {view.view_name}
-                </StyledButton3>
-            ) : (
-                <Button
-                    variant="contained"
-                    onClick={() => {
-                        handleDialogOpen();
-                    }}
-                    style={{
-                        backgroundColor: "",
-                        flexGrow: 1,
+                        borderTopRightRadius: mobile ? "" : 0,
+                        borderBottomRightRadius: mobile ? "" : 0,
                     }}
                 >
                     Add View +
@@ -1077,7 +872,7 @@ const Navbar = (props) => {
                     </IconButton>
 
                     <Box>
-                        <MobileViewsDropdown />
+                        <ViewsDropdown mobile={true} />
                     </Box>
 
                     <IconButton
