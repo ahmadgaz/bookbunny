@@ -1,9 +1,13 @@
 import dayjs from "dayjs";
 import { useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { tokens } from "theme";
 import { v4 } from "uuid";
 import Timeline from "./Timeline";
-
 const Schedule = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     /* FORMAT
     view => [{view_color: "", view_schedule: [{
        sunday: [{start_time: "00:00", end_time: "00:00"}]
@@ -31,9 +35,13 @@ const Schedule = (props) => {
                 style={{
                     position: "relative",
                     borderLeft:
-                        direction === "horizontal" ? "0.5px solid #bbb" : "",
+                        direction === "horizontal"
+                            ? `0.5px solid ${colors.neutralDark[300]}`
+                            : "",
                     borderTop:
-                        direction === "vertical" ? "0.5px solid #bbb" : "",
+                        direction === "vertical"
+                            ? `0.5px solid ${colors.neutralDark[300]}`
+                            : "",
                     width:
                         direction === "horizontal"
                             ? `calc((${pxSize}px / 24))`
@@ -56,7 +64,7 @@ const Schedule = (props) => {
                         margin: 0,
                         padding: "5px",
                         fontSize: "0.4em",
-                        color: "#bbb",
+                        color: colors.neutralDark[300],
                     }}
                 >
                     {i === 0 ? "12" : i > 12 ? `${i - 12}` : `${i}`}

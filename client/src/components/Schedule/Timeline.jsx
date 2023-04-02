@@ -15,11 +15,11 @@ import Container from "components/Container";
 import dayjs from "dayjs";
 import { useContext } from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useSelector } from "react-redux";
 import { tokens } from "theme";
 import { v4 } from "uuid";
 import { getTime, getPosAndSize } from "./convertData";
 import Event from "./Event";
-const colors = tokens("light");
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -44,25 +44,11 @@ function move(input, from, to) {
 
     input.splice(to, numberOfDeletedElm, elm);
 }
-const useStyles = makeStyles({
-    timeslotHoverAnimation: {
-        position: "absolute",
-        width: "100%",
-        height: "100%",
-        borderRadius: `${colors.borderRadius / 2}px`,
-        backgroundColor: "rgb(255,255,255,0)",
-        opacity: "25%",
-        boxShadow: "0",
-        mixBlendMode: "luminosity",
-        transition: "background-color 0.3s ease, box-shadow 0.3s ease",
-        "&:hover": {
-            backgroundColor: "rgb(255,255,255, 0.5)",
-            boxShadow: "1px 1px 5px black",
-        },
-    },
-});
 
 const Timeline = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const {
         direction,
         ticker,
@@ -75,6 +61,23 @@ const Timeline = (props) => {
         deleteEvent,
         acceptEvent,
     } = props;
+    const useStyles = makeStyles({
+        timeslotHoverAnimation: {
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            borderRadius: `${colors.borderRadius / 2}px`,
+            backgroundColor: "rgb(255,255,255,0)",
+            opacity: "25%",
+            boxShadow: "0",
+            mixBlendMode: "luminosity",
+            transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+            "&:hover": {
+                backgroundColor: "rgb(255,255,255, 0.5)",
+                boxShadow: `1px 1px 5px ${colors.neutralDark[900]}`,
+            },
+        },
+    });
     const classes = useStyles();
 
     class TimeslotData {
@@ -559,7 +562,7 @@ const Timeline = (props) => {
                         MozUserSelect: "none",
                         MsUserSelect: "none",
                         userSelect: "none",
-                        backgroundColor: "red",
+                        backgroundColor: colors.redAccent[500],
                         height: "1px",
                         width: "100%",
                     }}
@@ -569,7 +572,7 @@ const Timeline = (props) => {
                             width: "3px",
                             height: "3px",
                             borderRadius: "50%",
-                            backgroundColor: "red",
+                            backgroundColor: colors.redAccent[500],
                             marginRight: "-3px",
                         }}
                     ></div>
@@ -744,7 +747,7 @@ const Timeline = (props) => {
                                 style={{
                                     minWidth: "335px",
                                     padding: "0",
-                                    backgroundColor: "#fff",
+                                    backgroundColor: colors.neutralLight[100],
                                 }}
                             >
                                 <Event timeslot={timeslot} />
@@ -816,7 +819,7 @@ const Timeline = (props) => {
                     padding: "0 15px",
                     margin: "10px",
                     fontSize: "0.4em",
-                    color: "#bbb",
+                    color: colors.neutralDark[300],
                     WebkitTapHighlightColor: "transparent",
                     WebkitTouchCallout: "none",
                     WebkitUserSelect: "none",
@@ -839,9 +842,13 @@ const Timeline = (props) => {
                     flexDirection: direction === "vertical" ? "row" : "column",
                     flexWrap: "nowrap",
                     borderLeft:
-                        direction === "vertical" ? "0.5px solid #bbb" : "",
+                        direction === "vertical"
+                            ? `0.5px solid ${colors.neutralDark[300]}`
+                            : "",
                     borderTop:
-                        direction === "horizontal" ? "0.5px solid #bbb" : "",
+                        direction === "horizontal"
+                            ? `0.5px solid ${colors.neutralDark[300]}`
+                            : "",
                     width: direction === "horizontal" ? "100%" : "85%",
                     height: direction === "vertical" ? "100%" : "80%",
                     minHeight: 0,

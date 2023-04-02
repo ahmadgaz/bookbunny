@@ -3,7 +3,7 @@ import { isValidElement, useEffect } from "react";
 import jsxToString from "jsx-to-string";
 import { useState } from "react";
 import { tokens } from "theme";
-const colors = tokens("light");
+import { useSelector } from "react-redux";
 
 const Text = (props) => {
     const { translation, height, italicized, children } = props;
@@ -90,6 +90,9 @@ const Text = (props) => {
 };
 
 const Container = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const {
         italicized = false,
         size = "s",

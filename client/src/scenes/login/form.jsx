@@ -29,12 +29,14 @@ const initialValuesLogin = {
 };
 
 const Form = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
-    const colors = tokens("light");
 
     const googleLogin = useGoogleLogin({
         onSuccess: async (codeResponse) => {
@@ -203,7 +205,7 @@ const Form = () => {
                                 variant="contained"
                                 onClick={() => googleLogin()}
                                 style={{
-                                    backgroundColor: "#fff",
+                                    backgroundColor: colors.neutralLight[100],
                                     // fontFamily: "Product Sans",
                                 }}
                             >

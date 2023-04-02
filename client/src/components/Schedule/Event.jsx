@@ -7,11 +7,13 @@ import { useContext } from "react";
 import { CRUDFunctionsContext } from "App";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "state";
-const colors = tokens("light");
 
 const Event = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { timeslot } = props;
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { deleteEvent, acceptEvent, getAttendeesInfo } =
@@ -115,7 +117,7 @@ const Event = (props) => {
                         m="10px"
                         display="flex"
                         flexWrap="nowrap"
-                        color="gray"
+                        color={colors.neutralDark[300]}
                         alignItems="center"
                     >
                         {timeslot.event.event_location && <LocationOn />}
@@ -123,7 +125,7 @@ const Event = (props) => {
                             lineHeight={1}
                             paddingLeft="15px"
                             variant="body1"
-                            color="gray"
+                            color={colors.neutralDark[300]}
                             fontSize={14}
                         >
                             {timeslot.event.event_location}
@@ -133,7 +135,7 @@ const Event = (props) => {
                         m="10px"
                         display="flex"
                         flexWrap="nowrap"
-                        color="gray"
+                        color={colors.neutralDark[300]}
                         alignItems="center"
                     >
                         {timeslot.event.event_notes && <Notes />}
@@ -141,7 +143,7 @@ const Event = (props) => {
                             paddingLeft="15px"
                             lineHeight={1}
                             variant="body1"
-                            color="gray"
+                            color={colors.neutralDark[300]}
                             fontSize={14}
                         >
                             {timeslot.event.event_notes}

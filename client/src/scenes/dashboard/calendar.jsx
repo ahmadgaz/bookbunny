@@ -9,9 +9,11 @@ import { useState } from "react";
 import { tokens } from "theme";
 import { v4 } from "uuid";
 import { useEffect } from "react";
-const colors = tokens("light");
-
+import { useSelector } from "react-redux";
 const Calendar = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { user, getSelectedView, deleteEvent, acceptEvent, getGoogleEvents } =
         useContext(CRUDFunctionsContext);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -127,7 +129,7 @@ const Calendar = () => {
 
                         events.push({
                             view_google_event: { event_name: event.summary },
-                            view_color: "#808080",
+                            view_color: colors.neutralDark[300],
                             view_schedule: {
                                 sunday:
                                     dayOfWeek === "Sunday"
@@ -215,7 +217,7 @@ const Calendar = () => {
             </Box>
             <Box
                 display="grid"
-                gridTemplateColumns="7.5vmin min(710px, 70vw) 7.5vmin"
+                gridTemplateColumns="50px min(710px, 70vw) 50px"
                 flexGrow={1}
             >
                 <div
@@ -229,21 +231,21 @@ const Calendar = () => {
                     onMouseOver={() => setLeftArrowHovered(true)}
                     onMouseLeave={() => setLeftArrowHovered(false)}
                     style={{
-                        width: "7.5vmin",
-                        marginTop: "3vmin",
+                        marginTop: "20px",
+                        width: "30px",
                         cursor: "pointer",
-                        height: "7.5vmin",
+                        height: "43.2px",
                     }}
                 >
                     <Box
                         backgroundColor={colors.neutralDark[500]}
                         sx={{
                             position: "relative",
-                            width: "0.75vmin",
-                            height: "3vmin",
+                            width: "5px",
+                            height: "55%",
                             rotate: "45deg",
                             border: leftArrowHovered
-                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                ? ` 4px solid ${colors.neutralDark[500]}`
                                 : ` 0px solid ${colors.neutralDark[500]}`,
                             transition: "border 0.1s ease",
                         }}
@@ -252,12 +254,12 @@ const Calendar = () => {
                         backgroundColor={colors.neutralDark[500]}
                         sx={{
                             position: "relative",
-                            top: leftArrowHovered ? "-1.60vmin" : "-1.40vmin",
-                            width: "0.75vmin",
-                            height: "3vmin",
+                            top: leftArrowHovered ? "-12px" : "-10px",
+                            width: "5px",
+                            height: "55%",
                             rotate: "-45deg",
                             border: leftArrowHovered
-                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                ? ` 4px solid ${colors.neutralDark[500]}`
                                 : ` 0px solid ${colors.neutralDark[500]}`,
                             transition: "border 0.1s ease, top 0.1s ease",
                         }}
@@ -271,7 +273,7 @@ const Calendar = () => {
                         style={{
                             padding: "0 20px",
                             maxWidth: "90vw",
-                            backgroundColor: "#fff",
+                            backgroundColor: colors.neutralLight[100],
                         }}
                     >
                         {loading ? (
@@ -292,11 +294,13 @@ const Calendar = () => {
                                             variant="h5"
                                             lineHeight={1.7}
                                             textAlign="center"
-                                            color="gray"
+                                            color={colors.neutralDark[300]}
                                         ></Typography>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -304,7 +308,9 @@ const Calendar = () => {
                                         ></Box>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -312,7 +318,9 @@ const Calendar = () => {
                                         ></Box>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -320,7 +328,9 @@ const Calendar = () => {
                                         ></Box>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -328,7 +338,9 @@ const Calendar = () => {
                                         ></Box>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -336,7 +348,9 @@ const Calendar = () => {
                                         ></Box>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -344,7 +358,9 @@ const Calendar = () => {
                                         ></Box>
                                         <Box
                                             height="30.75px"
-                                            backgroundColor="#eeeeee"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
                                             sx={{
                                                 clipPath:
                                                     "circle(14px at 50% 45%)",
@@ -385,19 +401,19 @@ const Calendar = () => {
                                         variant="h5"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                     ></Typography>
                                     <Typography
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek.isSame(
                                                 dayjs(),
                                                 "day"
                                             )
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -410,12 +426,12 @@ const Calendar = () => {
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek
                                                 .add(1, "days")
                                                 .isSame(dayjs(), "day")
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -430,12 +446,12 @@ const Calendar = () => {
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek
                                                 .add(2, "days")
                                                 .isSame(dayjs(), "day")
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -450,12 +466,12 @@ const Calendar = () => {
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek
                                                 .add(3, "days")
                                                 .isSame(dayjs(), "day")
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -470,12 +486,12 @@ const Calendar = () => {
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek
                                                 .add(4, "days")
                                                 .isSame(dayjs(), "day")
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -490,12 +506,12 @@ const Calendar = () => {
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek
                                                 .add(5, "days")
                                                 .isSame(dayjs(), "day")
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -510,12 +526,12 @@ const Calendar = () => {
                                         variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
-                                        color="gray"
+                                        color={colors.neutralDark[300]}
                                         backgroundColor={
                                             startOfCurrentWeek
                                                 .add(6, "days")
                                                 .isSame(dayjs(), "day")
-                                                ? "#eeeeee"
+                                                ? colors.neutralDark[100]
                                                 : ""
                                         }
                                         sx={{
@@ -562,22 +578,22 @@ const Calendar = () => {
                     onMouseOver={() => setRightArrowHovered(true)}
                     onMouseLeave={() => setRightArrowHovered(false)}
                     style={{
-                        width: "7.5vmin",
-                        marginTop: "3vmin",
+                        width: "30px",
                         cursor: "pointer",
-                        height: "7.5vmin",
-                        paddingLeft: "7.25vmin",
+                        height: "43.2px",
+                        marginTop: "20px",
+                        paddingLeft: "45px",
                     }}
                 >
                     <Box
                         backgroundColor={colors.neutralDark[500]}
                         sx={{
                             position: "relative",
-                            width: "0.75vmin",
-                            height: "3vmin",
+                            width: "5px",
+                            height: "55%",
                             rotate: "-45deg",
                             border: rightArrowHovered
-                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                ? ` 4px solid ${colors.neutralDark[500]}`
                                 : ` 0px solid ${colors.neutralDark[500]}`,
                             transition: "border 0.1s ease",
                         }}
@@ -586,12 +602,12 @@ const Calendar = () => {
                         backgroundColor={colors.neutralDark[500]}
                         sx={{
                             position: "relative",
-                            top: rightArrowHovered ? "-1.60vmin" : "-1.40vmin",
-                            width: "0.75vmin",
-                            height: "3vmin",
+                            top: rightArrowHovered ? "-12px" : "-10px",
+                            width: "5px",
+                            height: "55%",
                             rotate: "45deg",
                             border: rightArrowHovered
-                                ? ` 0.61vmin solid ${colors.neutralDark[500]}`
+                                ? ` 4px solid ${colors.neutralDark[500]}`
                                 : ` 0px solid ${colors.neutralDark[500]}`,
                             transition: "border 0.1s ease, top 0.1s ease",
                         }}

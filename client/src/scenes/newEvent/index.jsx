@@ -20,8 +20,12 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
 import Container from "components/Container";
+import { tokens } from "theme";
 
 const NewEvent = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isAuth = Boolean(useSelector((state) => state.token));
@@ -233,7 +237,11 @@ const NewEvent = () => {
     const [timeChoice, setTimeChoice] = useState(null);
     const times = () => {
         return listOfAvailableTimesOnChosenDay <= 0 ? (
-            <Typography variant="body1" fontSize={24} color="gray">
+            <Typography
+                variant="body1"
+                fontSize={24}
+                color={colors.neutralDark[300]}
+            >
                 No available times
             </Typography>
         ) : (
@@ -356,7 +364,9 @@ const NewEvent = () => {
                                                 button={false}
                                                 style={{
                                                     padding: "30px",
-                                                    backgroundColor: "#fff",
+                                                    backgroundColor:
+                                                        colors
+                                                            .neutralLight[100],
                                                     textAlign: "left",
                                                     width: "fit-content",
                                                 }}
@@ -400,7 +410,10 @@ const NewEvent = () => {
                                                     <Typography
                                                         variant="body1"
                                                         fontSize={24}
-                                                        color="grey"
+                                                        color={
+                                                            colors
+                                                                .neutralDark[300]
+                                                        }
                                                         margin="0 0 20px 0"
                                                     >
                                                         <b>Duration: </b>
@@ -411,7 +424,10 @@ const NewEvent = () => {
                                                     <Typography
                                                         variant="body1"
                                                         fontSize={24}
-                                                        color="grey"
+                                                        color={
+                                                            colors
+                                                                .neutralDark[300]
+                                                        }
                                                         margin="0 0 20px 0"
                                                         textAlign="left"
                                                     >
@@ -461,7 +477,9 @@ const NewEvent = () => {
                                                 button={false}
                                                 style={{
                                                     padding: "30px",
-                                                    backgroundColor: "#fff",
+                                                    backgroundColor:
+                                                        colors
+                                                            .neutralLight[100],
                                                     textAlign: "left",
                                                     width: "fit-content",
                                                 }}
@@ -542,7 +560,9 @@ const NewEvent = () => {
                                                 button={false}
                                                 style={{
                                                     padding: "30px",
-                                                    backgroundColor: "#fff",
+                                                    backgroundColor:
+                                                        colors
+                                                            .neutralLight[100],
                                                     textAlign: "left",
                                                     width: "fit-content",
                                                 }}
@@ -581,7 +601,10 @@ const NewEvent = () => {
                                                         left="50%"
                                                         variant="body2"
                                                         fontSize={20}
-                                                        color="gray"
+                                                        color={
+                                                            colors
+                                                                .neutralDark[300]
+                                                        }
                                                         sx={{
                                                             transform:
                                                                 "translateX(-50%)",

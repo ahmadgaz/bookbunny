@@ -29,7 +29,7 @@ import SupportIcon from "@mui/icons-material/Support";
 import Logo from "../../assets/Logo-01.svg";
 import { CRUDFunctionsContext } from "App";
 import { useDispatch, useSelector } from "react-redux";
-import { hideSnackbar, setLogout, showSnackbar } from "state";
+import { hideSnackbar, setLogout, setTheme, showSnackbar } from "state";
 import { Global } from "@emotion/react";
 import {
     DarkMode,
@@ -41,14 +41,6 @@ import {
 } from "@mui/icons-material";
 import { tokens } from "theme";
 import Container from "components/Container";
-const colors = tokens("light");
-const themeColors = [
-    colors.neutralDark[500],
-    colors.redAccent[500],
-    colors.primary[500],
-    colors.neutralLight[500],
-    colors.secondary[500],
-];
 
 // VIEWS
 const addViewSchema = yup.object().shape({
@@ -72,6 +64,15 @@ const hexToRgb = (hex) => {
         : null;
 };
 const ColorPickerBtn = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+    const themeColors = [
+        colors.neutralDark[500],
+        colors.redAccent[500],
+        colors.primary[500],
+        colors.neutralLight[500],
+        colors.secondary[500],
+    ];
     const { error, selected, color, onClick } = props;
 
     return (
@@ -82,7 +83,11 @@ const ColorPickerBtn = (props) => {
                 minWidth: 0,
                 margin: "0 10px",
                 padding: "20px 20px 20px 20px",
-                border: `${error ? `${colors.borderSize}px solid red` : ""}`,
+                border: `${
+                    error
+                        ? `${colors.borderSize}px solid ${colors.redAccent[500]}`
+                        : ""
+                }`,
                 backgroundColor: `rgba(${hexToRgb(color).r}, ${
                     hexToRgb(color).g
                 }, ${hexToRgb(color).b}, ${selected ? 1 : 0.5})`,
@@ -96,6 +101,15 @@ const ColorPickerBtn = (props) => {
     );
 };
 const AddViewDialog = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+    const themeColors = [
+        colors.neutralDark[500],
+        colors.redAccent[500],
+        colors.primary[500],
+        colors.neutralLight[500],
+        colors.secondary[500],
+    ];
     const { setShowDialog } = props;
     const dispatch = useDispatch();
     const { createView } = useContext(CRUDFunctionsContext);
@@ -151,7 +165,7 @@ const AddViewDialog = (props) => {
                     style={{
                         padding: "30px",
                         height: "100%",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -384,52 +398,62 @@ const AddViewDialog = (props) => {
     );
 };
 
-const StyledButton1 = styled(Button)({
-    border: "none",
-    boxShadow: "none",
-    top: "0",
-    left: "0",
-    borderBottom: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
-    transition: "filter 0.1s ease",
-    "&:hover": {
-        top: "0",
-        left: "0",
-        filter: "brightness(110%)",
-        boxShadow: `none`,
-    },
-    "&:active": {
-        top: "0",
-        left: "0",
-        boxShadow: `none`,
-    },
-});
-const StyledButton2 = styled(Button)({
-    border: "none",
-    boxShadow: "none",
-    top: "0",
-    left: "0",
-    transition: "filter 0.1s ease",
-    "&:hover": {
-        top: "0",
-        left: "0",
-        filter: "brightness(110%)",
-        boxShadow: `none`,
-    },
-    "&:active": {
-        top: "0",
-        left: "0",
-        boxShadow: `none`,
-    },
-});
-const StyledButton3 = styled(Button)({
-    transition:
-        "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-    "&:hover": {
-        filter: "brightness(110%)",
-    },
-});
-
 const ViewsDropdown = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+    const themeColors = [
+        colors.neutralDark[500],
+        colors.redAccent[500],
+        colors.primary[500],
+        colors.neutralLight[500],
+        colors.secondary[500],
+    ];
+
+    const StyledButton1 = styled(Button)({
+        border: "none",
+        boxShadow: "none",
+        top: "0",
+        left: "0",
+        borderBottom: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+        transition: "filter 0.1s ease",
+        "&:hover": {
+            top: "0",
+            left: "0",
+            filter: "brightness(110%)",
+            boxShadow: `none`,
+        },
+        "&:active": {
+            top: "0",
+            left: "0",
+            boxShadow: `none`,
+        },
+    });
+    const StyledButton2 = styled(Button)({
+        border: "none",
+        boxShadow: "none",
+        top: "0",
+        left: "0",
+        transition: "filter 0.1s ease",
+        "&:hover": {
+            top: "0",
+            left: "0",
+            filter: "brightness(110%)",
+            boxShadow: `none`,
+        },
+        "&:active": {
+            top: "0",
+            left: "0",
+            boxShadow: `none`,
+        },
+    });
+    const StyledButton3 = styled(Button)({
+        transition:
+            "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+        "&:hover": {
+            filter: "brightness(110%)",
+        },
+    });
+
     const { user, getSelectedView, updateView } =
         useContext(CRUDFunctionsContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -441,6 +465,7 @@ const ViewsDropdown = () => {
         setShowDialog(true);
     };
     const handlePopoverOpen = (event) => {
+        console.log(event.currentTarget);
         setAnchorEl(event.currentTarget);
     };
     const handlePopoverClose = () => {
@@ -484,7 +509,8 @@ const ViewsDropdown = () => {
                                                         themeColors[1].toLowerCase() ||
                                                     v.view_color.toLowerCase() ===
                                                         themeColors[4].toLowerCase()
-                                                        ? "white"
+                                                        ? colors
+                                                              .neutralLight[100]
                                                         : "",
                                                 "&:hover": {
                                                     // backgroundColor: `${v.view_color}F7`,
@@ -530,6 +556,7 @@ const ViewsDropdown = () => {
         <>
             {view._id ? (
                 <StyledButton3
+                    key="styledbutton3"
                     variant="contained"
                     onClick={(e) => {
                         handlePopoverOpen(e);
@@ -549,7 +576,7 @@ const ViewsDropdown = () => {
                                 themeColors[1].toLowerCase() ||
                             view.view_color.toLowerCase() ===
                                 themeColors[4].toLowerCase()
-                                ? "white"
+                                ? colors.neutralLight[100]
                                 : "",
                     }}
                 >
@@ -595,6 +622,61 @@ const ViewsDropdown = () => {
     );
 };
 const MobileViewsDropdown = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+    const themeColors = [
+        colors.neutralDark[500],
+        colors.redAccent[500],
+        colors.primary[500],
+        colors.neutralLight[500],
+        colors.secondary[500],
+    ];
+
+    const StyledButton1 = styled(Button)({
+        border: "none",
+        boxShadow: "none",
+        top: "0",
+        left: "0",
+        borderBottom: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+        transition: "filter 0.1s ease",
+        "&:hover": {
+            top: "0",
+            left: "0",
+            filter: "brightness(110%)",
+            boxShadow: `none`,
+        },
+        "&:active": {
+            top: "0",
+            left: "0",
+            boxShadow: `none`,
+        },
+    });
+    const StyledButton2 = styled(Button)({
+        border: "none",
+        boxShadow: "none",
+        top: "0",
+        left: "0",
+        transition: "filter 0.1s ease",
+        "&:hover": {
+            top: "0",
+            left: "0",
+            filter: "brightness(110%)",
+            boxShadow: `none`,
+        },
+        "&:active": {
+            top: "0",
+            left: "0",
+            boxShadow: `none`,
+        },
+    });
+    const StyledButton3 = styled(Button)({
+        transition:
+            "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+        "&:hover": {
+            filter: "brightness(110%)",
+        },
+    });
+
     const { user, getSelectedView, updateView } =
         useContext(CRUDFunctionsContext);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -649,7 +731,8 @@ const MobileViewsDropdown = () => {
                                                         themeColors[1].toLowerCase() ||
                                                     v.view_color.toLowerCase() ===
                                                         themeColors[4].toLowerCase()
-                                                        ? "white"
+                                                        ? colors
+                                                              .neutralLight[100]
                                                         : "",
                                                 "&:hover": {
                                                     // backgroundColor: `${v.view_color}F7`,
@@ -712,7 +795,7 @@ const MobileViewsDropdown = () => {
                                 themeColors[1].toLowerCase() ||
                             view.view_color.toLowerCase() ===
                                 themeColors[4].toLowerCase()
-                                ? "white"
+                                ? colors.neutralLight[100]
                                 : "",
                     }}
                 >
@@ -760,60 +843,6 @@ const MobileViewsDropdown = () => {
 
 const drawerBleeding = 65;
 
-const Puller = (props) => {
-    const { setOpen } = props;
-    const [direction, setDirection] = useState("up");
-
-    return (
-        <Box
-            sx={{
-                width: 36,
-                height: 36,
-                position: "absolute",
-                backgroundColor: "white",
-                top: -12,
-                boxShadow: "0 0px 10px rgba(0, 0, 0, 0.4)",
-                borderRadius: "18px",
-                left: "calc(50% - 15px)",
-                cursor: "pointer",
-            }}
-            onClick={() => {
-                setOpen();
-                setDirection(direction === "up" ? "down" : "up");
-            }}
-        >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: direction === "up" ? "42%" : "47%",
-                    left: 9,
-                    width: "12px",
-                    height: "4px",
-                    borderRadius: 3,
-                    backgroundColor: "#808080",
-                    transform:
-                        direction === "up" ? "rotate(-45deg)" : "rotate(45deg)",
-                    transition: "0.4s ease-in-out ",
-                }}
-            ></Box>
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: direction === "up" ? "42%" : "47%",
-                    right: 9,
-                    width: "12px",
-                    height: "4px",
-                    borderRadius: 3,
-                    backgroundColor: "#808080",
-                    transform:
-                        direction === "up" ? "rotate(45deg)" : "rotate(-45deg)",
-                    transition: "0.4s ease-in-out ",
-                }}
-            ></Box>
-        </Box>
-    );
-};
-
 const StyledTabs = styled(({ className, ...other }) => {
     return (
         <Tabs
@@ -849,33 +878,11 @@ const StyledTabs = styled(({ className, ...other }) => {
     },
 });
 
-const HideOnScroll = (props) => {
-    const { children } = props;
-    // Note that you normally won't need to set the window ref as useScrollTrigger
-    // will default to window.
-    // This is only being set here because the demo is in an iframe.
-    const trigger = useScrollTrigger();
-    useEffect(() => {
-        console.log(trigger);
-    }, [trigger]);
-
-    return (
-        <Slide appear={false} direction="down" in={!trigger}>
-            {children}
-        </Slide>
-    );
-};
-
-const StyledAppBar1 = styled(AppBar)({
-    background: `linear-gradient(${colors.neutralLight[500]} 85%, ${colors.neutralLight[500]}00);`,
-});
-const StyledAppBar2 = styled(AppBar)({
-    background: `linear-gradient(${colors.neutralLight[500]} 85%, ${colors.neutralLight[500]}00);`,
-});
-
 const Navbar = (props) => {
-    const { tab, handleTabChange, emblaRef } = props;
     const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
+    const { tab, handleTabChange, emblaRef } = props;
     const dispatch = useDispatch();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const trigger = useScrollTrigger({
@@ -884,79 +891,6 @@ const Navbar = (props) => {
     useEffect(() => {
         console.log(trigger);
     }, [trigger]);
-
-    const View = () => {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                width="50px"
-                height="20px"
-            >
-                <ViewDayIcon />
-                {tab === 0 && (
-                    <Typography variant="" fontSize={14} paddingLeft="7px">
-                        <b>View</b>
-                    </Typography>
-                )}
-            </Box>
-        );
-    };
-    const Calendar = () => {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                width="50px"
-                height="20px"
-            >
-                <TodayIcon />
-                {tab === 1 && (
-                    <Typography variant="" fontSize={14} paddingLeft="7px">
-                        <b>Calendar</b>
-                    </Typography>
-                )}
-            </Box>
-        );
-    };
-    const Help = () => {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                width="50px"
-                height="20px"
-            >
-                <SupportIcon />
-                {tab === 2 && (
-                    <Typography variant="" fontSize={14} paddingLeft="7px">
-                        <b>Help</b>
-                    </Typography>
-                )}
-            </Box>
-        );
-    };
-    const Account = () => {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                width="50px"
-                height="20px"
-            >
-                <PersonIcon />
-                {tab === 3 && (
-                    <Typography variant="" fontSize={14} paddingLeft="7px">
-                        <b>Account</b>
-                    </Typography>
-                )}
-            </Box>
-        );
-    };
 
     console.log(tab);
     return isNonMobileScreens ? (
@@ -975,18 +909,15 @@ const Navbar = (props) => {
                             alt="Logo"
                             style={{ height: "50px", margin: "0 30px 0 0" }}
                         />
-                        <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
-                        >
+                        <Box display="flex">
                             <ViewsDropdown />
                             <Button
                                 variant={tab === 0 ? "contained" : ""}
                                 style={
                                     tab !== 0
                                         ? {
-                                              backgroundColor: "white",
+                                              backgroundColor:
+                                                  colors.neutralLight[100],
                                               borderRadius: 0,
                                               minHeight: "42.4px",
                                           }
@@ -1009,7 +940,8 @@ const Navbar = (props) => {
                                 style={
                                     tab !== 1
                                         ? {
-                                              backgroundColor: "white",
+                                              backgroundColor:
+                                                  colors.neutralLight[100],
                                               borderRadius: 0,
                                               minHeight: "42.4px",
                                           }
@@ -1032,7 +964,8 @@ const Navbar = (props) => {
                                 style={
                                     tab !== 2
                                         ? {
-                                              backgroundColor: "white",
+                                              backgroundColor:
+                                                  colors.neutralLight[100],
                                               borderRadius: 0,
                                               minHeight: "42.4px",
                                           }
@@ -1055,7 +988,8 @@ const Navbar = (props) => {
                                 style={
                                     tab !== 3
                                         ? {
-                                              backgroundColor: "white",
+                                              backgroundColor:
+                                                  colors.neutralLight[100],
                                               borderTopLeftRadius: 0,
                                               borderBottomLeftRadius: 0,
                                               minHeight: "42.4px",
@@ -1075,34 +1009,39 @@ const Navbar = (props) => {
                             >
                                 Account
                             </Button>
-                            {/* <Tabs
-                                value={tab}
-                                onChange={handleTabChange}
-                                indicatorColor="secondary"
-                                textColor="inherit"
-                                variant="fullWidth"
-                                sx={{
-                                    marginLeft: "20px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <Tab icon={<View />} />
-                                <Tab icon={<Calendar />} />
-                                <Tab icon={<Help />} />
-                                <Tab icon={<Account />} />
-                            </Tabs> */}
                         </Box>
                     </Box>
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => {
-                            dispatch(setLogout());
-                        }}
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
                     >
-                        Log out
-                    </Button>
+                        <Button
+                            variant="contained"
+                            style={{
+                                borderTopRightRadius: 0,
+                                borderBottomRightRadius: 0,
+                            }}
+                            onClick={() => {
+                                dispatch(setTheme());
+                            }}
+                        >
+                            {mode === "light" ? <DarkMode /> : <LightMode />}
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            style={{
+                                borderTopLeftRadius: 0,
+                                borderBottomLeftRadius: 0,
+                            }}
+                            onClick={() => {
+                                dispatch(setLogout());
+                            }}
+                        >
+                            <Logout />
+                        </Button>
+                    </Box>
                 </Toolbar>
             </Slide>
         </AppBar>
@@ -1119,7 +1058,6 @@ const Navbar = (props) => {
                         visibility: "visible",
                         backgroundColor: `${colors.neutralLight[200]}d7`,
                         backdropFilter: "blur(10px)",
-                        // borderTop: `1px solid ${colors.neutralDark[100]}`,
                         boxShadow: "0 -2.5px 7.5px rgba(0, 0, 0, 0.4)",
                         right: 0,
                         left: 0,
@@ -1129,7 +1067,12 @@ const Navbar = (props) => {
                         padding: "0 30px 0 30px",
                     }}
                 >
-                    <IconButton onClick={() => {}} sx={{ marginRight: "30px" }}>
+                    <IconButton
+                        onClick={() => {
+                            dispatch(setTheme());
+                        }}
+                        sx={{ marginRight: "30px" }}
+                    >
                         {mode === "light" ? <DarkMode /> : <LightMode />}
                     </IconButton>
 
@@ -1159,7 +1102,6 @@ const Navbar = (props) => {
                         visibility: "visible",
                         backgroundColor: `${colors.neutralLight[200]}d7`,
                         backdropFilter: "blur(10px)",
-                        // borderTop: `1px solid ${colors.neutralDark[100]}`,
                         boxShadow: "0 2.5px 7.5px rgba(0, 0, 0, 0.4)",
                         right: 0,
                         left: 0,

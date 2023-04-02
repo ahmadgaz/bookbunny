@@ -14,7 +14,7 @@ import NewEvent from "scenes/newEvent";
 
 function App() {
     const mode = useSelector((state) => state.mode);
-    const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+    const theme = createTheme(themeSettings(mode));
     const isAuth = Boolean(useSelector((state) => state.token));
 
     return (

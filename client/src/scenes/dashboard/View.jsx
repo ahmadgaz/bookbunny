@@ -24,16 +24,11 @@ import { CheckBox, ChevronLeft, Delete, Edit, Link } from "@mui/icons-material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { tokens } from "theme";
 import { useDispatch, useSelector } from "react-redux";
-const colors = tokens("light");
-const themeColors = [
-    colors.neutralDark[500],
-    colors.redAccent[500],
-    colors.primary[500],
-    colors.neutralLight[500],
-    colors.secondary[500],
-];
 
 const DeleteEventTypeDialog = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { eventType, setShowDialog } = props;
     const { getSelectedView, deleteEventType } =
         useContext(CRUDFunctionsContext);
@@ -64,7 +59,7 @@ const DeleteEventTypeDialog = (props) => {
                         padding: "30px",
                         height: "100%",
                         width: "max-content",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -76,7 +71,7 @@ const DeleteEventTypeDialog = (props) => {
                     >
                         <Typography
                             variant="body1"
-                            color="grey"
+                            color={colors.neutralDark[300]}
                             sx={{ gridColumn: "span 4" }}
                         >
                             Are you sure you want to delete{" "}
@@ -102,7 +97,7 @@ const DeleteEventTypeDialog = (props) => {
                             style={{
                                 padding: "10px 30px 8px 30px",
                                 gridColumn: "span 2",
-                                backgroundColor: "red",
+                                backgroundColor: colors.redAccent[500],
                             }}
                         >
                             Delete
@@ -153,7 +148,7 @@ const DeleteEventTypeDialog = (props) => {
                             style={{
                                 padding: "10px 30px 8px 30px",
                                 gridColumn: "span 2",
-                                backgroundColor: "red",
+                                backgroundColor: colors.redAccent[500],
                             }}
                         >
                             Delete
@@ -173,6 +168,9 @@ const eventTypeFormValidationSchema = yup.object().shape({
     event_type_location: yup.string().notRequired(),
 });
 const EditEventTypeDialog = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { eventType, setShowDialog } = props;
     const { getSelectedView, updateEventType } =
         useContext(CRUDFunctionsContext);
@@ -213,7 +211,7 @@ const EditEventTypeDialog = (props) => {
                     style={{
                         padding: "30px",
                         height: "100%",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -463,6 +461,9 @@ const initialValuesAddEventType = {
     event_type_location: "",
 };
 const AddEventTypeDialog = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { setShowDialog } = props;
     const { getSelectedView, createEventType } =
         useContext(CRUDFunctionsContext);
@@ -499,7 +500,7 @@ const AddEventTypeDialog = (props) => {
                     style={{
                         padding: "30px",
                         height: "100%",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -741,6 +742,8 @@ const AddEventTypeDialog = (props) => {
 };
 const eventTypeURL = `${process.env.REACT_APP_CLIENT_BASE_URL}/newEvent`;
 const EventTypes = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
     const { getSelectedView } = useContext(CRUDFunctionsContext);
     const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -808,7 +811,10 @@ const EventTypes = () => {
                                                 {et.event_type_location ? (
                                                     <Typography
                                                         variant="subtitle1"
-                                                        color="grey"
+                                                        color={
+                                                            colors
+                                                                .neutralDark[300]
+                                                        }
                                                         textAlign="left"
                                                     >
                                                         <b>Duration: </b>
@@ -820,7 +826,10 @@ const EventTypes = () => {
                                                 ) : (
                                                     <Typography
                                                         variant="subtitle1"
-                                                        color="grey"
+                                                        color={
+                                                            colors
+                                                                .neutralDark[300]
+                                                        }
                                                         textAlign="left"
                                                     >
                                                         <b>Duration: </b>
@@ -828,7 +837,9 @@ const EventTypes = () => {
                                                     </Typography>
                                                 )}
                                             </Box>
-                                            <hr style={{ marginBottom: "0" }} />
+                                            <hr
+                                                style={{ marginBottom: "2px" }}
+                                            />
                                             <Box
                                                 display="flex"
                                                 width="100%"
@@ -844,9 +855,6 @@ const EventTypes = () => {
                                                     }}
                                                     color="primary"
                                                     size="small"
-                                                    sx={{
-                                                        transform: "scale(0.8)",
-                                                    }}
                                                 >
                                                     <Edit
                                                         sx={{
@@ -864,9 +872,6 @@ const EventTypes = () => {
                                                     }}
                                                     color="primary"
                                                     size="small"
-                                                    sx={{
-                                                        transform: "scale(0.8)",
-                                                    }}
                                                 >
                                                     <Delete
                                                         sx={{
@@ -892,9 +897,6 @@ const EventTypes = () => {
                                                     }}
                                                     color="primary"
                                                     size="small"
-                                                    sx={{
-                                                        transform: "scale(0.8)",
-                                                    }}
                                                 >
                                                     <Link
                                                         sx={{
@@ -951,6 +953,15 @@ const EventTypes = () => {
 };
 
 const DeleteViewDialog = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+    const themeColors = [
+        colors.neutralDark[500],
+        colors.redAccent[500],
+        colors.primary[500],
+        colors.neutralLight[500],
+        colors.secondary[500],
+    ];
     const { view, setShowDialog } = props;
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { deleteView } = useContext(CRUDFunctionsContext);
@@ -979,7 +990,7 @@ const DeleteViewDialog = (props) => {
                         padding: "30px",
                         height: "100%",
                         width: "max-content",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -991,7 +1002,7 @@ const DeleteViewDialog = (props) => {
                     >
                         <Typography
                             variant="body1"
-                            color="grey"
+                            color={colors.neutralDark[300]}
                             sx={{ gridColumn: "span 4" }}
                         >
                             Are you sure you want to delete {view.view_name}?
@@ -1016,7 +1027,7 @@ const DeleteViewDialog = (props) => {
                             style={{
                                 padding: "10px 30px 8px 30px",
                                 gridColumn: "span 2",
-                                backgroundColor: "red",
+                                backgroundColor: colors.redAccent[500],
                             }}
                         >
                             Delete
@@ -1066,7 +1077,7 @@ const DeleteViewDialog = (props) => {
                             style={{
                                 padding: "10px 30px 8px 30px",
                                 gridColumn: "span 2",
-                                backgroundColor: "red",
+                                backgroundColor: colors.redAccent[500],
                             }}
                         >
                             Delete
@@ -1093,6 +1104,9 @@ const hexToRgb = (hex) => {
         : null;
 };
 const ColorPickerBtn = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { error, selected, color, onClick } = props;
 
     return (
@@ -1103,7 +1117,11 @@ const ColorPickerBtn = (props) => {
                 minWidth: 0,
                 margin: "0 10px",
                 padding: "20px 20px 20px 20px",
-                border: `${error ? `${colors.borderSize}px solid red` : ""}`,
+                border: `${
+                    error
+                        ? `${colors.borderSize}px solid ${colors.redAccent[500]}`
+                        : ""
+                }`,
                 backgroundColor: `rgba(${hexToRgb(color).r}, ${
                     hexToRgb(color).g
                 }, ${hexToRgb(color).b}, ${selected ? 1 : 0.5})`,
@@ -1117,6 +1135,16 @@ const ColorPickerBtn = (props) => {
     );
 };
 const EditViewDialog = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+    const themeColors = [
+        colors.neutralDark[500],
+        colors.redAccent[500],
+        colors.primary[500],
+        colors.neutralLight[500],
+        colors.secondary[500],
+    ];
+
     const { view, setShowDialog } = props;
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { updateView } = useContext(CRUDFunctionsContext);
@@ -1174,7 +1202,7 @@ const EditViewDialog = (props) => {
                     style={{
                         padding: "30px",
                         height: "100%",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -1407,6 +1435,9 @@ const EditViewDialog = (props) => {
 };
 
 const Views = (props) => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { setShownViews } = props;
     const { user } = useContext(CRUDFunctionsContext);
 
@@ -1457,6 +1488,9 @@ const Views = (props) => {
 };
 
 const View = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const { user, getSelectedView, updateView } =
         useContext(CRUDFunctionsContext);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -1547,7 +1581,7 @@ const View = () => {
                             style={{
                                 padding: "30px",
                                 height: "100%",
-                                backgroundColor: "#fff",
+                                backgroundColor: colors.neutralLight[100],
                                 textAlign: "center",
                             }}
                         >
@@ -1639,7 +1673,7 @@ const View = () => {
                                     </Typography>
                                     <Typography
                                         variant="subtitle1"
-                                        color="grey"
+                                        color={colors.neutralDark[300]}
                                     >
                                         {view.view_desc}
                                     </Typography>
@@ -1698,7 +1732,10 @@ const View = () => {
                                 </div>
                             </Box>
                         ) : (
-                            <Typography variant="h3" color="grey">
+                            <Typography
+                                variant="h3"
+                                color={colors.neutralDark[300]}
+                            >
                                 No Views
                             </Typography>
                         )}
@@ -1726,7 +1763,7 @@ const View = () => {
                             handleDeleteDialogOpen(view);
                         }}
                         sx={{
-                            backgroundColor: "white",
+                            backgroundColor: colors.neutralLight[100],
                             gridColumnStart: 7,
                             gridColumnEnd: 8,
                             gridRowStart: 1,
@@ -1758,7 +1795,7 @@ const View = () => {
                                 display: "flex",
                                 padding: "30px",
                                 height: "100%",
-                                backgroundColor: "#fff",
+                                backgroundColor: colors.neutralLight[100],
                                 textAlign: "center",
                             }}
                         >
@@ -1803,7 +1840,7 @@ const View = () => {
                             style={{
                                 padding: "30px",
                                 height: "100%",
-                                backgroundColor: "#fff",
+                                backgroundColor: colors.neutralLight[100],
                                 textAlign: "center",
                             }}
                         >
@@ -1835,7 +1872,7 @@ const View = () => {
                             style={{
                                 padding: "30px",
                                 height: "100%",
-                                backgroundColor: "#fff",
+                                backgroundColor: colors.neutralLight[100],
                                 textAlign: "center",
                             }}
                         >
@@ -1864,16 +1901,25 @@ const View = () => {
                                     />
                                 ) : user.views ? (
                                     user.views.length <= 0 ? (
-                                        <Typography variant="h3" color="grey">
+                                        <Typography
+                                            variant="h3"
+                                            color={colors.neutralDark[300]}
+                                        >
                                             <b>Create a View!</b>
                                         </Typography>
                                     ) : (
-                                        <Typography variant="h3" color="grey">
+                                        <Typography
+                                            variant="h3"
+                                            color={colors.neutralDark[300]}
+                                        >
                                             <b>Select a View</b>
                                         </Typography>
                                     )
                                 ) : (
-                                    <Typography variant="h3" color="grey">
+                                    <Typography
+                                        variant="h3"
+                                        color={colors.neutralDark[300]}
+                                    >
                                         <b>Log In to See Your Views!</b>
                                     </Typography>
                                 )}
@@ -1977,7 +2023,10 @@ const View = () => {
                                 <Typography variant="h3">
                                     <b>{view.view_name}</b>
                                 </Typography>
-                                <Typography variant="subtitle1" color="grey">
+                                <Typography
+                                    variant="subtitle1"
+                                    color={colors.neutralDark[300]}
+                                >
                                     {view.view_desc}
                                 </Typography>
                             </Box>
@@ -2027,7 +2076,10 @@ const View = () => {
                             </div>
                         </Box>
                     ) : (
-                        <Typography variant="h3" color="grey">
+                        <Typography
+                            variant="h3"
+                            color={colors.neutralDark[300]}
+                        >
                             No Views
                         </Typography>
                     )}
@@ -2055,7 +2107,7 @@ const View = () => {
                         handleDeleteDialogOpen(view);
                     }}
                     sx={{
-                        backgroundColor: "white",
+                        backgroundColor: colors.neutralLight[100],
                         gridColumnStart: 5,
                         gridColumnEnd: 8,
                         gridRowStart: 2,
@@ -2086,7 +2138,7 @@ const View = () => {
                         style={{
                             padding: "30px",
                             height: "100%",
-                            backgroundColor: "#fff",
+                            backgroundColor: colors.neutralLight[100],
                             textAlign: "center",
                         }}
                     >
@@ -2123,7 +2175,7 @@ const View = () => {
                             display: "flex",
                             padding: "30px",
                             height: "100%",
-                            backgroundColor: "#fff",
+                            backgroundColor: colors.neutralLight[100],
                             textAlign: "center",
                         }}
                     >
@@ -2168,7 +2220,7 @@ const View = () => {
                         style={{
                             padding: "30px",
                             height: "100%",
-                            backgroundColor: "#fff",
+                            backgroundColor: colors.neutralLight[100],
                             textAlign: "center",
                         }}
                     >
@@ -2200,7 +2252,7 @@ const View = () => {
                         style={{
                             padding: "30px",
                             height: "100%",
-                            backgroundColor: "#fff",
+                            backgroundColor: colors.neutralLight[100],
                             textAlign: "center",
                         }}
                     >
@@ -2228,16 +2280,25 @@ const View = () => {
                                 />
                             ) : user.views ? (
                                 user.views.length <= 0 ? (
-                                    <Typography variant="h3" color="grey">
+                                    <Typography
+                                        variant="h3"
+                                        color={colors.neutralDark[300]}
+                                    >
                                         <b>Create a View!</b>
                                     </Typography>
                                 ) : (
-                                    <Typography variant="h3" color="grey">
+                                    <Typography
+                                        variant="h3"
+                                        color={colors.neutralDark[300]}
+                                    >
                                         <b>Select a View</b>
                                     </Typography>
                                 )
                             ) : (
-                                <Typography variant="h3" color="grey">
+                                <Typography
+                                    variant="h3"
+                                    color={colors.neutralDark[300]}
+                                >
                                     <b>Log In to See Your Views!</b>
                                 </Typography>
                             )}

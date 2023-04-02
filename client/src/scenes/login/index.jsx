@@ -1,9 +1,14 @@
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import Container from "components/Container";
+import { useSelector } from "react-redux";
+import { tokens } from "theme";
 import Logo from "../../assets/Logo-02.svg";
 import Form from "./form";
 
 const Login = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
+
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     return isNonMobileScreens ? (
@@ -30,7 +35,7 @@ const Login = () => {
                     button={false}
                     style={{
                         padding: "30px",
-                        backgroundColor: "#fff",
+                        backgroundColor: colors.neutralLight[100],
                         textAlign: "center",
                     }}
                 >
@@ -40,7 +45,7 @@ const Login = () => {
                     <Typography
                         variant="body1"
                         fontSize={24}
-                        color="grey"
+                        color={colors.neutralDark[300]}
                         margin="0 0 40px 0"
                     >
                         Welcome back!
@@ -68,7 +73,7 @@ const Login = () => {
                 height: "max(100%, 100vh)",
                 minHeight: "max-content",
                 padding: "50px",
-                backgroundColor: "#fff",
+                backgroundColor: colors.neutralLight[100],
                 textAlign: "center",
             }}
         >
@@ -83,7 +88,7 @@ const Login = () => {
             <Typography
                 variant="body1"
                 fontSize={24}
-                color="grey"
+                color={colors.neutralDark[300]}
                 margin="0 0 40px 0"
             >
                 Welcome back!
