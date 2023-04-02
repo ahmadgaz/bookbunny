@@ -1,5 +1,5 @@
 import { Box, Snackbar, Typography, useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import NavbarSpacer from "components/NavbarSpacer";
 import Account from "./Account";
@@ -19,8 +19,27 @@ const Dashboard = () => {
         axis: "x",
         draggable: false,
     });
+    const viewRef = useRef();
+    const calendarRef = useRef();
+    const helpRef = useRef();
+    const accountRef = useRef();
+    const [emblaContainerRef, setEmblaContainerRef] = useState(calendarRef);
 
     const handleTabChange = (event, newValue) => {
+        switch (newValue) {
+            case 0:
+                setEmblaContainerRef(viewRef);
+                break;
+            case 1:
+                setEmblaContainerRef(calendarRef);
+                break;
+            case 2:
+                setEmblaContainerRef(helpRef);
+                break;
+            case 3:
+                setEmblaContainerRef(accountRef);
+                break;
+        }
         setTab(newValue);
     };
 
@@ -36,7 +55,11 @@ const Dashboard = () => {
 
     return (
         <Box width="100vw" height="100vh" sx={{ touchAction: "pan-y" }}>
-            <Navbar tab={tab} handleTabChange={handleTabChange} />
+            <Navbar
+                tab={tab}
+                handleTabChange={handleTabChange}
+                emblaRef={emblaContainerRef}
+            />
             {isNonMobileScreens ? (
                 <div
                     className="embla"
@@ -59,6 +82,7 @@ const Dashboard = () => {
                         <div
                             className="embla__slide"
                             key="0"
+                            ref={viewRef}
                             style={{
                                 overflowY: "auto",
                                 paddingTop: "70px",
@@ -74,6 +98,7 @@ const Dashboard = () => {
                         <div
                             className="embla__slide"
                             key="1"
+                            ref={calendarRef}
                             style={{
                                 overflowY: "auto",
                                 paddingTop: "70px",
@@ -89,6 +114,7 @@ const Dashboard = () => {
                         <div
                             className="embla__slide"
                             key="2"
+                            ref={helpRef}
                             style={{
                                 overflowY: "auto",
                                 paddingTop: "70px",
@@ -104,6 +130,7 @@ const Dashboard = () => {
                         <div
                             className="embla__slide"
                             key="3"
+                            ref={accountRef}
                             style={{
                                 overflowY: "auto",
                                 paddingTop: "70px",

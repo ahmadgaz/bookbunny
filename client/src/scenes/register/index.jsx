@@ -35,7 +35,7 @@ const Register = () => {
                     }}
                 >
                     <Typography variant="h1" margin="5px 0 10px 0">
-                        Sign Up
+                        <b>Sign Up</b>
                     </Typography>
                     <Typography
                         variant="body1"
@@ -68,13 +68,22 @@ const Register = () => {
                     gridRowStart: "2",
                 }}
             >
-                <Container variant="outlined" style={{ padding: "0 10px" }}>
+                <Container
+                    variant="outlined"
+                    outerStyle={{ padding: "0 10px" }}
+                >
                     Contact
                 </Container>
-                <Container variant="outlined" style={{ padding: "0 10px" }}>
+                <Container
+                    variant="outlined"
+                    outerStyle={{ padding: "0 10px" }}
+                >
                     Privacy Policy
                 </Container>
-                <Container variant="outlined" style={{ padding: "0 10px" }}>
+                <Container
+                    variant="outlined"
+                    outerStyle={{ padding: "0 10px" }}
+                >
                     Terms & Conditions
                 </Container>
             </Box>
@@ -100,7 +109,7 @@ const Register = () => {
                 style={{ height: "50px", margin: "30px 0" }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
-                Sign Up
+                <b>Sign Up</b>
             </Typography>
             <Typography
                 variant="body1"
@@ -118,13 +127,22 @@ const Register = () => {
                 alignItems="center"
                 padding="30px 0 0 0"
             >
-                <Container variant="outlined" style={{ padding: "0 10px" }}>
+                <Container
+                    variant="outlined"
+                    outerStyle={{ padding: "0 10px" }}
+                >
                     Contact
                 </Container>
-                <Container variant="outlined" style={{ padding: "0 10px" }}>
+                <Container
+                    variant="outlined"
+                    outerStyle={{ padding: "0 10px" }}
+                >
                     Privacy Policy
                 </Container>
-                <Container variant="outlined" style={{ padding: "0 10px" }}>
+                <Container
+                    variant="outlined"
+                    outerStyle={{ padding: "0 10px" }}
+                >
                     Terms & Conditions
                 </Container>
             </Box>

@@ -11,15 +11,11 @@ import Login from "scenes/login";
 import Register from "scenes/register";
 import Dashboard from "scenes/dashboard";
 import NewEvent from "scenes/newEvent";
-import { gapi } from "gapi-script";
-import { googleLogout } from "@react-oauth/google";
 
 function App() {
     const mode = useSelector((state) => state.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
     const isAuth = Boolean(useSelector((state) => state.token));
-    // const tok = useSelector((state) => state.token);
-    // console.log(tok);
 
     return (
         <div className="app">

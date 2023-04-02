@@ -6,11 +6,11 @@ import Navbar from "./navbar";
 import HeroSafariCompatible from "../../assets/HeroSafariCompatible.mov";
 import Hero from "../../assets/Hero.webm";
 import { tokens } from "theme";
-import Button from "components/Container";
+import Container from "components/Container";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    const isNonMobileScreens = useMediaQuery("(min-width: 1400px)");
     const colors = tokens();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -33,16 +33,18 @@ const Home = () => {
             <Navbar setPrevPage={setPrevPageToHome} />
             <NavbarSpacer />
             <Box
-                width="100%"
-                padding="20px 50px"
+                maxWidth="80%"
+                padding="20px 0px"
                 display="flex"
                 flexWrap="wrap"
                 justifyContent="center"
                 alignItems="center"
             >
-                <Box width={isNonMobileScreens ? "40vw" : "80vw"}>
+                <Box width={isNonMobileScreens ? "500px" : "100%"}>
                     <Typography variant="hero">
-                        Schedule life with <b>ease</b>!
+                        <em>
+                            Schedule life with <b>ease</b>!
+                        </em>
                     </Typography>
                     <hr
                         style={{
@@ -53,8 +55,10 @@ const Home = () => {
                         }}
                     />
                     <Typography variant="h3">
-                        No more double-bookings, missed appointments, or
-                        conflicting schedules.
+                        <b>
+                            No more double-bookings, missed appointments, or
+                            conflicting schedules.
+                        </b>
                     </Typography>
                     <br
                         style={{
@@ -63,7 +67,7 @@ const Home = () => {
                             border: "none",
                         }}
                     />
-                    <Typography variant="body1" fontSize={24}>
+                    <Typography variant="body1">
                         With <b>Bookbunny</b>, you can <Link>manage</Link> your
                         schedule and have more time for the things that matter.
                         Share your availability with friends, family and
@@ -77,34 +81,28 @@ const Home = () => {
                         }}
                     />
                     <Box display="flex" alignItems="center">
-                        <Box sx={{ marginRight: "50px" }}>
-                            <Button
-                                size="m"
-                                variant="contained"
-                                onClick={() => {
-                                    setPrevPageToHome();
-                                    navigate("/register");
-                                }}
-                            >
-                                Try Free
-                            </Button>
-                        </Box>
-                        <Button italicized size="m" variant="outlined">
+                        <Container
+                            size="m"
+                            variant="contained"
+                            outerStyle={{ marginRight: "50px" }}
+                            onClick={() => {
+                                setPrevPageToHome();
+                                navigate("/register");
+                            }}
+                        >
+                            Try Free
+                        </Container>
+                        <Container italicized size="m" variant="outlined">
                             See how it works
-                        </Button>
+                        </Container>
                     </Box>
-                    {/* STEPS */}
-                    {/* <Typography variant="body1" fontSize={24}>
-                            Make scheduling as simple as hop, skip, and{" "}
-                            <i>jump</i>.
-                        </Typography> */}
                 </Box>
                 <Box
-                    width={isNonMobileScreens ? "50vw" : "80vw"}
+                    width={isNonMobileScreens ? "700px" : "100%"}
                     display="flex"
                     justifyContent="center"
                 >
-                    <video height="600" autoPlay loop muted>
+                    <video height="450" autoPlay loop muted>
                         <source
                             src={HeroSafariCompatible}
                             type='video/mp4; codecs="hvc1"'

@@ -3,6 +3,7 @@ import { isValidElement, useEffect } from "react";
 import jsxToString from "jsx-to-string";
 import { useState } from "react";
 import { tokens } from "theme";
+const colors = tokens("light");
 
 const Text = (props) => {
     const { translation, height, italicized, children } = props;
@@ -61,7 +62,7 @@ const Text = (props) => {
                                 }ms ease`,
                             }}
                         >
-                            {italicized ? <i>{letter}</i> : letter}
+                            {italicized ? <em>{letter}</em> : letter}
                         </p>
                     );
                 });
@@ -79,7 +80,7 @@ const Text = (props) => {
                         transition: `transform ${(idx / 5 + 1) * 200}ms ease`,
                     }}
                 >
-                    {italicized ? <i>{letter}</i> : letter}
+                    {italicized ? <em>{letter}</em> : letter}
                 </p>
             ));
         }
@@ -89,13 +90,13 @@ const Text = (props) => {
 };
 
 const Container = (props) => {
-    const colors = tokens("light");
     const {
         italicized = false,
         size = "s",
         variant = "text",
         onClick = () => {},
         rounded,
+        outerStyle = {},
         style = {},
         children,
         button = true,
@@ -104,32 +105,36 @@ const Container = (props) => {
         fullHeight = false,
     } = props;
     const [translation, setTranslation] = useState("");
-    const [containedAnimation, setContainedAnimation] = useState("-2px");
+    const [containedAnimation, setContainedAnimation] = useState(
+        `-${colors.boxShadowSize}px`
+    );
     const nonContainedHeight =
         size === "s"
-            ? "20px"
+            ? "25px"
             : size === "m"
             ? "40px"
             : size === "l"
             ? "60px"
-            : "20px";
+            : "25px";
     const containedHeight =
         size === "s"
-            ? "35px"
+            ? "40px"
             : size === "m"
             ? "50px"
             : size === "l"
             ? "90px"
-            : "30px";
+            : "40px";
     const height =
         variant !== "contained" ? nonContainedHeight : containedHeight;
 
     return button ? (
         variant === "contained" ? (
+            // CONTAINED BUTTON
             <div
                 style={{
                     position: "relative",
                     width: fullWidth ? "100%" : "fit-content",
+                    ...outerStyle,
                 }}
             >
                 {/* Shadow */}
@@ -141,13 +146,13 @@ const Container = (props) => {
                             ? "h4"
                             : size === "l"
                             ? "h1"
-                            : "button"
+                            : "h6"
                     }
                     style={{
-                        border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
+                        border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
                         borderRadius: rounded
                             ? `${parseInt(height) / 2}px`
-                            : colors.borderRadius,
+                            : `${colors.borderRadius}px`,
                         backgroundColor: colors.neutralDark[500],
                         padding:
                             size === "s"
@@ -164,7 +169,250 @@ const Container = (props) => {
                         zIndex: "-1",
                     }}
                 >
+                    <b>
+                        <div
+                            style={{
+                                cursor: "pointer",
+                                display: "flex",
+                                flexDirection: "column",
+                                flexWrap: "nowrap",
+                                alignItems: "center",
+                                height: height,
+                                overflow: "hidden",
+                                WebkitTapHighlightColor: "transparent",
+                                WebkitTouchCallout: "none",
+                                WebkitUserSelect: "none",
+                                KhtmlUserSelect: "none",
+                                MozUserSelect: "none",
+                                MsUserSelect: "none",
+                                userSelect: "none",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    margin: 0,
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    height: height,
+                                }}
+                            >
+                                <Text
+                                    translation={translation}
+                                    height={height}
+                                    italicized={italicized}
+                                >
+                                    {children}
+                                </Text>
+                            </div>
+                            <div
+                                style={{
+                                    margin: 0,
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    height: height,
+                                }}
+                            >
+                                <Text
+                                    translation={translation}
+                                    height={height}
+                                    italicized={italicized}
+                                >
+                                    {children}
+                                </Text>
+                            </div>
+                            <div
+                                style={{
+                                    margin: 0,
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    height: height,
+                                }}
+                            >
+                                <Text
+                                    translation={translation}
+                                    height={height}
+                                    italicized={italicized}
+                                >
+                                    {children}
+                                </Text>
+                            </div>
+                        </div>
+                    </b>
+                </Typography>
+
+                {/* Button */}
+                <Typography
+                    onMouseEnter={() => {
+                        setContainedAnimation(`-${colors.boxShadowHovered}px`);
+                        setTranslation("translateY(-100%)");
+                    }}
+                    onMouseLeave={() => {
+                        setContainedAnimation(`-${colors.boxShadowSize}px`);
+                        setTranslation("");
+                    }}
+                    onMouseDown={() => {
+                        setContainedAnimation(`${colors.boxShadowPressed}px`);
+                        setTranslation("translateY(-200%)");
+                    }}
+                    onMouseUp={() => {
+                        setContainedAnimation(`-${colors.boxShadowHovered}px`);
+                        setTranslation("translateY(-100%)");
+                        onClick();
+                    }}
+                    variant={
+                        size === "s"
+                            ? "h6"
+                            : size === "m"
+                            ? "h4"
+                            : size === "l"
+                            ? "h1"
+                            : "h6"
+                    }
+                    style={{
+                        cursor: "pointer",
+                        position: "absolute",
+                        width: fullWidth ? "100%" : "fit-content",
+                        top: containedAnimation,
+                        left: containedAnimation,
+                        border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+                        borderRadius: rounded
+                            ? `${parseInt(height) / 2}px`
+                            : `${colors.borderRadius}px`,
+                        backgroundColor: colors.primary[500],
+                        padding:
+                            size === "s"
+                                ? "0 15px"
+                                : size === "m"
+                                ? "0 20px"
+                                : size === "l"
+                                ? "0 50px"
+                                : "0 15px",
+                        display: "flex",
+                        flexDirection: "column",
+                        flexWrap: "nowrap",
+                        alignItems: "center",
+                        transition: `top 75ms ease, left 75ms ease`,
+                        ...style,
+                    }}
+                >
+                    <b>
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                flexWrap: "nowrap",
+                                alignItems: "center",
+                                height: height,
+                                overflow: "hidden",
+                                WebkitTapHighlightColor: "transparent",
+                                WebkitTouchCallout: "none",
+                                WebkitUserSelect: "none",
+                                KhtmlUserSelect: "none",
+                                MozUserSelect: "none",
+                                MsUserSelect: "none",
+                                userSelect: "none",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    margin: 0,
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    height: height,
+                                }}
+                            >
+                                <Text
+                                    translation={translation}
+                                    height={height}
+                                    italicized={italicized}
+                                >
+                                    {children}
+                                </Text>
+                            </div>
+                            <div
+                                style={{
+                                    margin: 0,
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    height: height,
+                                }}
+                            >
+                                <Text
+                                    translation={translation}
+                                    height={height}
+                                    italicized={italicized}
+                                >
+                                    {children}
+                                </Text>
+                            </div>
+                            <div
+                                style={{
+                                    margin: 0,
+                                    display: "flex",
+                                    flexWrap: "nowrap",
+                                    height: height,
+                                }}
+                            >
+                                <Text
+                                    translation={translation}
+                                    height={height}
+                                    italicized={italicized}
+                                >
+                                    {children}
+                                </Text>
+                            </div>
+                        </div>
+                    </b>
+                    <button
+                        type={type}
+                        style={{
+                            cursor: "pointer",
+                            position: "absolute",
+                            top: containedAnimation,
+                            left: containedAnimation,
+                            width: "100%",
+                            height: "100%",
+                            opacity: "0%",
+                            type: type,
+                        }}
+                    ></button>
+                </Typography>
+            </div>
+        ) : (
+            <Typography
+                variant={
+                    size === "s"
+                        ? "h6"
+                        : size === "m"
+                        ? "h4"
+                        : size === "l"
+                        ? "h1"
+                        : "h6"
+                }
+                style={{
+                    width: fullWidth ? "100%" : "fit-content",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "nowrap",
+                    alignItems: "center",
+                    ...outerStyle,
+                }}
+            >
+                <b>
                     <div
+                        onMouseEnter={() => {
+                            setTranslation("translateY(-100%)");
+                        }}
+                        onMouseLeave={() => {
+                            setTranslation("");
+                        }}
+                        onMouseDown={() => {
+                            setTranslation("translateY(-200%)");
+                        }}
+                        onMouseUp={() => {
+                            setTranslation("translateY(-100%)");
+                            onClick();
+                        }}
                         style={{
                             cursor: "pointer",
                             display: "flex",
@@ -231,273 +479,15 @@ const Container = (props) => {
                             </Text>
                         </div>
                     </div>
-                    {variant === "outlined" && (
-                        <div
-                            style={{
-                                width: "calc(100% + 2px)",
-                                height: colors.borderSize,
-                                borderRadius: "0.5px",
-                                backgroundColor: colors.neutralDark[500],
-                            }}
-                        ></div>
-                    )}
-                </Typography>
-                {/* Button */}
-
-                <Typography
-                    onMouseEnter={() => {
-                        setContainedAnimation("-1px");
-                        setTranslation("translateY(-100%)");
-                    }}
-                    onMouseLeave={() => {
-                        setContainedAnimation("-2px");
-                        setTranslation("");
-                    }}
-                    onMouseDown={() => {
-                        setContainedAnimation("0px");
-                        setTranslation("translateY(-200%)");
-                    }}
-                    onMouseUp={() => {
-                        setContainedAnimation("-1px");
-                        setTranslation("translateY(-100%)");
-                        onClick();
-                    }}
-                    variant={
-                        size === "s"
-                            ? "h6"
-                            : size === "m"
-                            ? "h4"
-                            : size === "l"
-                            ? "h1"
-                            : "button"
-                    }
-                    style={{
-                        cursor: "pointer",
-                        position: "absolute",
-                        width: fullWidth ? "100%" : "fit-content",
-                        top: containedAnimation,
-                        left: containedAnimation,
-                        border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
-                        borderRadius: rounded
-                            ? `${parseInt(height) / 2}px`
-                            : colors.borderRadius,
-                        backgroundColor: colors.primary[500],
-                        padding:
-                            size === "s"
-                                ? "0 15px"
-                                : size === "m"
-                                ? "0 20px"
-                                : size === "l"
-                                ? "0 50px"
-                                : "0 15px",
-                        display: "flex",
-                        flexDirection: "column",
-                        flexWrap: "nowrap",
-                        alignItems: "center",
-                        transition: `top 75ms ease, left 75ms ease`,
-                        ...style,
-                    }}
-                >
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            flexWrap: "nowrap",
-                            alignItems: "center",
-                            height: height,
-                            overflow: "hidden",
-                            WebkitTapHighlightColor: "transparent",
-                            WebkitTouchCallout: "none",
-                            WebkitUserSelect: "none",
-                            KhtmlUserSelect: "none",
-                            MozUserSelect: "none",
-                            MsUserSelect: "none",
-                            userSelect: "none",
-                        }}
-                    >
-                        <div
-                            style={{
-                                margin: 0,
-                                display: "flex",
-                                flexWrap: "nowrap",
-                                height: height,
-                            }}
-                        >
-                            <Text
-                                translation={translation}
-                                height={height}
-                                italicized={italicized}
-                            >
-                                {children}
-                            </Text>
-                        </div>
-                        <div
-                            style={{
-                                margin: 0,
-                                display: "flex",
-                                flexWrap: "nowrap",
-                                height: height,
-                            }}
-                        >
-                            <Text
-                                translation={translation}
-                                height={height}
-                                italicized={italicized}
-                            >
-                                {children}
-                            </Text>
-                        </div>
-                        <div
-                            style={{
-                                margin: 0,
-                                display: "flex",
-                                flexWrap: "nowrap",
-                                height: height,
-                            }}
-                        >
-                            <Text
-                                translation={translation}
-                                height={height}
-                                italicized={italicized}
-                            >
-                                {children}
-                            </Text>
-                        </div>
-                    </div>
-                    {variant === "outlined" && (
-                        <div
-                            style={{
-                                width: "calc(100% + 2px)",
-                                height: colors.borderSize,
-                                borderRadius: "0.5px",
-                                backgroundColor: colors.neutralDark[500],
-                            }}
-                        ></div>
-                    )}
-                    <button
-                        type={type}
-                        style={{
-                            position: "absolute",
-                            top: containedAnimation,
-                            left: containedAnimation,
-                            width: "100%",
-                            height: "100%",
-                            opacity: "0%",
-                            type: type,
-                        }}
-                    ></button>
-                </Typography>
-            </div>
-        ) : (
-            <Typography
-                variant={
-                    size === "s"
-                        ? "h6"
-                        : size === "m"
-                        ? "h4"
-                        : size === "l"
-                        ? "h1"
-                        : "button"
-                }
-                style={{
-                    width: fullWidth ? "100%" : "fit-content",
-                    display: "flex",
-                    flexDirection: "column",
-                    flexWrap: "nowrap",
-                    alignItems: "center",
-                    ...style,
-                }}
-            >
-                <div
-                    onMouseEnter={() => {
-                        setTranslation("translateY(-100%)");
-                    }}
-                    onMouseLeave={() => {
-                        setTranslation("");
-                    }}
-                    onMouseDown={() => {
-                        setTranslation("translateY(-200%)");
-                    }}
-                    onMouseUp={() => {
-                        setTranslation("translateY(-100%)");
-                        onClick();
-                    }}
-                    style={{
-                        cursor: "pointer",
-                        display: "flex",
-                        flexDirection: "column",
-                        flexWrap: "nowrap",
-                        alignItems: "center",
-                        height: height,
-                        overflow: "hidden",
-                        WebkitTapHighlightColor: "transparent",
-                        WebkitTouchCallout: "none",
-                        WebkitUserSelect: "none",
-                        KhtmlUserSelect: "none",
-                        MozUserSelect: "none",
-                        MsUserSelect: "none",
-                        userSelect: "none",
-                    }}
-                >
-                    <div
-                        style={{
-                            margin: 0,
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            height: height,
-                        }}
-                    >
-                        <Text
-                            translation={translation}
-                            height={height}
-                            italicized={italicized}
-                        >
-                            {children}
-                        </Text>
-                    </div>
-                    <div
-                        style={{
-                            margin: 0,
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            height: height,
-                        }}
-                    >
-                        <Text
-                            translation={translation}
-                            height={height}
-                            italicized={italicized}
-                        >
-                            {children}
-                        </Text>
-                    </div>
-                    <div
-                        style={{
-                            margin: 0,
-                            display: "flex",
-                            flexWrap: "nowrap",
-                            height: height,
-                        }}
-                    >
-                        <Text
-                            translation={translation}
-                            height={height}
-                            italicized={italicized}
-                        >
-                            {children}
-                        </Text>
-                    </div>
-                </div>
-                {variant === "outlined" && (
                     <div
                         style={{
                             width: "calc(100% + 2px)",
-                            height: colors.borderSize,
+                            height: `${colors.borderSize}px`,
                             borderRadius: "0.5px",
                             backgroundColor: colors.neutralDark[500],
                         }}
                     ></div>
-                )}
+                </b>
             </Typography>
         )
     ) : (
@@ -507,6 +497,7 @@ const Container = (props) => {
                 width: fullWidth ? "100%" : "fit-content",
                 height: fullHeight ? "100%" : "fit-content",
                 maxHeight: "100%",
+                ...outerStyle,
             }}
         >
             <Box
@@ -515,10 +506,12 @@ const Container = (props) => {
                     height: fullHeight ? "calc(100% - 5px)" : "",
                     maxHeight: "100%",
                     overflow: "scroll",
-                    border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
-                    borderRadius: rounded ? `${parseInt(height) / 2}px` : 10,
+                    border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+                    borderRadius: rounded
+                        ? `${parseInt(height) / 2}px`
+                        : `${colors.borderRadius}px`,
                     backgroundColor: colors.primary[500],
-                    boxShadow: `5px 5px 0px ${colors.neutralDark[500]}`,
+                    boxShadow: `${colors.boxShadowSize}px ${colors.boxShadowSize}px 0px ${colors.neutralDark[500]}`,
                     ...style,
                 }}
             >

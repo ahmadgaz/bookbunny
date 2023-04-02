@@ -190,7 +190,7 @@ const Form = () => {
                                 Log in
                             </Container>
                             <Typography variant="h5" margin="10px">
-                                OR
+                                <b>OR</b>
                             </Typography>
                             {/* <GoogleLogin
                                 size="large"
@@ -215,7 +215,22 @@ const Form = () => {
                                 <b color="#EA4335">e</b>
                             </Container>
                         </Box>
-                        {/* QUESTION */}
+                        {/* QUESTIONS */}
+                        <Typography
+                            onClick={() => {
+                                navigate("/register");
+                                resetForm();
+                            }}
+                            sx={{
+                                color: colors.primary[500],
+                                textDecoration: "underline",
+                                "&:hover": {
+                                    cursor: "pointer",
+                                },
+                            }}
+                        >
+                            Forgot Password?
+                        </Typography>
                         <Typography>Don't have an account?</Typography>
                         <Typography
                             onClick={() => {

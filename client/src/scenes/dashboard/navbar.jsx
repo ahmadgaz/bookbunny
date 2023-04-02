@@ -31,9 +31,24 @@ import { CRUDFunctionsContext } from "App";
 import { useDispatch, useSelector } from "react-redux";
 import { hideSnackbar, setLogout, showSnackbar } from "state";
 import { Global } from "@emotion/react";
-import { Delete, Edit, Link, Logout } from "@mui/icons-material";
+import {
+    DarkMode,
+    Delete,
+    Edit,
+    LightMode,
+    Link,
+    Logout,
+} from "@mui/icons-material";
 import { tokens } from "theme";
 import Container from "components/Container";
+const colors = tokens("light");
+const themeColors = [
+    colors.neutralDark[500],
+    colors.redAccent[500],
+    colors.primary[500],
+    colors.neutralLight[500],
+    colors.secondary[500],
+];
 
 // VIEWS
 const addViewSchema = yup.object().shape({
@@ -46,7 +61,6 @@ const initialValuesAddView = {
     view_desc: "",
     view_color: "",
 };
-const colors = ["#423E3B", "#FF2E00", "#FEA82F", "#FFFECB", "#5448C8"];
 const hexToRgb = (hex) => {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
@@ -68,7 +82,7 @@ const ColorPickerBtn = (props) => {
                 minWidth: 0,
                 margin: "0 10px",
                 padding: "20px 20px 20px 20px",
-                border: `${error ? "2px solid red" : ""}`,
+                border: `${error ? `${colors.borderSize}px solid red` : ""}`,
                 backgroundColor: `rgba(${hexToRgb(color).r}, ${
                     hexToRgb(color).g
                 }, ${hexToRgb(color).b}, ${selected ? 1 : 0.5})`,
@@ -92,7 +106,7 @@ const AddViewDialog = (props) => {
 
         return (
             <Box>
-                {colors.map((color, idx) => (
+                {themeColors.map((color, idx) => (
                     <ColorPickerBtn
                         key={idx}
                         error={error}
@@ -369,34 +383,47 @@ const AddViewDialog = (props) => {
         </Dialog>
     );
 };
-const themeColors = tokens("light");
+
 const StyledButton1 = styled(Button)({
     border: "none",
     boxShadow: "none",
-    borderBottom: `${themeColors.borderSize} solid ${themeColors.neutralDark[500]}`,
+    top: "0",
+    left: "0",
+    borderBottom: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
     transition: "filter 0.1s ease",
     "&:hover": {
+        top: "0",
+        left: "0",
         filter: "brightness(110%)",
         boxShadow: `none`,
     },
     "&:active": {
+        top: "0",
+        left: "0",
         boxShadow: `none`,
     },
 });
 const StyledButton2 = styled(Button)({
     border: "none",
     boxShadow: "none",
+    top: "0",
+    left: "0",
     transition: "filter 0.1s ease",
     "&:hover": {
+        top: "0",
+        left: "0",
         filter: "brightness(110%)",
         boxShadow: `none`,
     },
     "&:active": {
+        top: "0",
+        left: "0",
         boxShadow: `none`,
     },
 });
 const StyledButton3 = styled(Button)({
-    transition: "filter 0.1s ease",
+    transition:
+        "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
     "&:hover": {
         filter: "brightness(110%)",
     },
@@ -424,9 +451,9 @@ const ViewsDropdown = () => {
             return (
                 <Box
                     sx={{
-                        border: `${themeColors.borderSize} solid ${themeColors.neutralDark[500]}`,
-                        boxShadow: `1.5px 1.5px 0px ${themeColors.neutralDark[500]}`,
-                        borderRadius: 1.5,
+                        border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+                        boxShadow: `${colors.boxShadowSize}px ${colors.boxShadowSize}px 0px ${colors.neutralDark[500]}`,
+                        borderRadius: `${colors.borderRadius}px`,
                         overflow: "auto",
                     }}
                 >
@@ -451,11 +478,12 @@ const ViewsDropdown = () => {
                                                 borderRadius: "0",
                                                 backgroundColor: v.view_color,
                                                 color:
-                                                    v.view_color ===
-                                                        colors[0] ||
-                                                    v.view_color ===
-                                                        colors[1] ||
-                                                    v.view_color === colors[4]
+                                                    v.view_color.toLowerCase() ===
+                                                        themeColors[0].toLowerCase() ||
+                                                    v.view_color.toLowerCase() ===
+                                                        themeColors[1].toLowerCase() ||
+                                                    v.view_color.toLowerCase() ===
+                                                        themeColors[4].toLowerCase()
                                                         ? "white"
                                                         : "",
                                                 "&:hover": {
@@ -510,12 +538,17 @@ const ViewsDropdown = () => {
                     style={{
                         cursor: "pointer",
                         padding: "10px 30px",
-                        width: "100%",
+                        flexGrow: 1,
+                        borderTopRightRadius: 0,
+                        borderBottomRightRadius: 0,
                         backgroundColor: view.view_color,
                         color:
-                            view.view_color === colors[0] ||
-                            view.view_color === colors[1] ||
-                            view.view_color === colors[4]
+                            view.view_color.toLowerCase() ===
+                                themeColors[0].toLowerCase() ||
+                            view.view_color.toLowerCase() ===
+                                themeColors[1].toLowerCase() ||
+                            view.view_color.toLowerCase() ===
+                                themeColors[4].toLowerCase()
                                 ? "white"
                                 : "",
                     }}
@@ -530,6 +563,170 @@ const ViewsDropdown = () => {
                     }}
                     style={{
                         backgroundColor: "",
+                        flexGrow: 1,
+                    }}
+                >
+                    Add View +
+                </Button>
+            )}
+            <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "left",
+                }}
+                onClose={() => {
+                    handlePopoverClose();
+                }}
+                PaperProps={{
+                    style: {
+                        boxShadow: "0px 0px 0px rgba(0,0,0,0)",
+                        overflow: "visible",
+                        backgroundColor: "rgba(0,0,0,0)",
+                        marginTop: "10px",
+                    },
+                }}
+            >
+                {viewList()}
+            </Popover>
+            {showDialog && <AddViewDialog setShowDialog={setShowDialog} />}
+        </>
+    );
+};
+const MobileViewsDropdown = () => {
+    const { user, getSelectedView, updateView } =
+        useContext(CRUDFunctionsContext);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [showDialog, setShowDialog] = useState(false);
+    const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
+    let view = { ...getSelectedView() };
+
+    const handleDialogOpen = () => {
+        setShowDialog(true);
+    };
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+    const viewList = () => {
+        if (user.views) {
+            return (
+                <Box
+                    sx={{
+                        border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+                        boxShadow: `${colors.boxShadowSize}px ${colors.boxShadowSize}px 0px ${colors.neutralDark[500]}`,
+                        borderRadius: `${colors.borderRadius}px`,
+                        overflow: "auto",
+                    }}
+                >
+                    <ul
+                        style={{ margin: 0, padding: 0, listStyleType: "none" }}
+                    >
+                        {user.views.map((v, idx) => {
+                            if (v._id !== view._id) {
+                                return (
+                                    <li key={idx}>
+                                        <StyledButton1
+                                            fullWidth
+                                            variant="contained"
+                                            onClick={() => {
+                                                setSelectedView(v);
+                                                handlePopoverClose();
+                                            }}
+                                            style={{
+                                                cursor: "pointer",
+                                                padding: "10px 30px",
+                                                width: "100%",
+                                                borderRadius: "0",
+                                                backgroundColor: v.view_color,
+                                                color:
+                                                    v.view_color.toLowerCase() ===
+                                                        themeColors[0].toLowerCase() ||
+                                                    v.view_color.toLowerCase() ===
+                                                        themeColors[1].toLowerCase() ||
+                                                    v.view_color.toLowerCase() ===
+                                                        themeColors[4].toLowerCase()
+                                                        ? "white"
+                                                        : "",
+                                                "&:hover": {
+                                                    // backgroundColor: `${v.view_color}F7`,
+                                                },
+                                            }}
+                                        >
+                                            {v.view_name}
+                                        </StyledButton1>
+                                    </li>
+                                );
+                            }
+                            return null;
+                        })}
+                        <StyledButton2
+                            fullWidth
+                            variant="contained"
+                            onClick={() => {
+                                handleDialogOpen();
+                                handlePopoverClose();
+                            }}
+                            style={{
+                                borderRadius: "0",
+                                backgroundColor: "",
+                            }}
+                        >
+                            Add view +
+                        </StyledButton2>
+                    </ul>
+                </Box>
+            );
+        }
+        return null;
+    };
+
+    const setSelectedView = (v) => {
+        let selectedView = { ...v };
+        view.view_selected = false;
+        selectedView.view_selected = true;
+        updateView(view);
+        updateView(selectedView);
+    };
+    return (
+        <>
+            {view._id ? (
+                <StyledButton3
+                    variant="contained"
+                    onClick={(e) => {
+                        handlePopoverOpen(e);
+                    }}
+                    endIcon={<ArrowDropDownIcon sx={{ m: "0 0 0 5px" }} />}
+                    style={{
+                        cursor: "pointer",
+                        padding: "10px 30px",
+                        flexGrow: 1,
+                        backgroundColor: view.view_color,
+                        color:
+                            view.view_color.toLowerCase() ===
+                                themeColors[0].toLowerCase() ||
+                            view.view_color.toLowerCase() ===
+                                themeColors[1].toLowerCase() ||
+                            view.view_color.toLowerCase() ===
+                                themeColors[4].toLowerCase()
+                                ? "white"
+                                : "",
+                    }}
+                >
+                    {view.view_name}
+                </StyledButton3>
+            ) : (
+                <Button
+                    variant="contained"
+                    onClick={() => {
+                        handleDialogOpen();
+                    }}
+                    style={{
+                        backgroundColor: "",
+                        flexGrow: 1,
                     }}
                 >
                     Add View +
@@ -670,22 +867,24 @@ const HideOnScroll = (props) => {
 };
 
 const StyledAppBar1 = styled(AppBar)({
-    background: `linear-gradient(${themeColors.neutralLight[500]} 85%, ${themeColors.neutralLight[500]}00);`,
+    background: `linear-gradient(${colors.neutralLight[500]} 85%, ${colors.neutralLight[500]}00);`,
 });
 const StyledAppBar2 = styled(AppBar)({
-    background: `linear-gradient(${themeColors.neutralLight[500]} 85%, ${themeColors.neutralLight[500]}00);`,
+    background: `linear-gradient(${colors.neutralLight[500]} 85%, ${colors.neutralLight[500]}00);`,
 });
 
 const Navbar = (props) => {
-    const { tab, handleTabChange } = props;
-    const { user } = useContext(CRUDFunctionsContext);
-    // const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
-    const [open, setOpen] = useState(false);
-    const toggleDrawer = (newOpen) => {
-        setOpen(newOpen);
-    };
+    const { tab, handleTabChange, emblaRef } = props;
+    const mode = useSelector((state) => state.mode);
     const dispatch = useDispatch();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    const trigger = useScrollTrigger({
+        target: emblaRef.current ? emblaRef.current : undefined,
+    });
+    useEffect(() => {
+        console.log(trigger);
+    }, [trigger]);
+
     const View = () => {
         return (
             <Box
@@ -693,7 +892,7 @@ const Navbar = (props) => {
                 justifyContent="center"
                 alignItems="center"
                 width="50px"
-                height="50px"
+                height="20px"
             >
                 <ViewDayIcon />
                 {tab === 0 && (
@@ -711,7 +910,7 @@ const Navbar = (props) => {
                 justifyContent="center"
                 alignItems="center"
                 width="50px"
-                height="50px"
+                height="20px"
             >
                 <TodayIcon />
                 {tab === 1 && (
@@ -729,7 +928,7 @@ const Navbar = (props) => {
                 justifyContent="center"
                 alignItems="center"
                 width="50px"
-                height="50px"
+                height="20px"
             >
                 <SupportIcon />
                 {tab === 2 && (
@@ -747,7 +946,7 @@ const Navbar = (props) => {
                 justifyContent="center"
                 alignItems="center"
                 width="50px"
-                height="50px"
+                height="20px"
             >
                 <PersonIcon />
                 {tab === 3 && (
@@ -759,74 +958,154 @@ const Navbar = (props) => {
         );
     };
 
+    console.log(tab);
     return isNonMobileScreens ? (
-        <StyledAppBar1>
-            <Toolbar
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                }}
-            >
-                <Box display="flex" alignItems="center">
-                    <img
-                        src={Logo}
-                        alt="Logo"
-                        style={{ height: "50px", margin: "0 30px 0 0" }}
-                    />
-                    <Box>
-                        <ViewsDropdown />
-                    </Box>
-                </Box>
-                <Tabs
-                    value={tab}
-                    onChange={handleTabChange}
-                    indicatorColor="secondary"
-                    textColor="inherit"
-                    variant="fullWidth"
+        <AppBar>
+            <Slide appear={false} direction="down" in={!trigger}>
+                <Toolbar
                     sx={{
-                        position: "absolute",
-                        left: "50%",
                         display: "flex",
-                        justifyContent: "center",
-                        transform: "translateX(-50%)",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                     }}
                 >
-                    <Tab icon={<View />} />
-                    <Tab icon={<Calendar />} />
-                    <Tab icon={<Help />} />
-                    <Tab icon={<Account />} />
-                </Tabs>
-                {/* <Tabs
-                    value={tab}
-                    onChange={handleTabChange}
-                    indicatorColor="secondary"
-                    textColor="inherit"
-                    variant="fullWidth"
-                    sx={{
-                        position: "absolute",
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                    }}
-                >
-                    <Tab label="View" />
-                    <Tab label="Calendar" />
-                    <Tab label="Help" />
-                    <Tab label="Account" />
-                </Tabs> */}
-
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => {
-                        dispatch(setLogout());
-                    }}
-                    sx={{ marginLeft: "30px" }}
-                >
-                    Log out
-                </Button>
-            </Toolbar>
-        </StyledAppBar1>
+                    <Box display="flex" alignItems="center">
+                        <img
+                            src={Logo}
+                            alt="Logo"
+                            style={{ height: "50px", margin: "0 30px 0 0" }}
+                        />
+                        <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <ViewsDropdown />
+                            <Button
+                                variant={tab === 0 ? "contained" : ""}
+                                style={
+                                    tab !== 0
+                                        ? {
+                                              backgroundColor: "white",
+                                              borderRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                        : {
+                                              top: 0,
+                                              left: 0,
+                                              boxShadow: "0 0 0",
+                                              borderRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                }
+                                onClick={() => {
+                                    handleTabChange(null, 0);
+                                }}
+                            >
+                                Views
+                            </Button>
+                            <Button
+                                variant={tab === 1 ? "contained" : ""}
+                                style={
+                                    tab !== 1
+                                        ? {
+                                              backgroundColor: "white",
+                                              borderRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                        : {
+                                              top: 0,
+                                              left: 0,
+                                              boxShadow: "0 0 0",
+                                              borderRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                }
+                                onClick={() => {
+                                    handleTabChange(null, 1);
+                                }}
+                            >
+                                Calendar
+                            </Button>
+                            <Button
+                                variant={tab === 2 ? "contained" : ""}
+                                style={
+                                    tab !== 2
+                                        ? {
+                                              backgroundColor: "white",
+                                              borderRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                        : {
+                                              top: 0,
+                                              left: 0,
+                                              boxShadow: "0 0 0",
+                                              borderRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                }
+                                onClick={() => {
+                                    handleTabChange(null, 2);
+                                }}
+                            >
+                                Help
+                            </Button>
+                            <Button
+                                variant={tab === 3 ? "contained" : ""}
+                                style={
+                                    tab !== 3
+                                        ? {
+                                              backgroundColor: "white",
+                                              borderTopLeftRadius: 0,
+                                              borderBottomLeftRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                        : {
+                                              top: 0,
+                                              left: 0,
+                                              boxShadow: "0 0 0",
+                                              borderTopLeftRadius: 0,
+                                              borderBottomLeftRadius: 0,
+                                              minHeight: "42.4px",
+                                          }
+                                }
+                                onClick={() => {
+                                    handleTabChange(null, 3);
+                                }}
+                            >
+                                Account
+                            </Button>
+                            {/* <Tabs
+                                value={tab}
+                                onChange={handleTabChange}
+                                indicatorColor="secondary"
+                                textColor="inherit"
+                                variant="fullWidth"
+                                sx={{
+                                    marginLeft: "20px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <Tab icon={<View />} />
+                                <Tab icon={<Calendar />} />
+                                <Tab icon={<Help />} />
+                                <Tab icon={<Account />} />
+                            </Tabs> */}
+                        </Box>
+                    </Box>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => {
+                            dispatch(setLogout());
+                        }}
+                    >
+                        Log out
+                    </Button>
+                </Toolbar>
+            </Slide>
+        </AppBar>
     ) : (
         <>
             <AppBar sx={{ padding: "0px" }}>
@@ -836,11 +1115,11 @@ const Navbar = (props) => {
                         position: "absolute",
                         borderBottomLeftRadius: 12,
                         borderBottomRightRadius: 12,
-                        color: themeColors.neutralDark[500],
+                        color: colors.neutralDark[500],
                         visibility: "visible",
-                        backgroundColor: `${themeColors.neutralLight[200]}d7`,
+                        backgroundColor: `${colors.neutralLight[200]}d7`,
                         backdropFilter: "blur(10px)",
-                        // borderTop: `1px solid ${themeColors.neutralDark[100]}`,
+                        // borderTop: `1px solid ${colors.neutralDark[100]}`,
                         boxShadow: "0 -2.5px 7.5px rgba(0, 0, 0, 0.4)",
                         right: 0,
                         left: 0,
@@ -850,14 +1129,12 @@ const Navbar = (props) => {
                         padding: "0 30px 0 30px",
                     }}
                 >
-                    <img
-                        src={Logo}
-                        alt="Logo"
-                        style={{ height: "50px", margin: "0 30px 0 0" }}
-                    />
+                    <IconButton onClick={() => {}} sx={{ marginRight: "30px" }}>
+                        {mode === "light" ? <DarkMode /> : <LightMode />}
+                    </IconButton>
 
                     <Box>
-                        <ViewsDropdown />
+                        <MobileViewsDropdown />
                     </Box>
 
                     <IconButton
@@ -878,11 +1155,11 @@ const Navbar = (props) => {
                         top: -drawerBleeding,
                         borderTopLeftRadius: 12,
                         borderTopRightRadius: 12,
-                        color: themeColors.neutralDark[500],
+                        color: colors.neutralDark[500],
                         visibility: "visible",
-                        backgroundColor: `${themeColors.neutralLight[200]}d7`,
+                        backgroundColor: `${colors.neutralLight[200]}d7`,
                         backdropFilter: "blur(10px)",
-                        // borderTop: `1px solid ${themeColors.neutralDark[100]}`,
+                        // borderTop: `1px solid ${colors.neutralDark[100]}`,
                         boxShadow: "0 2.5px 7.5px rgba(0, 0, 0, 0.4)",
                         right: 0,
                         left: 0,

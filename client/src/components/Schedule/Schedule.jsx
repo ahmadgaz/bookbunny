@@ -55,7 +55,7 @@ const Schedule = (props) => {
                     style={{
                         margin: 0,
                         padding: "5px",
-                        fontSize: "0.5em",
+                        fontSize: "0.4em",
                         color: "#bbb",
                     }}
                 >

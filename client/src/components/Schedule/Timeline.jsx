@@ -19,6 +19,7 @@ import { tokens } from "theme";
 import { v4 } from "uuid";
 import { getTime, getPosAndSize } from "./convertData";
 import Event from "./Event";
+const colors = tokens("light");
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -48,7 +49,7 @@ const useStyles = makeStyles({
         position: "absolute",
         width: "100%",
         height: "100%",
-        borderRadius: "2px",
+        borderRadius: `${colors.borderRadius / 2}px`,
         backgroundColor: "rgb(255,255,255,0)",
         opacity: "25%",
         boxShadow: "0",
@@ -81,9 +82,9 @@ const Timeline = (props) => {
             this.key = v4();
             this.direction = direction;
             this.color = color;
-            this.borderColor = `rgba(${hexToRgb(color).r - 100}, ${
-                hexToRgb(color).g - 100
-            }, ${hexToRgb(color).b - 100}, 1)`;
+            this.borderColor = `rgba(${hexToRgb(color).r - 50}, ${
+                hexToRgb(color).g - 50
+            }, ${hexToRgb(color).b - 50}, 1)`;
             this.time = time;
             this.event = event;
             this.googleEvent = googleEvent;
@@ -124,8 +125,15 @@ const Timeline = (props) => {
                         : this.event || this.googleEvent
                         ? this.eventHeight
                         : "100%",
-                borderRadius: "5px",
-                border: this.size > 0 ? `1.5px solid ${this.borderColor}` : "",
+                borderRadius: `${colors.borderRadius / 2}px`,
+                border:
+                    this.size > 0
+                        ? type === "write"
+                            ? `${colors.borderSize}px solid ${this.borderColor}`
+                            : this.event
+                            ? `${colors.borderSize}px  solid ${this.borderColor}`
+                            : ""
+                        : "",
                 opacity: this.opacity,
                 background:
                     type === "read" &&
@@ -807,7 +815,7 @@ const Timeline = (props) => {
                     alignSelf: "center",
                     padding: "0 15px",
                     margin: "10px",
-                    fontSize: "0.5em",
+                    fontSize: "0.4em",
                     color: "#bbb",
                     WebkitTapHighlightColor: "transparent",
                     WebkitTouchCallout: "none",

@@ -24,6 +24,14 @@ import { CheckBox, ChevronLeft, Delete, Edit, Link } from "@mui/icons-material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { tokens } from "theme";
 import { useDispatch, useSelector } from "react-redux";
+const colors = tokens("light");
+const themeColors = [
+    colors.neutralDark[500],
+    colors.redAccent[500],
+    colors.primary[500],
+    colors.neutralLight[500],
+    colors.secondary[500],
+];
 
 const DeleteEventTypeDialog = (props) => {
     const { eventType, setShowDialog } = props;
@@ -68,7 +76,6 @@ const DeleteEventTypeDialog = (props) => {
                     >
                         <Typography
                             variant="body1"
-                            fontSize={24}
                             color="grey"
                             sx={{ gridColumn: "span 4" }}
                         >
@@ -210,7 +217,7 @@ const EditEventTypeDialog = (props) => {
                         textAlign: "center",
                     }}
                 >
-                    <Typography variant="h1" margin="5px 0 25px 0">
+                    <Typography variant="h3" margin="5px 0 25px 0">
                         Edit Event Type
                     </Typography>
                     <Formik
@@ -496,7 +503,7 @@ const AddEventTypeDialog = (props) => {
                         textAlign: "center",
                     }}
                 >
-                    <Typography variant="h1" margin="5px 0 25px 0">
+                    <Typography variant="h3" margin="5px 0 25px 0">
                         Add Event Type
                     </Typography>
                     <Formik
@@ -788,7 +795,6 @@ const EventTypes = () => {
                                         <Box width="100%">
                                             <Typography
                                                 variant="body1"
-                                                fontSize={20}
                                                 textAlign="left"
                                             >
                                                 {et.event_type_name}
@@ -796,31 +802,33 @@ const EventTypes = () => {
                                             <Box
                                                 display="flex"
                                                 width="100%"
-                                                justifyContent="space-between"
+                                                justifyContent="left"
                                                 alignItems="center"
                                             >
-                                                <Typography
-                                                    variant="body1"
-                                                    fontSize={16}
-                                                    color="grey"
-                                                    textAlign="left"
-                                                >
-                                                    <b>Duration: </b>
-                                                    {et.event_type_duration}
-                                                </Typography>
-                                                {et.event_type_location && (
+                                                {et.event_type_location ? (
                                                     <Typography
-                                                        variant="body1"
-                                                        fontSize={16}
+                                                        variant="subtitle1"
                                                         color="grey"
-                                                        textAlign="right"
+                                                        textAlign="left"
                                                     >
+                                                        <b>Duration: </b>
+                                                        {et.event_type_duration}
+                                                        &ensp;|&ensp;
                                                         <b>Location: </b>
                                                         {et.event_type_location}
                                                     </Typography>
+                                                ) : (
+                                                    <Typography
+                                                        variant="subtitle1"
+                                                        color="grey"
+                                                        textAlign="left"
+                                                    >
+                                                        <b>Duration: </b>
+                                                        {et.event_type_duration}
+                                                    </Typography>
                                                 )}
                                             </Box>
-                                            <hr />
+                                            <hr style={{ marginBottom: "0" }} />
                                             <Box
                                                 display="flex"
                                                 width="100%"
@@ -834,8 +842,18 @@ const EventTypes = () => {
                                                         );
                                                         handlePopoverClose();
                                                     }}
+                                                    color="primary"
+                                                    size="small"
+                                                    sx={{
+                                                        transform: "scale(0.8)",
+                                                    }}
                                                 >
-                                                    <Edit />
+                                                    <Edit
+                                                        sx={{
+                                                            transform:
+                                                                "scale(0.8)",
+                                                        }}
+                                                    />
                                                 </IconButton>
                                                 <IconButton
                                                     onClick={() => {
@@ -844,8 +862,18 @@ const EventTypes = () => {
                                                         );
                                                         handlePopoverClose();
                                                     }}
+                                                    color="primary"
+                                                    size="small"
+                                                    sx={{
+                                                        transform: "scale(0.8)",
+                                                    }}
                                                 >
-                                                    <Delete />
+                                                    <Delete
+                                                        sx={{
+                                                            transform:
+                                                                "scale(0.8)",
+                                                        }}
+                                                    />
                                                 </IconButton>
                                                 <IconButton
                                                     onClick={() => {
@@ -862,8 +890,18 @@ const EventTypes = () => {
                                                             })
                                                         );
                                                     }}
+                                                    color="primary"
+                                                    size="small"
+                                                    sx={{
+                                                        transform: "scale(0.8)",
+                                                    }}
                                                 >
-                                                    <Link />
+                                                    <Link
+                                                        sx={{
+                                                            transform:
+                                                                "scale(0.8)",
+                                                        }}
+                                                    />
                                                 </IconButton>
                                             </Box>
                                         </Box>
@@ -953,7 +991,6 @@ const DeleteViewDialog = (props) => {
                     >
                         <Typography
                             variant="body1"
-                            fontSize={24}
                             color="grey"
                             sx={{ gridColumn: "span 4" }}
                         >
@@ -1045,7 +1082,6 @@ const addViewSchema = yup.object().shape({
     view_desc: yup.string().notRequired(),
     view_color: yup.string().required("Pick a color!"),
 });
-const colors = ["#423E3B", "#FF2E00", "#FEA82F", "#FFFECB", "#5448C8"];
 const hexToRgb = (hex) => {
     let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
@@ -1067,7 +1103,7 @@ const ColorPickerBtn = (props) => {
                 minWidth: 0,
                 margin: "0 10px",
                 padding: "20px 20px 20px 20px",
-                border: `${error ? "1px solid red" : ""}`,
+                border: `${error ? `${colors.borderSize}px solid red` : ""}`,
                 backgroundColor: `rgba(${hexToRgb(color).r}, ${
                     hexToRgb(color).g
                 }, ${hexToRgb(color).b}, ${selected ? 1 : 0.5})`,
@@ -1097,7 +1133,7 @@ const EditViewDialog = (props) => {
 
         return (
             <>
-                {colors.map((color, idx) => (
+                {themeColors.map((color, idx) => (
                     <ColorPickerBtn
                         key={idx}
                         error={error}
@@ -1142,7 +1178,7 @@ const EditViewDialog = (props) => {
                         textAlign: "center",
                     }}
                 >
-                    <Typography variant="h1" margin="5px 0 25px 0">
+                    <Typography variant="h3" margin="5px 0 25px 0">
                         Edit View
                     </Typography>
                     <Formik
@@ -1428,7 +1464,6 @@ const View = () => {
     const [showEditDialog, setShowEditDialog] = useState(null);
     const [showDeletedSnackbar, setShowDeletedSnackbar] = useState(false);
     const [showEditedSnackbar, setShowEditedSnackbar] = useState(false);
-    const colors = tokens("light");
     const [leftArrowHovered, setLeftArrowHovered] = useState(false);
     const [rightArrowHovered, setRightArrowHovered] = useState(false);
     const [shownViews, setShownViews] = useState(
@@ -1480,364 +1515,384 @@ const View = () => {
 
     return isNonMobileScreens ? (
         <Box marginBottom="30px">
-            <Box
-                display="grid"
-                p="20px"
-                gridTemplateColumns="10vw 10vw 10vw 10vw 10vw 10vw 10vw"
-                gridTemplateRows=" 60px 100px 100px 100px 100px 100px 100px"
-                columnGap="20px"
-                rowGap="20px"
-            >
+            <Box width="1200px" maxWidth="80vw">
                 <Box
-                    sx={{
-                        width: "100%",
-                        height: "100%",
+                    display="grid"
+                    p="20px"
+                    gridTemplateColumns="12.6% 12.6% 12.6% 12.6% 12.6% 12.6% 12.6%"
+                    gridTemplateRows=" 60px 100px 100px 100px 100px 100px 100px"
+                    columnGap="20px"
+                    rowGap="20px"
+                >
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
 
-                        gridColumnStart: 1,
-                        gridColumnEnd: 3,
-                        gridRowStart: 1,
-                        gridRowEnd: 5,
-                        justifySelf: "center",
-                        alignSelf: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Container
-                        fullWidth
-                        fullHeight
-                        button={false}
-                        style={{
-                            padding: "30px",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                            textAlign: "center",
-                        }}
-                    >
-                        {" "}
-                        <Typography variant="h2" margin="5px 0 10px 0">
-                            Event Types
-                        </Typography>
-                        <EventTypes />
-                    </Container>
-                </Box>
-                <Box
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        gridColumnStart: 3,
-                        gridColumnEnd: 6,
-                        gridRowStart: 1,
-                        gridRowEnd: 2,
-                        justifySelf: "center",
-                        alignSelf: "center",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "left",
-                        alignItems: "end",
-                    }}
-                >
-                    {view._id ? (
-                        <Box
-                            display="flex"
-                            paddingLeft="20px"
-                            width="100%"
-                            justifyContent="space-between"
-                            alignItems="center"
-                        >
-                            <div
-                                onClick={() => {
-                                    setPrevView();
-                                }}
-                                onMouseOver={() => setLeftArrowHovered(true)}
-                                onMouseLeave={() => setLeftArrowHovered(false)}
-                                style={{
-                                    width: "30px",
-                                    cursor: "pointer",
-                                    height: "43.2px",
-                                }}
-                            >
-                                <Box
-                                    backgroundColor={colors.neutralDark[500]}
-                                    sx={{
-                                        position: "relative",
-                                        width: "5px",
-                                        height: "55%",
-                                        rotate: "45deg",
-                                        border: leftArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
-                                        transition: "border 0.1s ease",
-                                    }}
-                                ></Box>
-                                <Box
-                                    backgroundColor={colors.neutralDark[500]}
-                                    sx={{
-                                        position: "relative",
-                                        top: leftArrowHovered
-                                            ? "-12px"
-                                            : "-10px",
-                                        width: "5px",
-                                        height: "55%",
-                                        rotate: "-45deg",
-                                        border: leftArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
-                                        transition:
-                                            "border 0.1s ease, top 0.1s ease",
-                                    }}
-                                ></Box>
-                            </div>
-                            <Box flexGrow="1" paddingLeft="20px">
-                                <Typography variant="h2">
-                                    {view.view_name}
-                                </Typography>
-                                <Typography
-                                    variant="body1"
-                                    fontSize={16}
-                                    color="grey"
-                                >
-                                    {view.view_desc}
-                                </Typography>
-                            </Box>
-                            <div
-                                onClick={() => {
-                                    setNextView();
-                                }}
-                                onMouseOver={() => setRightArrowHovered(true)}
-                                onMouseLeave={() => setRightArrowHovered(false)}
-                                style={{
-                                    width: "30px",
-                                    cursor: "pointer",
-                                    paddingRight: "25px",
-                                    height: "43.2px",
-                                }}
-                            >
-                                <Box
-                                    backgroundColor={colors.neutralDark[500]}
-                                    sx={{
-                                        position: "relative",
-                                        width: "5px",
-                                        height: "55%",
-                                        rotate: "-45deg",
-                                        border: rightArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
-                                        transition: "border 0.1s ease",
-                                    }}
-                                ></Box>
-                                <Box
-                                    backgroundColor={colors.neutralDark[500]}
-                                    sx={{
-                                        position: "relative",
-                                        top: rightArrowHovered
-                                            ? "-12px"
-                                            : "-10px",
-                                        width: "5px",
-                                        height: "55%",
-                                        rotate: "45deg",
-                                        border: rightArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
-                                        transition:
-                                            "border 0.1s ease, top 0.1s ease",
-                                    }}
-                                ></Box>
-                            </div>
-                        </Box>
-                    ) : (
-                        <Typography variant="h2" color="grey">
-                            No Views
-                        </Typography>
-                    )}
-                </Box>
-                <Button
-                    fullWidth
-                    disabled={!view._id}
-                    variant="contained"
-                    onClick={() => {
-                        handleEditDialogOpen(view);
-                    }}
-                    sx={{
-                        gridColumnStart: 6,
-                        gridColumnEnd: 7,
-                        gridRowStart: 1,
-                        gridRowEnd: 2,
-                    }}
-                >
-                    Edit View
-                </Button>
-                <Button
-                    fullWidth
-                    disabled={!view._id}
-                    onClick={() => {
-                        handleDeleteDialogOpen(view);
-                    }}
-                    sx={{
-                        backgroundColor: "white",
-                        gridColumnStart: 7,
-                        gridColumnEnd: 8,
-                        gridRowStart: 1,
-                        gridRowEnd: 2,
-                    }}
-                >
-                    Delete View
-                </Button>
-                <Box
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        gridColumnStart: 3,
-                        gridColumnEnd: 8,
-                        gridRowStart: 2,
-                        gridRowEnd: 5,
-                        justifySelf: "center",
-                        alignSelf: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Container
-                        fullWidth
-                        fullHeight
-                        button={false}
-                        style={{
+                            gridColumnStart: 1,
+                            gridColumnEnd: 3,
+                            gridRowStart: 1,
+                            gridRowEnd: 5,
+                            justifySelf: "center",
+                            alignSelf: "center",
                             display: "flex",
-                            padding: "30px",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                            textAlign: "center",
+                            flexDirection: "column",
+                            justifyContent: "center",
                         }}
                     >
-                        {/* <TransformWrapper>
+                        <Container
+                            fullWidth
+                            fullHeight
+                            button={false}
+                            style={{
+                                padding: "30px",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                                textAlign: "center",
+                            }}
+                        >
+                            {" "}
+                            <Typography variant="h3" margin="5px 0 10px 0">
+                                <b>Event Types</b>
+                            </Typography>
+                            <EventTypes />
+                        </Container>
+                    </Box>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            gridColumnStart: 3,
+                            gridColumnEnd: 6,
+                            gridRowStart: 1,
+                            gridRowEnd: 2,
+                            justifySelf: "center",
+                            alignSelf: "center",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "left",
+                            alignItems: "end",
+                        }}
+                    >
+                        {view._id ? (
+                            <Box
+                                display="flex"
+                                paddingLeft="20px"
+                                width="100%"
+                                justifyContent="space-between"
+                                alignItems="center"
+                            >
+                                <div
+                                    onClick={() => {
+                                        setPrevView();
+                                    }}
+                                    onMouseOver={() =>
+                                        setLeftArrowHovered(true)
+                                    }
+                                    onMouseLeave={() =>
+                                        setLeftArrowHovered(false)
+                                    }
+                                    style={{
+                                        width: "30px",
+                                        cursor: "pointer",
+                                        height: "43.2px",
+                                    }}
+                                >
+                                    <Box
+                                        backgroundColor={
+                                            colors.neutralDark[500]
+                                        }
+                                        sx={{
+                                            position: "relative",
+                                            width: "5px",
+                                            height: "55%",
+                                            rotate: "45deg",
+                                            border: leftArrowHovered
+                                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                                : ` 0px solid ${colors.neutralDark[500]}`,
+                                            transition: "border 0.1s ease",
+                                        }}
+                                    ></Box>
+                                    <Box
+                                        backgroundColor={
+                                            colors.neutralDark[500]
+                                        }
+                                        sx={{
+                                            position: "relative",
+                                            top: leftArrowHovered
+                                                ? "-12px"
+                                                : "-10px",
+                                            width: "5px",
+                                            height: "55%",
+                                            rotate: "-45deg",
+                                            border: leftArrowHovered
+                                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                                : ` 0px solid ${colors.neutralDark[500]}`,
+                                            transition:
+                                                "border 0.1s ease, top 0.1s ease",
+                                        }}
+                                    ></Box>
+                                </div>
+                                <Box flexGrow="1" paddingLeft="20px">
+                                    <Typography variant="h3">
+                                        <b>{view.view_name}</b>
+                                    </Typography>
+                                    <Typography
+                                        variant="subtitle1"
+                                        color="grey"
+                                    >
+                                        {view.view_desc}
+                                    </Typography>
+                                </Box>
+                                <div
+                                    onClick={() => {
+                                        setNextView();
+                                    }}
+                                    onMouseOver={() =>
+                                        setRightArrowHovered(true)
+                                    }
+                                    onMouseLeave={() =>
+                                        setRightArrowHovered(false)
+                                    }
+                                    style={{
+                                        width: "30px",
+                                        cursor: "pointer",
+                                        paddingRight: "25px",
+                                        height: "43.2px",
+                                    }}
+                                >
+                                    <Box
+                                        backgroundColor={
+                                            colors.neutralDark[500]
+                                        }
+                                        sx={{
+                                            position: "relative",
+                                            width: "5px",
+                                            height: "55%",
+                                            rotate: "-45deg",
+                                            border: rightArrowHovered
+                                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                                : ` 0px solid ${colors.neutralDark[500]}`,
+                                            transition: "border 0.1s ease",
+                                        }}
+                                    ></Box>
+                                    <Box
+                                        backgroundColor={
+                                            colors.neutralDark[500]
+                                        }
+                                        sx={{
+                                            position: "relative",
+                                            top: rightArrowHovered
+                                                ? "-12px"
+                                                : "-10px",
+                                            width: "5px",
+                                            height: "55%",
+                                            rotate: "45deg",
+                                            border: rightArrowHovered
+                                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                                : ` 0px solid ${colors.neutralDark[500]}`,
+                                            transition:
+                                                "border 0.1s ease, top 0.1s ease",
+                                        }}
+                                    ></Box>
+                                </div>
+                            </Box>
+                        ) : (
+                            <Typography variant="h3" color="grey">
+                                No Views
+                            </Typography>
+                        )}
+                    </Box>
+                    <Button
+                        fullWidth
+                        disabled={!view._id}
+                        variant="contained"
+                        onClick={() => {
+                            handleEditDialogOpen(view);
+                        }}
+                        sx={{
+                            gridColumnStart: 6,
+                            gridColumnEnd: 7,
+                            gridRowStart: 1,
+                            gridRowEnd: 2,
+                        }}
+                    >
+                        Edit View
+                    </Button>
+                    <Button
+                        fullWidth
+                        disabled={!view._id}
+                        onClick={() => {
+                            handleDeleteDialogOpen(view);
+                        }}
+                        sx={{
+                            backgroundColor: "white",
+                            gridColumnStart: 7,
+                            gridColumnEnd: 8,
+                            gridRowStart: 1,
+                            gridRowEnd: 2,
+                        }}
+                    >
+                        Delete View
+                    </Button>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            gridColumnStart: 3,
+                            gridColumnEnd: 8,
+                            gridRowStart: 2,
+                            gridRowEnd: 5,
+                            justifySelf: "center",
+                            alignSelf: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Container
+                            fullWidth
+                            fullHeight
+                            button={false}
+                            style={{
+                                display: "flex",
+                                padding: "30px",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                                textAlign: "center",
+                            }}
+                        >
+                            {/* <TransformWrapper>
                             <TransformComponent> */}
-                        <Box height="260px" width="fit-content">
-                            <Schedule
-                                direction="horizontal"
-                                type="write"
-                                pxSize="650"
-                                views={
-                                    getSelectedView() ? [getSelectedView()] : []
-                                }
-                                updateView={updateView}
-                            />
-                        </Box>
-                        {/* </TransformComponent>
-                        </TransformWrapper> */}
-                    </Container>
-                </Box>
-                <Box
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        gridColumnStart: 1,
-                        gridColumnEnd: 3,
-                        gridRowStart: 5,
-                        gridRowEnd: 8,
-                        justifySelf: "center",
-                        alignSelf: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Container
-                        fullWidth
-                        fullHeight
-                        button={false}
-                        style={{
-                            padding: "30px",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                            textAlign: "center",
-                        }}
-                    >
-                        <Typography variant="h2" margin="5px 0 10px 0">
-                            All Views
-                        </Typography>
-                        <Views setShownViews={setShownViews} />
-                    </Container>
-                </Box>
-                <Box
-                    sx={{
-                        width: "100%",
-                        height: "100%",
-                        gridColumnStart: 3,
-                        gridColumnEnd: 8,
-                        gridRowStart: 5,
-                        gridRowEnd: 8,
-                        justifySelf: "center",
-                        alignSelf: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Container
-                        fullWidth
-                        fullHeight
-                        button={false}
-                        style={{
-                            padding: "30px",
-                            height: "100%",
-                            backgroundColor: "#fff",
-                            textAlign: "center",
-                        }}
-                    >
-                        <Box height="260px" width="fit-content">
-                            {shownViews.length > 0 ? (
+                            <Box height="260px" width="fit-content">
                                 <Schedule
                                     direction="horizontal"
-                                    type="read"
+                                    type="write"
                                     pxSize="650"
                                     views={
-                                        user.views
-                                            ? user.views.length > 0
-                                                ? user.views.filter((view) =>
-                                                      shownViews.some(
-                                                          (viewid) =>
-                                                              viewid ===
-                                                              view._id
-                                                      )
-                                                  )
-                                                : getSelectedView()
-                                                ? [getSelectedView()]
-                                                : []
+                                        getSelectedView()
+                                            ? [getSelectedView()]
                                             : []
                                     }
+                                    updateView={updateView}
                                 />
-                            ) : user.views ? (
-                                user.views.length <= 0 ? (
-                                    <Typography variant="h2" color="grey">
-                                        Create a View!
-                                    </Typography>
+                            </Box>
+                            {/* </TransformComponent>
+                        </TransformWrapper> */}
+                        </Container>
+                    </Box>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            gridColumnStart: 1,
+                            gridColumnEnd: 3,
+                            gridRowStart: 5,
+                            gridRowEnd: 8,
+                            justifySelf: "center",
+                            alignSelf: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Container
+                            fullWidth
+                            fullHeight
+                            button={false}
+                            style={{
+                                padding: "30px",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                                textAlign: "center",
+                            }}
+                        >
+                            <Typography variant="h3" margin="5px 0 10px 0">
+                                <b>All Views</b>
+                            </Typography>
+                            <Views setShownViews={setShownViews} />
+                        </Container>
+                    </Box>
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            gridColumnStart: 3,
+                            gridColumnEnd: 8,
+                            gridRowStart: 5,
+                            gridRowEnd: 8,
+                            justifySelf: "center",
+                            alignSelf: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Container
+                            fullWidth
+                            fullHeight
+                            button={false}
+                            style={{
+                                padding: "30px",
+                                height: "100%",
+                                backgroundColor: "#fff",
+                                textAlign: "center",
+                            }}
+                        >
+                            <Box height="260px" width="fit-content">
+                                {shownViews.length > 0 ? (
+                                    <Schedule
+                                        direction="horizontal"
+                                        type="read"
+                                        pxSize="650"
+                                        views={
+                                            user.views
+                                                ? user.views.length > 0
+                                                    ? user.views.filter(
+                                                          (view) =>
+                                                              shownViews.some(
+                                                                  (viewid) =>
+                                                                      viewid ===
+                                                                      view._id
+                                                              )
+                                                      )
+                                                    : getSelectedView()
+                                                    ? [getSelectedView()]
+                                                    : []
+                                                : []
+                                        }
+                                    />
+                                ) : user.views ? (
+                                    user.views.length <= 0 ? (
+                                        <Typography variant="h3" color="grey">
+                                            <b>Create a View!</b>
+                                        </Typography>
+                                    ) : (
+                                        <Typography variant="h3" color="grey">
+                                            <b>Select a View</b>
+                                        </Typography>
+                                    )
                                 ) : (
-                                    <Typography variant="h2" color="grey">
-                                        Select a View
+                                    <Typography variant="h3" color="grey">
+                                        <b>Log In to See Your Views!</b>
                                     </Typography>
-                                )
-                            ) : (
-                                <Typography variant="h2" color="grey">
-                                    Log In to See Your Views!
-                                </Typography>
-                            )}
-                        </Box>
-                    </Container>
+                                )}
+                            </Box>
+                        </Container>
+                    </Box>
+                    {showDeleteDialog && (
+                        <DeleteViewDialog
+                            view={showDeleteDialog}
+                            setShowDialog={setShowDeleteDialog}
+                        />
+                    )}
+                    {showEditDialog && (
+                        <EditViewDialog
+                            view={showEditDialog}
+                            setShowDialog={setShowEditDialog}
+                        />
+                    )}
                 </Box>
-                {showDeleteDialog && (
-                    <DeleteViewDialog
-                        view={showDeleteDialog}
-                        setShowDialog={setShowDeleteDialog}
-                    />
-                )}
-                {showEditDialog && (
-                    <EditViewDialog
-                        view={showEditDialog}
-                        setShowDialog={setShowEditDialog}
-                    />
-                )}
             </Box>
         </Box>
     ) : (
@@ -1919,14 +1974,10 @@ const View = () => {
                                 ></Box>
                             </div>
                             <Box flexGrow="1" paddingLeft="20px">
-                                <Typography variant="h2" fontSize={28}>
-                                    {view.view_name}
+                                <Typography variant="h3">
+                                    <b>{view.view_name}</b>
                                 </Typography>
-                                <Typography
-                                    variant="body1"
-                                    fontSize={16}
-                                    color="grey"
-                                >
+                                <Typography variant="subtitle1" color="grey">
                                     {view.view_desc}
                                 </Typography>
                             </Box>
@@ -1976,7 +2027,7 @@ const View = () => {
                             </div>
                         </Box>
                     ) : (
-                        <Typography variant="h2" color="grey">
+                        <Typography variant="h3" color="grey">
                             No Views
                         </Typography>
                     )}
@@ -2040,12 +2091,8 @@ const View = () => {
                         }}
                     >
                         {" "}
-                        <Typography
-                            variant="h2"
-                            margin="5px 0 10px 0"
-                            fontSize={28}
-                        >
-                            Event Types
+                        <Typography variant="h3" margin="5px 0 10px 0">
+                            <b>Event Types</b>
                         </Typography>
                         <EventTypes />
                     </Container>
@@ -2125,12 +2172,8 @@ const View = () => {
                             textAlign: "center",
                         }}
                     >
-                        <Typography
-                            variant="h2"
-                            margin="5px 0 10px 0"
-                            fontSize={28}
-                        >
-                            All Views
+                        <Typography variant="h3" margin="5px 0 10px 0">
+                            <b>All Views</b>
                         </Typography>
                         <Views setShownViews={setShownViews} />
                     </Container>
@@ -2185,17 +2228,17 @@ const View = () => {
                                 />
                             ) : user.views ? (
                                 user.views.length <= 0 ? (
-                                    <Typography variant="h2" color="grey">
-                                        Create a View!
+                                    <Typography variant="h3" color="grey">
+                                        <b>Create a View!</b>
                                     </Typography>
                                 ) : (
-                                    <Typography variant="h2" color="grey">
-                                        Select a View
+                                    <Typography variant="h3" color="grey">
+                                        <b>Select a View</b>
                                     </Typography>
                                 )
                             ) : (
-                                <Typography variant="h2" color="grey">
-                                    Log In to See Your Views!
+                                <Typography variant="h3" color="grey">
+                                    <b>Log In to See Your Views!</b>
                                 </Typography>
                             )}
                         </Box>

@@ -1,8 +1,4 @@
-// Light mode for all colors
-
-import { createTheme } from "@mui/material";
-
-// Dark mode for all colors
+// TODO: Add dark mode
 export const tokens = (mode) => ({
     ...(mode === "light"
         ? {
@@ -62,8 +58,11 @@ export const tokens = (mode) => ({
                   800: "#661200",
                   900: "#330900",
               },
-              borderSize: "2.5px",
-              borderRadius: "3px",
+              borderSize: 1.5,
+              borderRadius: 8,
+              boxShadowSize: 3,
+              boxShadowHovered: 1.5,
+              boxShadowPressed: 0,
           }
         : {
               primary: {
@@ -122,8 +121,11 @@ export const tokens = (mode) => ({
                   800: "#661200",
                   900: "#330900",
               },
-              borderSize: "2.5px",
-              borderRadius: "3px",
+              borderSize: 2.5,
+              borderRadius: 3,
+              boxShadowSize: 3,
+              boxShadowHovered: 1.5,
+              boxShadowPressed: 0,
           }),
 });
 
@@ -193,88 +195,67 @@ export const themeSettings = (mode) => {
             color: colors.neutralDark[500],
             hero: {
                 fontFamily: ["ProspectusProXL", "sans-serif"].join(","),
-                fontStyle: "italic",
-                fontSize: 84,
+                fontSize: 60,
                 lineHeight: 1.1,
                 color: colors.neutralDark[500],
             },
             h1: {
                 fontFamily: ["ProspectusProL", "sans-serif"].join(","),
-                fontWeight: "bolder",
-                fontStyle: "normal",
                 fontSize: 48,
                 color: colors.neutralDark[500],
             },
             h2: {
                 fontFamily: ["ProspectusProL", "sans-serif"].join(","),
-                fontWeight: "bolder",
-                fontStyle: "normal",
                 fontSize: 36,
                 color: colors.neutralDark[500],
             },
             h3: {
                 fontFamily: ["ProspectusProL", "sans-serif"].join(","),
-                fontWeight: "bold",
-                fontStyle: "normal",
                 fontSize: 30,
                 color: colors.neutralDark[500],
             },
             h4: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
-                fontWeight: "bolder",
-                fontStyle: "normal",
                 fontSize: 24,
                 color: colors.neutralDark[500],
             },
             h5: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
-                fontWeight: "bolder",
-                fontStyle: "normal",
-                fontSize: 18,
+                fontSize: 21,
                 color: colors.neutralDark[500],
             },
             h6: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
-                fontWeight: "bold",
-                fontStyle: "normal",
-                fontSize: 16,
+                fontSize: 18,
                 color: colors.neutralDark[500],
             },
             subtitle1: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
-                fontWeight: "lighter",
-                fontStyle: "normal",
-                color: colors.neutralDark[500],
+                fontSize: 12,
+                fontStyle: "italic",
+                color: colors.neutralDark[200],
             },
             subtitle2: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
-                fontWeight: "lighter",
-                fontStyle: "italic",
                 color: colors.neutralDark[500],
             },
             body1: {
                 fontFamily: ["ProspectusProS", "sans-serif"].join(","),
-                fontWeight: "normal",
-                fontStyle: "normal",
+                fontSize: 16,
                 color: colors.neutralDark[500],
             },
             body2: {
                 fontFamily: ["ProspectusProS", "sans-serif"].join(","),
-                fontWeight: "normal",
-                fontStyle: "italic",
                 color: colors.neutralDark[500],
             },
             button: {
                 fontFamily: ["ProspectusProM", "sans-serif"].join(","),
+                fontSize: 14,
                 fontWeight: "bold",
-                fontStyle: "normal",
-                fontSize: 16,
                 color: colors.neutralDark[500],
             },
             caption: {
                 fontFamily: ["ProspectusProS", "sans-serif"].join(","),
-                fontWeight: "normal",
-                fontStyle: "normal",
                 color: colors.neutralDark[500],
             },
         },
@@ -334,25 +315,40 @@ export const themeSettings = (mode) => {
                         padding: "10px 20px 8px 20px",
                         textTransform: "none",
                         lineHeight: "1.1rem",
-                        border: `${colors.borderSize} solid ${colors.neutralDark[500]}`,
-                        borderRadius: 5,
-                        boxShadow: `1.5px 1.5px 0px ${colors.neutralDark[500]}`,
+                        border: `${colors.borderSize}px solid ${colors.neutralDark[500]}`,
+                        borderRadius: `${colors.borderRadius}px`,
+                        transition:
+                            "background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+                        top: `${colors.boxShadowSize * -1}px`,
+                        left: `${colors.boxShadowSize * -1}px`,
+                        boxShadow: `${colors.boxShadowSize}px ${colors.boxShadowSize}px 0px ${colors.neutralDark[500]}`,
                         "&:hover": {
-                            boxShadow: `2px 2px 0px ${colors.neutralDark[500]}`,
+                            top: `${colors.boxShadowHovered * -1}px`,
+                            left: `${colors.boxShadowHovered * -1}px`,
+                            boxShadow: `${colors.boxShadowHovered}px ${colors.boxShadowHovered}px 0px ${colors.neutralDark[500]}`,
                         },
                         "&:active": {
-                            boxShadow: `0.5px 0.5px 0px ${colors.neutralDark[500]}`,
+                            top: `${colors.boxShadowPressed * -1}px`,
+                            left: `${colors.boxShadowPressed * -1}px`,
+                            boxShadow: `${colors.boxShadowPressed}px ${colors.boxShadowPressed}px 0px ${colors.neutralDark[500]}`,
+                        },
+                    },
+                    outlined: {
+                        "&:hover": {
+                            border: `${colors.borderSize}px solid ${colors.primary[500]}`,
+                            top: `${colors.boxShadowHovered * -1}px`,
+                            left: `${colors.boxShadowHovered * -1}px`,
+                            boxShadow: `${colors.boxShadowHovered}px ${colors.boxShadowHovered}px 0px ${colors.primary[500]}`,
+                        },
+                        "&:active": {
+                            top: `${colors.boxShadowPressed * -1}px`,
+                            left: `${colors.boxShadowPressed * -1}px`,
+                            boxShadow: `${colors.boxShadowPressed}px ${colors.boxShadowPressed}px 0px ${colors.neutralDark[500]}`,
                         },
                     },
                     text: {
                         "&:hover": {
                             backgroundColor: `${colors.neutralLight[200]}`,
-                        },
-                    },
-                    outlined: {
-                        "&:hover": {
-                            border: `${colors.borderSize} solid ${colors.primary[500]}`,
-                            boxShadow: `1.5px 1.5px 0px ${colors.primary[500]}`,
                         },
                     },
                 },
@@ -393,52 +389,3 @@ export const themeSettings = (mode) => {
         },
     };
 };
-
-const theme = createTheme({
-    components: {
-        MuiAppBar: {
-            defaultProps: {},
-            styleOverrides: {
-                root: {
-                    maxWidth: "500px",
-                },
-            },
-        },
-        MuiToolbar: {
-            styleOverrides: {
-                root: {
-                    minHeight: "0",
-                },
-            },
-        },
-        MuiPaper: {
-            defaultProps: {
-                elevation: 5,
-            },
-            styleOverrides: {},
-        },
-        MuiButton: {
-            defaultProps: {
-                disableElevation: true,
-                disableRipple: true, // edit .Mui-focusVisible class
-            },
-            styleOverrides: {
-                root: {
-                    "&:hover": {
-                        backgroundColor: "#ffffff",
-                    },
-                },
-            },
-        },
-        MuiDialog: {
-            defaultProps: {
-                PaperProps: {
-                    opacity: "0%",
-                },
-            },
-            styleOverrides: {
-                opacity: "50%",
-            },
-        },
-    },
-});

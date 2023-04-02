@@ -9,6 +9,7 @@ import { useState } from "react";
 import { tokens } from "theme";
 import { v4 } from "uuid";
 import { useEffect } from "react";
+const colors = tokens("light");
 
 const Calendar = () => {
     const { user, getSelectedView, deleteEvent, acceptEvent, getGoogleEvents } =
@@ -176,13 +177,12 @@ const Calendar = () => {
     const [leftArrowHovered, setLeftArrowHovered] = useState(false);
     const [rightArrowHovered, setRightArrowHovered] = useState(false);
     const [randomKey, setRandomKey] = useState(v4()); // Random key used to remount the Schedule component when needed as it won't remount without changing the key
-    const colors = tokens("light");
 
     return (
         <Box
             sx={{
                 width: "fit-content",
-                height: "100%",
+                height: "940px",
                 display: "flex",
                 flexDirection: "column",
                 marginBottom: "120px",
@@ -195,28 +195,28 @@ const Calendar = () => {
                 alignItems="center"
             >
                 <Box padding="10px 20px">
-                    <Typography
-                        variant="h2"
-                        fontSize={isNonMobileScreens ? 36 : 28}
-                    >
-                        {startOfCurrentWeek.month() ===
-                        startOfCurrentWeek.add(7, "days").month()
-                            ? `${startOfCurrentWeek.format(
-                                  "MMMM"
-                              )} ${startOfCurrentWeek.format("YYYY")}`
-                            : `${startOfCurrentWeek.format(
-                                  "MMMM"
-                              )} - ${startOfCurrentWeek
-                                  .add(7, "days")
-                                  .format("MMMM")} ${startOfCurrentWeek.format(
-                                  "YYYY"
-                              )}`}
+                    <Typography variant="h3">
+                        <b>
+                            {startOfCurrentWeek.month() ===
+                            startOfCurrentWeek.add(7, "days").month()
+                                ? `${startOfCurrentWeek.format(
+                                      "MMMM"
+                                  )} ${startOfCurrentWeek.format("YYYY")}`
+                                : `${startOfCurrentWeek.format(
+                                      "MMMM"
+                                  )} - ${startOfCurrentWeek
+                                      .add(7, "days")
+                                      .format(
+                                          "MMMM"
+                                      )} ${startOfCurrentWeek.format("YYYY")}`}
+                        </b>
                     </Typography>
                 </Box>
             </Box>
             <Box
                 display="grid"
                 gridTemplateColumns="7.5vmin min(710px, 70vw) 7.5vmin"
+                flexGrow={1}
             >
                 <div
                     onClick={() => {
@@ -263,14 +263,14 @@ const Calendar = () => {
                         }}
                     ></Box>
                 </div>
-                <Box marginBottom="30px" width="100%">
+                <Box marginBottom="30px" width="100%" height="100%">
                     <Container
                         fullWidth
+                        fullHeight
                         button={false}
                         style={{
                             padding: "0 20px",
                             maxWidth: "90vw",
-                            height: "77vh",
                             backgroundColor: "#fff",
                         }}
                     >
@@ -388,7 +388,7 @@ const Calendar = () => {
                                         color="gray"
                                     ></Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"
@@ -407,7 +407,7 @@ const Calendar = () => {
                                         {startOfCurrentWeek.format("D")}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"
@@ -427,7 +427,7 @@ const Calendar = () => {
                                             .format("D")}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"
@@ -447,7 +447,7 @@ const Calendar = () => {
                                             .format("D")}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"
@@ -467,7 +467,7 @@ const Calendar = () => {
                                             .format("D")}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"
@@ -487,7 +487,7 @@ const Calendar = () => {
                                             .format("D")}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"
@@ -507,7 +507,7 @@ const Calendar = () => {
                                             .format("D")}
                                     </Typography>
                                     <Typography
-                                        variant="h5"
+                                        variant="h6"
                                         lineHeight={1.7}
                                         textAlign="center"
                                         color="gray"

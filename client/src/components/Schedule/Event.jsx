@@ -9,10 +9,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { showSnackbar } from "state";
+const colors = tokens("light");
 
 const Event = (props) => {
     const { timeslot } = props;
-    const colors = tokens("light");
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const { deleteEvent, acceptEvent, getAttendeesInfo } =
         useContext(CRUDFunctionsContext);
@@ -66,7 +66,7 @@ const Event = (props) => {
                             alignItems: "center",
                             padding: "0 23px",
                             maxWidth: "90vw",
-                            borderRadius: 8,
+                            borderRadius: `${colors.borderRadius}px`,
                             backgroundColor: colors.primary[100],
                         }}
                     >
@@ -75,7 +75,9 @@ const Event = (props) => {
                             textAlign="center"
                             variant="h3"
                         >
-                            {dayjs(timeslot.event.event_date).format("MMM")}
+                            <b>
+                                {dayjs(timeslot.event.event_date).format("MMM")}
+                            </b>
                         </Typography>
                         <Typography
                             color={colors.primary[700]}
@@ -170,7 +172,7 @@ const Event = (props) => {
                             flexDirection: "column",
                             padding: "10px 15px",
                             maxWidth: "90vw",
-                            borderRadius: 8,
+                            borderRadius: `${colors.borderRadius}px`,
                             backgroundColor: colors.primary[100],
                         }}
                     >
@@ -247,7 +249,7 @@ const Event = (props) => {
                                                     margin: "10px",
                                                     width: "15px",
                                                     height: "15px",
-                                                    border: "2px solid #00A300",
+                                                    border: `${colors.borderSize}px solid #00A300`,
                                                     borderRadius: "5px",
                                                     background:
                                                         "repeating-linear-gradient(45deg, #00A300AA, #00A300AA 1px,  #00A3007F 2.5px,  #00A3007F 10px)",
@@ -266,7 +268,7 @@ const Event = (props) => {
                                                     margin: "10px",
                                                     width: "15px",
                                                     height: "15px",
-                                                    border: "2px solid #FEA82F",
+                                                    border: `${colors.borderSize}px solid #FEA82F`,
                                                     borderRadius: "5px",
                                                     background:
                                                         "repeating-linear-gradient(45deg, #FEA82FAA, #FEA82FAA 1px,  #FEA82F7F 2.5px,  #FEA82F7F 10px)",
@@ -279,7 +281,7 @@ const Event = (props) => {
                                                     margin: "10px",
                                                     width: "15px",
                                                     height: "15px",
-                                                    border: "2px solid #FF2E00",
+                                                    border: `${colors.borderSize}px solid #FF2E00`,
                                                     borderRadius: "5px",
                                                     background:
                                                         "repeating-linear-gradient(45deg, #FF2E00AA, #FF2E00AA 1px,  #FF2E007F 2.5px,  #FF2E007F 10px)",

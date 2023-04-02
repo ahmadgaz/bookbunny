@@ -35,7 +35,7 @@ const Login = () => {
                     }}
                 >
                     <Typography variant="h1" margin="5px 0 10px 0">
-                        Log In
+                        <b>Log In</b>
                     </Typography>
                     <Typography
                         variant="body1"
@@ -78,7 +78,7 @@ const Login = () => {
                 style={{ height: "50px", margin: "30px 0" }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
-                Log In
+                <b>Log In</b>
             </Typography>
             <Typography
                 variant="body1"
