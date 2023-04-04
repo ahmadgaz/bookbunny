@@ -1,7 +1,11 @@
 import express from "express";
 import {
+    isConnectedToGoogle,
     getGoogleEvents,
     getUser,
+    updateName,
+    updatePass,
+    confirmPassword,
     getRecievingUser,
     getFirstFourUsers,
     getAttendeesInfo,
@@ -23,10 +27,14 @@ import { verifyToken } from "../middleware/auth.js";
 const router = express.Router();
 
 // GOOGLE
+router.get("/:user/isConnectedToGoogle", verifyToken, isConnectedToGoogle);
 router.post("/:user/getGoogleEvents", verifyToken, getGoogleEvents);
 
 // USER
 router.get("/:user", verifyToken, getUser);
+router.patch("/:user/updateName", verifyToken, updateName); //
+router.patch("/:user/updatePass", verifyToken, updatePass); //
+router.post("/:user/confirmPassword", verifyToken, confirmPassword); //
 router.get("/:user/getRecievingUser/:eventType", verifyToken, getRecievingUser); //
 router.get("/:user/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers); //
 router.get("/:user/getAttendeesInfo/:event", verifyToken, getAttendeesInfo); //

@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import View from "../models/View.js";
@@ -7,6 +8,21 @@ import { authenticate } from "@google-cloud/local-auth";
 import { google } from "googleapis";
 
 // GOOGLE
+export const isConnectedToGoogle = async (req, res) => {
+    req.params.user = mongoose.Types.ObjectId(req.params.user);
+    const user = await User.findOne({
+        _id: req.params.user,
+    }).exec();
+    if (user.googleTokens) {
+        res.status(201).json({ connectedToGoogle: true });
+    } else {
+        res.status(201).json({ connectedToGoogle: false });
+    }
+    try {
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 export const getGoogleEvents = async (req, res) => {
     req.params.user = mongoose.Types.ObjectId(req.params.user);
     const user = await User.findOne({
@@ -75,6 +91,59 @@ export const getUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+export const updateName = async (req, res) => {
+    try {
+        const { first_name, last_name } = req.body;
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        const user = await User.findOne({
+            _id: req.params.user,
+        }).exec();
+
+        user.first_name = first_name;
+        user.last_name = last_name;
+        user.save();
+
+        res.status(201).json("Updated name!");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const updatePass = async (req, res) => {
+    try {
+        const { password } = req.body;
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        const user = await User.findOne({
+            _id: req.params.user,
+        }).exec();
+
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        user.password = passwordHash;
+        user.save();
+
+        res.status(201).json("Updated password!");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const confirmPassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+        const user = await User.findOne({
+            _id: req.params.user,
+        }).exec();
+
+        console.log(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ msg: "Wrong password!" });
+
+        res.status(201).json({ passConfirmed: "Password changed!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 export const getRecievingUser = async (req, res) => {
     try {
         req.params.eventType = mongoose.Types.ObjectId(req.params.eventType);
@@ -98,7 +167,6 @@ export const getRecievingUser = async (req, res) => {
 
         res.status(201).json(secureUser);
     } catch (err) {
-        console.log(err.message);
         res.status(500).json({ error: err.message });
     }
 };

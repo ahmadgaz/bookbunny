@@ -173,6 +173,20 @@ const Form = () => {
                             helperText={touched.password && errors.password}
                             sx={{ gridColumn: "span 4" }}
                         />
+                        <Typography
+                            onClick={() => {}}
+                            sx={{
+                                gridColumn: "span 4",
+                                color: colors.primary[500],
+                                textDecoration: "underline",
+                                textAlign: "right",
+                                "&:hover": {
+                                    cursor: "pointer",
+                                },
+                            }}
+                        >
+                            Forgot Password?
+                        </Typography>
                     </Box>
 
                     {/* BUTTONS */}
@@ -218,21 +232,7 @@ const Form = () => {
                             </Container>
                         </Box>
                         {/* QUESTIONS */}
-                        <Typography
-                            onClick={() => {
-                                navigate("/register");
-                                resetForm();
-                            }}
-                            sx={{
-                                color: colors.primary[500],
-                                textDecoration: "underline",
-                                "&:hover": {
-                                    cursor: "pointer",
-                                },
-                            }}
-                        >
-                            Forgot Password?
-                        </Typography>
+
                         <Typography>Don't have an account?</Typography>
                         <Typography
                             onClick={() => {

@@ -704,7 +704,11 @@ const Navbar = (props) => {
                             alt="Logo"
                             style={{ height: "50px", margin: "0 30px 0 0" }}
                         />
-                        <Box display="flex">
+                        <Box
+                            display="flex"
+                            backgroundColor={colors.neutralDark[500]}
+                            borderRadius={colors.borderRadius}
+                        >
                             <ViewsDropdown />
                             <Button
                                 variant={tab === 0 ? "contained" : ""}
@@ -810,6 +814,8 @@ const Navbar = (props) => {
                         display="flex"
                         justifyContent="center"
                         alignItems="center"
+                        backgroundColor={colors.neutralDark[500]}
+                        borderRadius={colors.borderRadius}
                     >
                         <Button
                             variant="contained"

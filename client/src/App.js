@@ -78,6 +78,52 @@ const CRUDFunctionsContextProvider = (props) => {
     }, []);
 
     // GOOGLE
+    const isConnectedToGoogle = async () => {
+        if (!user || !token) {
+            return;
+        }
+
+        const connectedToGoogleResponse = await fetch(
+            `${userURL}/${user._id}/isConnectedToGoogle`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const connectedToGoogle = await connectedToGoogleResponse.json();
+
+        if (!connectedToGoogle) {
+            console.log("Error");
+            return;
+        }
+
+        return connectedToGoogle;
+    };
+    const unlinkFromGoogle = async () => {
+        if (!user || !token) {
+            return;
+        }
+
+        const unlinkResponse = await fetch(
+            `${userURL}/${user._id}/unlinkFromGoogle`,
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const unlink = await unlinkResponse.json();
+
+        if (!unlink) {
+            console.log("Error");
+            return;
+        }
+
+        return unlink;
+    };
     const getGoogleEvents = async (date) => {
         if (!user || !token) {
             return;
@@ -107,6 +153,81 @@ const CRUDFunctionsContextProvider = (props) => {
     };
 
     // USER
+    const updateName = async (first_name, last_name) => {
+        const updatedResponse = await fetch(
+            `${userURL}/${user._id}/updateName`,
+            {
+                method: "PATCH",
+                body: JSON.stringify({
+                    first_name,
+                    last_name,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const updated = await updatedResponse.json();
+
+        if (!updated) {
+            console.log("Error");
+            return { err: "THere has been an error! Please try again later." };
+        } else if (updated.msg) {
+            return { msg: updated.msg };
+        } else if (updated.error) {
+            return { err: updated.error };
+        }
+
+        await updateUser();
+        return { success: updated };
+    };
+    const updatePass = async (password) => {
+        const updatedResponse = await fetch(
+            `${userURL}/${user._id}/updatePass`,
+            {
+                method: "PATCH",
+                body: JSON.stringify({
+                    password,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const updated = await updatedResponse.json();
+
+        if (!updated) {
+            console.log("Error");
+            return;
+        }
+
+        await updateUser();
+    };
+    const confirmPassword = async (password) => {
+        const confirmedResponse = await fetch(
+            `${userURL}/${user._id}/confirmPassword`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    password,
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `${token}`,
+                },
+            }
+        );
+        const confirmed = await confirmedResponse.json();
+
+        if (!confirmed) {
+            console.log("Error");
+            return;
+        }
+
+        return confirmed;
+    };
     const updateUser = async () => {
         if (!user) {
             return;
@@ -414,6 +535,11 @@ const CRUDFunctionsContextProvider = (props) => {
         <CRUDFunctionsContext.Provider
             value={{
                 user,
+                updateName,
+                updatePass,
+                confirmPassword,
+                unlinkFromGoogle,
+                isConnectedToGoogle,
                 getGoogleEvents,
                 getAttendeesInfo,
                 getRecievingUser,

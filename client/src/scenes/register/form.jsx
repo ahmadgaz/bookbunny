@@ -280,7 +280,7 @@ const Form = () => {
                                     }}
                                 >
                                     <Typography variant="h6">
-                                        Your password must:
+                                        <b>Your password must:</b>
                                     </Typography>
 
                                     <ul>

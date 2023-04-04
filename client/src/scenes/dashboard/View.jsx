@@ -1736,7 +1736,7 @@ const View = () => {
                                 variant="h3"
                                 color={colors.neutralDark[300]}
                             >
-                                No Views
+                                <b>No Views</b>
                             </Typography>
                         )}
                     </Box>
@@ -2080,7 +2080,7 @@ const View = () => {
                             variant="h3"
                             color={colors.neutralDark[300]}
                         >
-                            No Views
+                            <b>No Views</b>
                         </Typography>
                     )}
                 </Box>
