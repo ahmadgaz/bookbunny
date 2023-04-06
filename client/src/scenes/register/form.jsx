@@ -33,6 +33,7 @@ const registerSchema = yup.object().shape({
         .matches(/[^\w]/, "Password requires a symbol!"),
     passwordConfirm: yup
         .string()
+        .required("Confirm your password!")
         .oneOf(
             [yup.ref("password"), null],
             'Must match "Password" field value'

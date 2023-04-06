@@ -329,8 +329,10 @@ const NewEvent = () => {
                                 variant="hero"
                                 fontSize={40}
                             >
-                                Book an event with{" "}
-                                <b>{receivingUser.first_name}</b>!
+                                <em>
+                                    Book an event with{" "}
+                                    <b>{receivingUser.first_name}</b>!
+                                </em>
                             </Typography>
                             <div
                                 className="embla"
@@ -893,20 +895,22 @@ const NewEvent = () => {
                 textAlign="center"
                 sx={{ margin: "40px" }}
             >
-                You've successfully booked <b>{eventType.event_type_name}</b>{" "}
-                for{" "}
-                <b>
-                    {listOfAvailableTimesOnChosenDay[timeChoice].format(
-                        "MMMM D, YYYY"
-                    )}
-                </b>{" "}
-                at{" "}
-                <b>
-                    {listOfAvailableTimesOnChosenDay[timeChoice].format(
-                        "h:mm A"
-                    )}
-                </b>
-                !
+                <em>
+                    You've successfully booked{" "}
+                    <b>{eventType.event_type_name}</b> for{" "}
+                    <b>
+                        {listOfAvailableTimesOnChosenDay[timeChoice].format(
+                            "MMMM D, YYYY"
+                        )}
+                    </b>{" "}
+                    at{" "}
+                    <b>
+                        {listOfAvailableTimesOnChosenDay[timeChoice].format(
+                            "h:mm A"
+                        )}
+                    </b>
+                    !
+                </em>
             </Typography>
 
             <Container

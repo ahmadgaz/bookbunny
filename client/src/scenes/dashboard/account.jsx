@@ -31,6 +31,7 @@ const passwordSchema = yup.object().shape({
         .matches(/[^\w]/, "Password requires a symbol!"),
     passwordConfirm: yup
         .string()
+        .required("Confirm your password!")
         .oneOf(
             [yup.ref("newPassword"), null],
             'Must match "New Password" field value'
@@ -87,8 +88,8 @@ const Account = () => {
 
         if (confirmedResponse.passConfirmed) {
             await updatePass(values.newPassword);
-            setShowPasswordRequirements(null);
             onSubmitProps.resetForm();
+            setShowPasswordRequirements(null);
             setPassError(confirmedResponse.passConfirmed);
         } else if (confirmedResponse.msg) {
             setPassError(confirmedResponse.msg);
@@ -661,6 +662,10 @@ const Account = () => {
                                                     color="inherit"
                                                     style={{}}
                                                     onClick={() => {
+                                                        setShowPasswordRequirements(
+                                                            null
+                                                        );
+
                                                         resetForm();
                                                     }}
                                                     sx={{

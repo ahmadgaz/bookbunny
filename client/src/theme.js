@@ -137,6 +137,10 @@ export const themeSettings = (mode) => {
     return {
         palette: {
             mode: mode,
+            common: {
+                black: colors.neutralDark[500],
+                white: colors.neutralLight[500],
+            },
             text: {
                 primary: colors.neutralDark[500],
                 secondary: colors.neutralDark[300],
@@ -319,6 +323,9 @@ export const themeSettings = (mode) => {
                             left: `${colors.boxShadowPressed * -1}px`,
                             boxShadow: `${colors.boxShadowPressed}px ${colors.boxShadowPressed}px 0px ${colors.neutralDark[500]}`,
                         },
+                    },
+                    contained: {
+                        color: colors.neutralDark[500],
                     },
                     outlined: {
                         "&:hover": {
