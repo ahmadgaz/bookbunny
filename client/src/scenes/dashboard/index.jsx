@@ -2,11 +2,11 @@ import { Box, Snackbar, Typography, useMediaQuery } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import NavbarSpacer from "components/NavbarSpacer";
-import Account from "./Account";
-import Calendar from "./Calendar";
-import Help from "./Help";
-import Navbar from "./navbar";
-import View from "./View";
+import Account from "./Account.jsx";
+import Calendar from "./Calendar.jsx";
+import Help from "./Help.jsx";
+import Navbar from "./navbar.jsx";
+import View from "./View.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { hideSnackbar } from "state";
 
