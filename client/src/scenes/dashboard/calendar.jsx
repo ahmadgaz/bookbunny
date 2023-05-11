@@ -10,6 +10,7 @@ import { tokens } from "theme";
 import { v4 } from "uuid";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+
 const Calendar = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);

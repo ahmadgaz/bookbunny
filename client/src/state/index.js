@@ -16,6 +16,9 @@ const initialState = {
         eventAccepted: false,
         eventDenied: false,
         eventCanceled: false,
+        profileSaved: false,
+        passwordChanged: false,
+        googleAccountUnlinked: false,
     },
 };
 

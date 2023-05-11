@@ -344,6 +344,32 @@ const Dashboard = () => {
                 }}
                 message="Event canceled."
             />
+            <Snackbar
+                open={snackbars.profileSaved}
+                autoHideDuration={4000}
+                onClose={() => {
+                    dispatch(hideSnackbar({ snackbar: "profileSaved" }));
+                }}
+                message="Profile saved."
+            />
+            <Snackbar
+                open={snackbars.passwordChanged}
+                autoHideDuration={4000}
+                onClose={() => {
+                    dispatch(hideSnackbar({ snackbar: "passwordChanged" }));
+                }}
+                message="Password changed."
+            />
+            <Snackbar
+                open={snackbars.googleAccountUnlinked}
+                autoHideDuration={4000}
+                onClose={() => {
+                    dispatch(
+                        hideSnackbar({ snackbar: "googleAccountUnlinked" })
+                    );
+                }}
+                message="Your google account has been unlinked."
+            />
         </Box>
     );
 };

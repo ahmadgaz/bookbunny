@@ -1,6 +1,7 @@
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import Container from "components/Container";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { tokens } from "theme";
 import Logo from "../../assets/Logo-02.svg";
 import Form from "./form";
@@ -9,6 +10,7 @@ const Login = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
 
+    const navigate = useNavigate();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     return isNonMobileScreens ? (
@@ -56,8 +58,12 @@ const Login = () => {
                     src={Logo}
                     alt="Logo"
                     style={{
+                        cursor: "pointer",
                         height: "50px",
                         margin: "30px 0",
+                    }}
+                    onClick={() => {
+                        navigate("/");
                     }}
                 />
             </Box>
@@ -80,7 +86,14 @@ const Login = () => {
             <img
                 src={Logo}
                 alt="Logo"
-                style={{ height: "50px", margin: "30px 0" }}
+                style={{
+                    cursor: "pointer",
+                    height: "50px",
+                    margin: "30px 0",
+                }}
+                onClick={() => {
+                    navigate("/");
+                }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
                 <b>Log In</b>

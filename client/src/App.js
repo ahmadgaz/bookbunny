@@ -11,6 +11,9 @@ import Login from "scenes/login";
 import Register from "scenes/register";
 import Dashboard from "scenes/dashboard";
 import NewEvent from "scenes/newEvent";
+import ForgotPassword from "scenes/forgotPassword";
+import ResetPassword from "scenes/resetPassword";
+import ConfirmedEmail from "scenes/register/confirmedEmail";
 
 function App() {
     const mode = useSelector((state) => state.mode);
@@ -37,12 +40,24 @@ function App() {
                             />
                             <Route
                                 path="/login"
-                                element={<Login />}
+                                element={
+                                    isAuth ? (
+                                        <Navigate to="/dashboard" />
+                                    ) : (
+                                        <Login />
+                                    )
+                                }
                                 // errorElement={}
                             />
                             <Route
                                 path="/register"
-                                element={<Register />}
+                                element={
+                                    isAuth ? (
+                                        <Navigate to="/dashboard" />
+                                    ) : (
+                                        <Register />
+                                    )
+                                }
                                 // errorElement={}
                             />
                             <Route
@@ -55,6 +70,18 @@ function App() {
                             <Route
                                 path="/newEvent/:eventTypeID"
                                 element={<NewEvent />}
+                            />
+                            <Route
+                                path="/forgot_password"
+                                element={<ForgotPassword />}
+                            />
+                            <Route
+                                path="/reset_password/:token/:userId"
+                                element={<ResetPassword />}
+                            />
+                            <Route
+                                path="/confirmation/:token"
+                                element={<ConfirmedEmail />}
                             />
                         </Routes>
                     </ThemeProvider>
@@ -101,7 +128,7 @@ const CRUDFunctionsContextProvider = (props) => {
 
         return connectedToGoogle;
     };
-    const unlinkFromGoogle = async () => {
+    const unlinkFromGoogle = async (password) => {
         if (!user || !token) {
             return;
         }
@@ -109,8 +136,12 @@ const CRUDFunctionsContextProvider = (props) => {
         const unlinkResponse = await fetch(
             `${userURL}/${user._id}/unlinkFromGoogle`,
             {
-                method: "POST",
+                method: "PATCH",
+                body: JSON.stringify({
+                    password,
+                }),
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `${token}`,
                 },
             }
@@ -149,10 +180,19 @@ const CRUDFunctionsContextProvider = (props) => {
             return;
         }
 
+        await updateUser();
         return googleEvents;
     };
 
     // USER
+    const deleteUser = async () => {
+        await fetch(`${userURL}/${user._id}/deleteUser`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `${token}`,
+            },
+        });
+    };
     const updateName = async (first_name, last_name) => {
         const updatedResponse = await fetch(
             `${userURL}/${user._id}/updateName`,
@@ -240,6 +280,8 @@ const CRUDFunctionsContextProvider = (props) => {
             },
         });
         const updatedUser = await updatedUserResponse.json();
+
+        console.log(updatedUser);
 
         if (!updatedUser) {
             console.log("Error");
@@ -535,6 +577,7 @@ const CRUDFunctionsContextProvider = (props) => {
         <CRUDFunctionsContext.Provider
             value={{
                 user,
+                deleteUser,
                 updateName,
                 updatePass,
                 confirmPassword,

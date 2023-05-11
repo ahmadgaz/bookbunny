@@ -2,55 +2,84 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import fetch from "node-fetch";
-import path from "path";
-import { promises as fsp } from "fs";
-import { authenticate } from "@google-cloud/local-auth";
-import { google } from "googleapis";
+import Token from "../models/Token.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import mongoose from "mongoose";
 
-// // GOOGLE OAUTH
-// const SCOPES = [
-//     "openid",
-//     "email",
-//     "profile",
-//     "https://www.googleapis.com/auth/userinfo.profile",
-//     "https://www.googleapis.com/auth/userinfo.email",
-//     "https://www.googleapis.com/auth/calendar",
-//     "https://www.googleapis.com/auth/calendar.events",
-// ].join(" ");
-// const TOKEN_PATH = path.join(process.cwd(), "token.json");
-// async function loadSavedCredentialsIfExist() {
-//     try {
-//         const content = await fs.readFile(TOKEN_PATH);
-//         const credentials = JSON.parse(content);
-//         return google.auth.fromJSON(credentials);
-//     } catch (err) {
-//         return null;
-//     }
-// }
-// async function saveCredentials(tokens) {
-//     const payload = JSON.stringify({
-//         type: "authorized_user",
-//         client_id: process.env.GOOGLE_CLIENT_ID,
-//         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-//         refresh_token: tokens.refresh_token,
-//     });
-//     await fs.writeFile(TOKEN_PATH, payload);
-// }
-// async function authorize() {
-//     let client = await loadSavedCredentialsIfExist();
-//     if (client) {
-//         return client;
-//     }
+// FORGOT PASSWORD
+export const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({
+            email: { $regex: email, $options: "i" },
+        });
+        if (!user) return res.status(400).json({ msg: "User does not exist!" });
+        if (user.googleTokens)
+            return res.status(400).json({
+                msg: "This account is associated with a google account! Please login with google.",
+            });
 
-//     client = await authenticate({
-//         scopes: SCOPES,
-//         keyfilePath: CREDENTIALS_PATH,
-//     });
-//     if (client.credentials) {
-//         await saveCredentials(client);
-//     }
-//     return client;
-// }
+        const token = await Token.findOne({ owner_id: user._id });
+        if (token) await token.deleteOne();
+        let resetToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const salt = await bcrypt.genSalt();
+        const resetTokenHash = await bcrypt.hash(resetToken, salt);
+
+        await new Token({
+            owner_id: user._id,
+            token: resetTokenHash,
+            createdAt: Date.now(),
+        }).save();
+
+        const link = `${process.env.CLIENT_BASE_URL}/reset_password/${resetToken}/${user._id}`;
+        await sendEmail(
+            user.email,
+            "Password Reset Request",
+            { name: `${user.first_name} ${user.last_name}`, link: link },
+            "./template/requestResetPassword.handlebars"
+        );
+        res.status(200).json({ msg: "Email has been sent!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const resetPassword = async (req, res) => {
+    try {
+        let { userId, token, password } = req.body;
+        userId = mongoose.Types.ObjectId(userId);
+        let passwordResetToken = await Token.findOne({ owner_id: userId });
+        if (!passwordResetToken)
+            return res
+                .status(400)
+                .json({ msg: "Invalid or expired password reset token" });
+        const isValid = await bcrypt.compare(token, passwordResetToken.token);
+        if (!isValid)
+            return res
+                .status(400)
+                .json({ msg: "Invalid or expired password reset token" });
+
+        const salt = await bcrypt.genSalt();
+        const passwordHash = await bcrypt.hash(password, salt);
+        await User.updateOne(
+            { _id: userId },
+            { $set: { password: passwordHash } },
+            { new: true }
+        );
+        const user = await User.findById({ _id: userId });
+        await sendEmail(
+            user.email,
+            "Password Reset Successfully",
+            {
+                name: user.name,
+            },
+            "./template/resetPassword.handlebars"
+        );
+        await passwordResetToken.deleteOne();
+        return res.status(400).json({ msg: "Password reset!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 
 // REGISTER USER
 export const register = async (req, res) => {
@@ -150,6 +179,13 @@ export const register = async (req, res) => {
             let secureUser = savedUser._doc;
             delete secureUser.googleTokens;
 
+            await sendEmail(
+                secureUser.email,
+                "Welcome to Bookbunny!",
+                { name: `${secureUser.first_name} ${secureUser.last_name}` },
+                "./template/welcome.handlebars"
+            );
+
             res.status(200).json({
                 token: secureUser.loginToken,
                 user: secureUser,
@@ -169,24 +205,71 @@ export const register = async (req, res) => {
                     .status(400)
                     .json({ msg: "Email is already in use!" });
 
-            const salt = await bcrypt.genSalt();
-            const passwordHash = await bcrypt.hash(password, salt);
+            const passSalt = await bcrypt.genSalt();
+            const passwordHash = await bcrypt.hash(password, passSalt);
 
-            const newUser = new User({
+            const token = await Token.findOne({ email });
+            if (token) await token.deleteOne();
+            let confirmToken = jwt.sign({ id: email }, process.env.JWT_SECRET);
+
+            await new Token({
                 first_name,
                 last_name,
                 email,
                 // timezone,
                 password: passwordHash,
-                views: [],
+                token: confirmToken,
+                createdAt: Date.now(),
+            }).save();
+
+            const link = `${process.env.CLIENT_BASE_URL}/confirmation/${confirmToken}`;
+            await sendEmail(
+                email,
+                "Confirm your email",
+                { name: `${first_name} ${last_name}`, link: link },
+                "./template/confirmationEmail.handlebars"
+            );
+
+            res.status(201).json({
+                msg: "Confirmation email sent! Check your inbox and follow the instructions.",
             });
-            const savedUser = await newUser.save();
-
-            let secureUser = savedUser._doc;
-            delete secureUser.password;
-
-            res.status(201).json(secureUser);
         }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const createConfirmedUser = async (req, res) => {
+    try {
+        let { token } = req.body;
+        let confirmationToken = await Token.findOne({ token });
+        if (!confirmationToken)
+            return res
+                .status(400)
+                .json({ msg: "Invalid or expired password reset token!" });
+
+        const newUser = new User({
+            first_name: confirmationToken.first_name,
+            last_name: confirmationToken.last_name,
+            email: confirmationToken.email,
+            // timezone,
+            password: confirmationToken.password,
+            views: [],
+        });
+        const savedUser = await newUser.save();
+
+        let secureUser = savedUser._doc;
+        delete secureUser.password;
+
+        await confirmationToken.deleteOne();
+
+        await sendEmail(
+            secureUser.email,
+            "Welcome to Bookbunny!",
+            { name: `${secureUser.first_name} ${secureUser.last_name}` },
+            "./template/welcome.handlebars"
+        );
+
+        res.status(201).json({ msg: "Your email has been confirmed!" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -233,6 +316,10 @@ export const login = async (req, res) => {
             });
             if (!user)
                 return res.status(400).json({ msg: "User does not exist!" });
+            if (!user.googleTokens)
+                return res.status(400).json({
+                    msg: "This google account is not linked to a Bookbunny account!",
+                });
 
             user.googleTokens = tokens;
             user.loginToken = jwt.sign(

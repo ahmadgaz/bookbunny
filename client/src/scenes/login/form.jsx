@@ -174,12 +174,15 @@ const Form = () => {
                             sx={{ gridColumn: "span 4" }}
                         />
                         <Typography
-                            onClick={() => {}}
+                            onClick={() => {
+                                navigate("/forgot_password");
+                                resetForm();
+                            }}
                             sx={{
                                 gridColumn: "span 4",
                                 color: colors.primary[500],
                                 textDecoration: "underline",
-                                textAlign: "right",
+                                textAlign: "left",
                                 "&:hover": {
                                     cursor: "pointer",
                                 },

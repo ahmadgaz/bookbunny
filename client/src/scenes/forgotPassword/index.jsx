@@ -6,7 +6,7 @@ import { tokens } from "theme";
 import Logo from "../../assets/Logo-02.svg";
 import Form from "./form";
 
-const Register = () => {
+const ForgotPassword = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
 
@@ -42,7 +42,7 @@ const Register = () => {
                     }}
                 >
                     <Typography variant="h1" margin="5px 0 10px 0">
-                        <b>Sign Up</b>
+                        <b>Forgot Password?</b>
                     </Typography>
                     <Typography
                         variant="body1"
@@ -50,7 +50,9 @@ const Register = () => {
                         color={colors.neutralDark[300]}
                         margin="0 0 40px 0"
                     >
-                        Create a Bookbunny account
+                        To reset your password, enter your email below and
+                        submit. An email will be sent to you with instructions
+                        about how to complete the process.
                     </Typography>
                     <Form />
                 </Container>
@@ -66,37 +68,6 @@ const Register = () => {
                         navigate("/");
                     }}
                 />
-            </Box>
-            <Box
-                display="flex"
-                flexWrap="nowrap"
-                justifyContent="center"
-                alignItems="center"
-                padding="0 0 30px 0"
-                sx={{
-                    gridColumnStart: "-1",
-                    gridColumnEnd: "-5",
-                    gridRowStart: "2",
-                }}
-            >
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Contact
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Privacy Policy
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Terms & Conditions
-                </Container>
             </Box>
         </Box>
     ) : (
@@ -127,7 +98,7 @@ const Register = () => {
                 }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
-                <b>Sign Up</b>
+                <b>Forgot Password?</b>
             </Typography>
             <Typography
                 variant="body1"
@@ -135,37 +106,13 @@ const Register = () => {
                 color={colors.neutralDark[300]}
                 margin="0 0 40px 0"
             >
-                Create a Bookbunny account
+                To reset your password, enter your email below and submit. An
+                email will be sent to you with instructions about how to
+                complete the process.
             </Typography>
             <Form />
-            <Box
-                display="flex"
-                flexWrap="nowrap"
-                justifyContent="center"
-                alignItems="center"
-                padding="30px 0 0 0"
-            >
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Contact
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Privacy Policy
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Terms & Conditions
-                </Container>
-            </Box>
         </Box>
     );
 };
 
-export default Register;
+export default ForgotPassword;

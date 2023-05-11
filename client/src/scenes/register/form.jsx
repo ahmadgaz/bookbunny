@@ -101,50 +101,25 @@ const Form = () => {
     });
 
     const register = async (values, onSubmitProps) => {
-        const savedUserResponse = await fetch(`${authURL}/register`, {
-            method: "POST",
-            body: JSON.stringify(values),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const savedUser = await savedUserResponse.json();
+        const sentConfirmationEmailResponse = await fetch(
+            `${authURL}/register`,
+            {
+                method: "POST",
+                body: JSON.stringify(values),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        const sentConfirmationEmail =
+            await sentConfirmationEmailResponse.json();
 
-        if (!savedUser) {
+        if (!sentConfirmationEmail) {
             setError("There has been an error in the server.");
             return;
-        } else if (savedUser.msg) {
-            setError(savedUser.msg);
+        } else if (sentConfirmationEmail.msg) {
+            setError(sentConfirmationEmail.msg);
             return;
-        }
-
-        login(values, onSubmitProps);
-    };
-
-    const login = async (values, onSubmitProps) => {
-        const loggedInResponse = await fetch(`${authURL}/login`, {
-            method: "POST",
-            body: JSON.stringify({
-                email: values.email,
-                password: values.password,
-            }),
-            headers: { "Content-Type": "application/json" },
-        });
-        const loggedIn = await loggedInResponse.json();
-
-        if (loggedIn.token !== undefined && loggedIn.user !== undefined) {
-            onSubmitProps.resetForm();
-            dispatch(
-                setLogin({
-                    user: loggedIn.user,
-                    token: loggedIn.token,
-                })
-            );
-            navigate(previousPage);
-        } else if (loggedIn.msg) {
-            setError(loggedIn.msg);
-        } else {
-            setError("There has been an error on our end.");
         }
     };
 

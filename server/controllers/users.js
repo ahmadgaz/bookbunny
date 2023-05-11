@@ -6,6 +6,7 @@ import EventType from "../models/EventType.js";
 import Event from "../models/Event.js";
 import { authenticate } from "@google-cloud/local-auth";
 import { google } from "googleapis";
+import { sendEmail } from "../utils/sendEmail.js";
 
 // GOOGLE
 export const isConnectedToGoogle = async (req, res) => {
@@ -18,6 +19,106 @@ export const isConnectedToGoogle = async (req, res) => {
     } else {
         res.status(201).json({ connectedToGoogle: false });
     }
+    try {
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const unlinkFromGoogle = async (req, res) => {
+    const { password } = req.body;
+    req.params.user = mongoose.Types.ObjectId(req.params.user);
+    const user = await User.findOne({
+        _id: req.params.user,
+    }).exec();
+
+    if (!user.googleTokens) {
+        res.status(201).json({ msg: "No account connected!" });
+    }
+
+    user.googleTokens = undefined;
+
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    user.password = passwordHash;
+    user.save();
+
+    await sendEmail(
+        user.email,
+        "Google Account Unlinked",
+        { name: `${user.first_name} ${user.last_name}` },
+        "./template/unlinkedFromGoogle.handlebars"
+    );
+
+    res.status(201).json({ msg: "Unlinked from google" });
+    try {
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+export const linkToGoogle = async (req, res) => {
+    // Get token
+    const tokensResponse = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        body: JSON.stringify({
+            code: req.body.googleCode,
+            client_id: process.env.GOOGLE_CLIENT_ID,
+            client_secret: process.env.GOOGLE_CLIENT_SECRET,
+            redirect_uri: "postmessage",
+            grant_type: "authorization_code",
+        }),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    const tokens = await tokensResponse.json();
+
+    // Get user
+    const googleOAuthResponse = await fetch(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${tokens.access_token}`,
+            },
+        }
+    );
+    const googleOAuth = await googleOAuthResponse.json();
+
+    if (!googleOAuth.verified_email) {
+        res.status(403).json({
+            error: "Google account is not verified!",
+        });
+    }
+
+    const {
+        given_name: first_name,
+        family_name: last_name,
+        email,
+    } = googleOAuth;
+
+    req.params.user = mongoose.Types.ObjectId(req.params.user);
+    const user = await User.findOne({
+        _id: req.params.user,
+    }).exec();
+
+    if (user.googleTokens) {
+        res.status(201).json({ msg: "There is an account connected already!" });
+    }
+
+    const userAlreadyExists = await User.findOne({ email: email });
+    if (userAlreadyExists && email.toLowerCase() !== user.email.toLowerCase())
+        return res.status(400).json({ msg: "Email is already in use!" });
+
+    user.first_name = first_name;
+    user.last_name = last_name;
+    user.email = email;
+    user.googleTokens = tokens;
+    user.password = undefined;
+
+    user.save();
+
+    res.status(201).json({ msg: "Linked to google" });
     try {
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -43,7 +144,8 @@ export const getGoogleEvents = async (req, res) => {
             return d;
         };
         const calendarList = await calendar.calendarList.list({
-            showHidden: true,
+            minAccessRole: "owner",
+            showHidden: false,
         });
         const calendarListResults = calendarList.data.items.map(
             (item) => item.id
@@ -91,6 +193,38 @@ export const getUser = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+export const deleteUser = async (req, res) => {
+    try {
+        req.params.user = mongoose.Types.ObjectId(req.params.user);
+
+        const user = await User.findOne({
+            _id: req.params.user,
+        }).exec();
+
+        await sendEmail(
+            user.email,
+            "Goodbye! ;(",
+            { name: `${user.first_name} ${user.last_name}` },
+            "./template/deletedAccount.handlebars"
+        );
+
+        await user.deleteOne();
+
+        await EventType.deleteMany({
+            owner_id: req.params.user,
+        });
+        await View.deleteMany({
+            owner_id: req.params.user,
+        });
+        await Event.deleteMany({
+            owner_id: req.params.user,
+        });
+
+        res.status(201).json("User Deleted!");
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
 export const updateName = async (req, res) => {
     try {
         const { first_name, last_name } = req.body;
@@ -121,6 +255,13 @@ export const updatePass = async (req, res) => {
 
         user.password = passwordHash;
         user.save();
+
+        await sendEmail(
+            user.email,
+            "Password Updated",
+            { name: `${user.first_name} ${user.last_name}` },
+            "./template/passwordUpdated.handlebars"
+        );
 
         res.status(201).json("Updated password!");
     } catch (err) {
@@ -539,6 +680,27 @@ export const createEvent = async (req, res) => {
         users[0].events.push(newEvents[0]);
         await newEvents[0].save();
         await users[0].save();
+        const date = new Date(event_date);
+
+        await sendEmail(
+            users[0].email,
+            `${eventType.event_type_name} Has Been Booked!`,
+            {
+                name: `${users[0].first_name} ${users[0].last_name}`,
+                event: eventType.event_type_name,
+                location: eventType.event_type_location,
+                date: `${date.toLocaleDateString("en-us", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                })} ${date.toLocaleTimeString()}`,
+                duration: event_duration,
+                notes: event_notes,
+                attendees: event_attendees,
+            },
+            "./template/newEvent.handlebars"
+        );
 
         // Create & save event for receivers
         for (const [idx, attendee] of event_attendees.entries()) {
@@ -561,6 +723,28 @@ export const createEvent = async (req, res) => {
                         event_attending: false,
                     }),
                 ];
+                const date = new Date(event_date);
+
+                await sendEmail(
+                    user.email,
+                    `You've been invited to ${eventType.event_type_name}!`,
+                    {
+                        name: `${user.first_name} ${user.last_name}`,
+                        event: eventType.event_type_name,
+                        sender: `${users[0].first_name} ${users[0].last_name}`,
+                        location: eventType.event_type_location,
+                        date: `${date.toLocaleDateString("en-us", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                        })} ${date.toLocaleTimeString()}`,
+                        duration: event_duration,
+                        notes: event_notes,
+                        attendees: event_attendees,
+                    },
+                    "./template/invitation.handlebars"
+                );
                 emails = [...emails, { email: user.email }];
                 users = [
                     ...users,
@@ -651,35 +835,40 @@ export const acceptEvent = async (req, res) => {
 
         // If the user is connected to google, accept the google event if it's there
         if (user.googleTokens) {
-            const credentials = {
-                type: "authorized_user",
-                client_id: process.env.GOOGLE_CLIENT_ID,
-                client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                refresh_token: user.googleTokens.refresh_token,
-            };
-            const client = google.auth.fromJSON(credentials);
-            const calendar = google.calendar({ version: "v3", auth: client });
-            const googleEvent = await calendar.events.get({
-                calendarId: "primary",
-                eventId: event.event_id.toString(),
-            });
-
-            if (googleEvent) {
-                await calendar.events.update({
+            try {
+                const credentials = {
+                    type: "authorized_user",
+                    client_id: process.env.GOOGLE_CLIENT_ID,
+                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                    refresh_token: user.googleTokens.refresh_token,
+                };
+                const client = google.auth.fromJSON(credentials);
+                const calendar = google.calendar({
+                    version: "v3",
+                    auth: client,
+                });
+                const googleEvent = await calendar.events.get({
                     calendarId: "primary",
                     eventId: event.event_id.toString(),
-                    requestBody: {
-                        ...googleEvent.data,
-                        attendees: [
-                            ...googleEvent.data.attendees,
-                            {
-                                email: user.email,
-                                responseStatus: "accepted",
-                            },
-                        ],
-                    },
                 });
-            }
+
+                if (googleEvent) {
+                    await calendar.events.update({
+                        calendarId: "primary",
+                        eventId: event.event_id.toString(),
+                        requestBody: {
+                            ...googleEvent.data,
+                            attendees: [
+                                ...googleEvent.data.attendees,
+                                {
+                                    email: user.email,
+                                    responseStatus: "accepted",
+                                },
+                            ],
+                        },
+                    });
+                }
+            } catch (err) {}
         }
 
         await user.save();
@@ -781,34 +970,61 @@ export const deleteEvent = async (req, res) => {
                     e.event_attending = false;
                     await u.save();
                     await e.save();
+                    let sender = await User.findOne({
+                        _id: event.sender_id,
+                    }).exec();
+
+                    const date = new Date(event.event_date);
+
+                    await sendEmail(
+                        u.email,
+                        `Event Canceled: ${event.event_name}!`,
+                        {
+                            name: `${u.first_name} ${u.last_name}`,
+                            event: event.event_name,
+                            sender: `${sender.first_name} ${sender.last_name}`,
+                            location: event.event_location,
+                            date: `${date.toLocaleDateString("en-us", {
+                                weekday: "long",
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                            })} ${date.toLocaleTimeString()}`,
+                            duration: event.event_duration,
+                            notes: event.event_notes,
+                            attendees: event.event_attendees,
+                        },
+                        "./template/eventCanceled.handlebars"
+                    );
                     continue;
                 }
             }
 
             if (user.googleTokens) {
-                const credentials = {
-                    type: "authorized_user",
-                    client_id: process.env.GOOGLE_CLIENT_ID,
-                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                    refresh_token: user.googleTokens.refresh_token,
-                };
-                const client = google.auth.fromJSON(credentials);
-                const calendar = google.calendar({
-                    version: "v3",
-                    auth: client,
-                });
-                const googleEvent = await calendar.events.get({
-                    calendarId: "primary",
-                    eventId: event.event_id.toString(),
-                });
-
-                if (googleEvent) {
-                    await calendar.events.delete({
+                try {
+                    const credentials = {
+                        type: "authorized_user",
+                        client_id: process.env.GOOGLE_CLIENT_ID,
+                        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                        refresh_token: user.googleTokens.refresh_token,
+                    };
+                    const client = google.auth.fromJSON(credentials);
+                    const calendar = google.calendar({
+                        version: "v3",
+                        auth: client,
+                    });
+                    const googleEvent = await calendar.events.get({
                         calendarId: "primary",
                         eventId: event.event_id.toString(),
-                        sendUpdates: "all",
                     });
-                }
+                    if (googleEvent) {
+                        await calendar.events.delete({
+                            calendarId: "primary",
+                            eventId: event.event_id.toString(),
+                            sendUpdates: "all",
+                        });
+                    }
+                } catch (err) {}
             }
 
             let senderEventIndex = user.events.findIndex(
@@ -875,28 +1091,30 @@ export const deleteEvent = async (req, res) => {
             }
 
             if (user.googleTokens) {
-                const credentials = {
-                    type: "authorized_user",
-                    client_id: process.env.GOOGLE_CLIENT_ID,
-                    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                    refresh_token: user.googleTokens.refresh_token,
-                };
-                const client = google.auth.fromJSON(credentials);
-                const calendar = google.calendar({
-                    version: "v3",
-                    auth: client,
-                });
-                const googleEvent = await calendar.events.get({
-                    calendarId: "primary",
-                    eventId: event.event_id.toString(),
-                });
-
-                if (googleEvent) {
-                    await calendar.events.delete({
+                try {
+                    const credentials = {
+                        type: "authorized_user",
+                        client_id: process.env.GOOGLE_CLIENT_ID,
+                        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                        refresh_token: user.googleTokens.refresh_token,
+                    };
+                    const client = google.auth.fromJSON(credentials);
+                    const calendar = google.calendar({
+                        version: "v3",
+                        auth: client,
+                    });
+                    const googleEvent = await calendar.events.get({
                         calendarId: "primary",
                         eventId: event.event_id.toString(),
                     });
-                }
+
+                    if (googleEvent) {
+                        await calendar.events.delete({
+                            calendarId: "primary",
+                            eventId: event.event_id.toString(),
+                        });
+                    }
+                } catch (err) {}
             }
 
             // Delete user event

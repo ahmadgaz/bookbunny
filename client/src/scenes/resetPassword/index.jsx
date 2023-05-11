@@ -1,17 +1,18 @@
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import Container from "components/Container";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "theme";
 import Logo from "../../assets/Logo-02.svg";
 import Form from "./form";
 
-const Register = () => {
+const ResetPassword = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
 
     const navigate = useNavigate();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
+    let { token, userId } = useParams();
 
     return isNonMobileScreens ? (
         <Box
@@ -41,18 +42,10 @@ const Register = () => {
                         textAlign: "center",
                     }}
                 >
-                    <Typography variant="h1" margin="5px 0 10px 0">
-                        <b>Sign Up</b>
+                    <Typography variant="h1" margin="5px 0 40px 0">
+                        <b>Reset Your Password</b>
                     </Typography>
-                    <Typography
-                        variant="body1"
-                        fontSize={24}
-                        color={colors.neutralDark[300]}
-                        margin="0 0 40px 0"
-                    >
-                        Create a Bookbunny account
-                    </Typography>
-                    <Form />
+                    <Form token={token} userId={userId} />
                 </Container>
                 <img
                     src={Logo}
@@ -66,37 +59,6 @@ const Register = () => {
                         navigate("/");
                     }}
                 />
-            </Box>
-            <Box
-                display="flex"
-                flexWrap="nowrap"
-                justifyContent="center"
-                alignItems="center"
-                padding="0 0 30px 0"
-                sx={{
-                    gridColumnStart: "-1",
-                    gridColumnEnd: "-5",
-                    gridRowStart: "2",
-                }}
-            >
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Contact
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Privacy Policy
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Terms & Conditions
-                </Container>
             </Box>
         </Box>
     ) : (
@@ -126,46 +88,12 @@ const Register = () => {
                     navigate("/");
                 }}
             />
-            <Typography variant="h1" margin="5px 0 10px 0">
-                <b>Sign Up</b>
+            <Typography variant="h1" margin="5px 0 40px 0">
+                <b>Reset Your Password</b>
             </Typography>
-            <Typography
-                variant="body1"
-                fontSize={24}
-                color={colors.neutralDark[300]}
-                margin="0 0 40px 0"
-            >
-                Create a Bookbunny account
-            </Typography>
-            <Form />
-            <Box
-                display="flex"
-                flexWrap="nowrap"
-                justifyContent="center"
-                alignItems="center"
-                padding="30px 0 0 0"
-            >
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Contact
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Privacy Policy
-                </Container>
-                <Container
-                    variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
-                >
-                    Terms & Conditions
-                </Container>
-            </Box>
+            <Form token={token} userId={userId} />
         </Box>
     );
 };
 
-export default Register;
+export default ResetPassword;

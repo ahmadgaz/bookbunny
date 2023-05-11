@@ -1,8 +1,11 @@
 import express from "express";
 import {
     isConnectedToGoogle,
+    unlinkFromGoogle,
+    linkToGoogle,
     getGoogleEvents,
     getUser,
+    deleteUser,
     updateName,
     updatePass,
     confirmPassword,
@@ -28,10 +31,13 @@ const router = express.Router();
 
 // GOOGLE
 router.get("/:user/isConnectedToGoogle", verifyToken, isConnectedToGoogle);
+router.patch("/:user/unlinkFromGoogle", verifyToken, unlinkFromGoogle);
+router.patch("/:user/linkToGoogle", verifyToken, linkToGoogle);
 router.post("/:user/getGoogleEvents", verifyToken, getGoogleEvents);
 
 // USER
 router.get("/:user", verifyToken, getUser);
+router.delete("/:user/deleteUser", verifyToken, deleteUser);
 router.patch("/:user/updateName", verifyToken, updateName); //
 router.patch("/:user/updatePass", verifyToken, updatePass); //
 router.post("/:user/confirmPassword", verifyToken, confirmPassword); //

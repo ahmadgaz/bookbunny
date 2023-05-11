@@ -11,7 +11,6 @@ export const verifyToken = async (req, res, next) => {
         }
 
         const verified = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(req.params.user, verified.id);
         if (req.params.user !== verified.id)
             return res.status(403).send("Access denied!");
 
