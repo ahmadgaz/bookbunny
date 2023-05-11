@@ -140,17 +140,6 @@ const Form = () => {
                 resetForm,
             }) => (
                 <form onSubmit={handleSubmit}>
-                    {error && (
-                        <Typography
-                            textAlign="left"
-                            variant="h6"
-                            margin="0 0 10px 0"
-                            color={colors.redAccent[500]}
-                        >
-                            {error}
-                        </Typography>
-                    )}
-
                     {/* FIELDS */}
                     <Box
                         display="grid"
@@ -285,6 +274,17 @@ const Form = () => {
                             </Box>
                         )}
                     </Box>
+
+                    {error && (
+                        <Typography
+                            textAlign="left"
+                            variant="h6"
+                            margin="0 0 10px 0"
+                            color={colors.redAccent[500]}
+                        >
+                            {error}
+                        </Typography>
+                    )}
 
                     {/* BUTTONS */}
                     <Box>
