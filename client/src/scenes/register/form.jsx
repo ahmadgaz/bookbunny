@@ -73,7 +73,6 @@ const Form = () => {
             const savedUser = await savedUserResponse.json();
 
             if (savedUser.token !== undefined && savedUser.user !== undefined) {
-                console.log(savedUser);
                 dispatch(
                     setLogin({
                         user: savedUser.user,
@@ -303,7 +302,6 @@ const Form = () => {
                             {/* <GoogleLogin
                                 size="large"
                                 onSuccess={googleLogin}
-                                onError={(err) => console.log(err)}
                             /> */}
                             <Container
                                 size="m"

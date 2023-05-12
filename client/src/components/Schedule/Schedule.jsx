@@ -81,27 +81,22 @@ const Schedule = (props) => {
     return (
         <div
             onTouchStart={() => {
-                console.log("auto");
                 key.current = v4();
                 setTouchAction("auto");
             }}
             onTouchEnd={() => {
-                console.log("none");
                 key.current = v4();
                 setTouchAction("none");
             }}
             onTouchEndCapture={() => {
-                console.log("none");
                 key.current = v4();
                 setTouchAction("none");
             }}
             onTouchCancel={() => {
-                console.log("none");
                 key.current = v4();
                 setTouchAction("none");
             }}
             onTouchCancelCapture={() => {
-                console.log("none");
                 key.current = v4();
                 setTouchAction("none");
             }}

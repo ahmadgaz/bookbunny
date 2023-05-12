@@ -42,7 +42,6 @@ app.use(cors()); // Cross-origin compatibility
 // ROUTES
 app.post("/test", (req, res) => {
     try {
-        console.log(req.body);
         res.status(200).json(req.body);
     } catch (err) {
         res.status(500).json({ msg: "error!" });
@@ -55,7 +54,6 @@ app.use("/user", userRoutes);
 // const httpServer = createServer();
 // const io = new Server(3001);
 // io.on("connection", (socket) => {
-//     console.log(socket.id)
 //   });
 
 // MONGOOSE SETUP
@@ -67,6 +65,6 @@ mongoose
         useUnifiedTopology: true,
     })
     .then(() => {
-        app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+        app.listen(PORT, () => {});
     })
-    .catch((error) => console.log(`${error} did not connect!`));
+    .catch((error) => {});

@@ -170,7 +170,6 @@ export const register = async (req, res) => {
             //             console.error(err);
             //             return;
             //         }
-            //         console.log("Subscription response:", res.data);
             //     }
             // );
 
@@ -349,7 +348,6 @@ export const login = async (req, res) => {
             //             console.error(err);
             //             return;
             //         }
-            //         console.log("Subscription response:", res.data);
             //     }
             // );
 

@@ -19,9 +19,7 @@ const HideOnScroll = (props) => {
     // will default to window.
     // This is only being set here because the demo is in an iframe.
     const trigger = useScrollTrigger();
-    useEffect(() => {
-        console.log(trigger);
-    }, [trigger]);
+    useEffect(() => {}, [trigger]);
 
     return (
         <Slide appear={false} direction="down" in={!trigger}>

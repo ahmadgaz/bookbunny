@@ -276,7 +276,6 @@ export const confirmPassword = async (req, res) => {
             _id: req.params.user,
         }).exec();
 
-        console.log(password, user.password);
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ msg: "Wrong password!" });
 

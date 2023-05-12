@@ -122,7 +122,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const connectedToGoogle = await connectedToGoogleResponse.json();
 
         if (!connectedToGoogle) {
-            console.log("Error");
             return;
         }
 
@@ -149,7 +148,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const unlink = await unlinkResponse.json();
 
         if (!unlink) {
-            console.log("Error");
             return;
         }
 
@@ -176,7 +174,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const googleEvents = await googleEventsResponse.json();
 
         if (!googleEvents) {
-            console.log("Error");
             return;
         }
 
@@ -211,7 +208,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const updated = await updatedResponse.json();
 
         if (!updated) {
-            console.log("Error");
             return { err: "THere has been an error! Please try again later." };
         } else if (updated.msg) {
             return { msg: updated.msg };
@@ -239,7 +235,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const updated = await updatedResponse.json();
 
         if (!updated) {
-            console.log("Error");
             return;
         }
 
@@ -262,7 +257,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const confirmed = await confirmedResponse.json();
 
         if (!confirmed) {
-            console.log("Error");
             return;
         }
 
@@ -281,10 +275,7 @@ const CRUDFunctionsContextProvider = (props) => {
         });
         const updatedUser = await updatedUserResponse.json();
 
-        console.log(updatedUser);
-
         if (!updatedUser) {
-            console.log("Error");
             return;
         }
 
@@ -307,7 +298,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const receivingUser = await receivingUserResponse.json();
 
         if (!receivingUser) {
-            console.log("Error");
             return;
         }
 
@@ -326,7 +316,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const firstFourUsers = await firstFourUsersResponse.json();
 
         if (!firstFourUsers) {
-            console.log("Error");
             return;
         }
 
@@ -345,7 +334,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const attendeesInfo = await attendeesInfoResponse.json();
 
         if (!attendeesInfo) {
-            console.log("Error");
             return;
         }
 
@@ -380,7 +368,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const newView = await newViewResponse.json();
 
         if (!newView) {
-            console.log("Error");
             return;
         }
 
@@ -407,7 +394,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const updatedView = await updatedViewResponse.json();
 
         if (!updatedView) {
-            console.log("Error");
             return;
         }
 
@@ -426,7 +412,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const deleteView = await deleteViewResponse.json();
 
         if (!deleteView) {
-            console.log("Error");
             return;
         }
 
@@ -456,7 +441,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const newEventType = await newEventTypeResponse.json();
 
         if (!newEventType) {
-            console.log("Error");
             return;
         }
 
@@ -481,7 +465,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const updatedEventType = await updatedEventTypeResponse.json();
 
         if (!updatedEventType) {
-            console.log("Error");
             return;
         }
 
@@ -500,7 +483,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const deleteEventType = await deleteEventTypeResponse.json();
 
         if (!deleteEventType) {
-            console.log("Error");
             return;
         }
 
@@ -525,9 +507,7 @@ const CRUDFunctionsContextProvider = (props) => {
         );
         const newEvent = await newEventResponse.json();
 
-        console.log(newEvent);
         if (!newEvent) {
-            console.log("Error");
             return;
         }
 
@@ -545,9 +525,7 @@ const CRUDFunctionsContextProvider = (props) => {
         );
         const acceptEvent = await acceptEventResponse.json();
 
-        console.log(acceptEvent);
         if (!acceptEvent) {
-            console.log("Error");
             return;
         }
 
@@ -566,7 +544,6 @@ const CRUDFunctionsContextProvider = (props) => {
         const deleteEvent = await deleteEventResponse.json();
 
         if (!deleteEvent) {
-            console.log("Error");
             return;
         }
 

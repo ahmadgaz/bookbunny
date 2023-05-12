@@ -235,7 +235,6 @@ const Timeline = (props) => {
             let data = [...timeslotsDataCurrent];
             data.forEach((timeslot, idx) => {
                 if (this.key === timeslot.key) {
-                    // console.log('same slot');
                     return;
                 }
                 let checks = {
@@ -257,7 +256,6 @@ const Timeline = (props) => {
                     checks.thisEndIsBetweenTimeslot &&
                     checks.thisStartIsBetweenTimeslot
                 ) {
-                    // console.log('inside slot');
                     let time = timeslot.time;
                     timeslot.size = this.position - timeslot.position;
                     timeslot.time = {
@@ -307,7 +305,6 @@ const Timeline = (props) => {
                     return;
                 }
                 if (checks.thisStartIsBetweenTimeslot) {
-                    // console.log('start overlaps slot');
                     timeslot.size = this.position - timeslot.position;
                     timeslot.time = {
                         start_time: `${getTime(
@@ -322,7 +319,6 @@ const Timeline = (props) => {
                     return;
                 }
                 if (checks.thisEndIsBetweenTimeslot) {
-                    // console.log('end overlaps slot');
                     timeslot.size =
                         timeslot.position +
                         timeslot.size -
@@ -341,7 +337,6 @@ const Timeline = (props) => {
                     return;
                 }
                 if (checks.timeslotIsInsideThis) {
-                    // console.log('overtakes slot');
                     data.splice(idx, 1);
                     data = this.correctOverlapsForWriteComponents(data);
                 }
@@ -383,7 +378,6 @@ const Timeline = (props) => {
                     return;
                 }
                 if (this.key === timeslot.key) {
-                    // console.log('same slot');
                     return;
                 }
                 let checks = {
@@ -408,7 +402,6 @@ const Timeline = (props) => {
                     checks.thisEndIsBetweenTimeslot &&
                     checks.thisStartIsBetweenTimeslot
                 ) {
-                    // console.log("inside slot");
                     if (this.event) {
                         this.opacity = "80%";
                     }
@@ -417,7 +410,6 @@ const Timeline = (props) => {
                     return;
                 }
                 if (checks.thisStartIsBetweenTimeslot) {
-                    // console.log("start overlaps slot");
                     if (this.event) {
                         this.opacity = "80%";
                     }
@@ -426,10 +418,8 @@ const Timeline = (props) => {
                     return;
                 }
                 if (checks.timeslotIsInsideThis) {
-                    // console.log("overtakes slot");
                 }
             });
-            // console.log(opaqueParts.map((part) => part.percentages));
             return data;
         }
         handlePopoverOpen(event) {

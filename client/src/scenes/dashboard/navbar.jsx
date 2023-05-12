@@ -466,7 +466,6 @@ const ViewsDropdown = (props) => {
         setShowDialog(true);
     };
     const handlePopoverOpen = (event) => {
-        console.log(event.currentTarget);
         setAnchorEl(event.currentTarget);
     };
     const handlePopoverClose = () => {
@@ -683,11 +682,8 @@ const Navbar = (props) => {
     const trigger = useScrollTrigger({
         target: emblaRef.current ? emblaRef.current : undefined,
     });
-    useEffect(() => {
-        console.log(trigger);
-    }, [trigger]);
+    useEffect(() => {}, [trigger]);
 
-    console.log(tab);
     return isNonMobileScreens ? (
         <AppBar>
             <Slide appear={false} direction="down" in={!trigger}>
