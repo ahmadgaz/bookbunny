@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { setRouteBeforeLogInOrSignUp } from "state";
 import NavbarSpacer from "components/NavbarSpacer";
 import Navbar from "./navbar";
-import HeroSafariCompatible from "../../assets/HeroSafariCompatible.mov";
+import HeroSafariCompatible from "../../assets/Hero4.mp4";
 import Hero from "../../assets/Hero.webm";
 import { tokens } from "theme";
 import Container from "components/Container";
@@ -82,7 +82,7 @@ const Home = () => {
                     />
                     <Box display="flex" alignItems="center">
                         <Container
-                            size="m"
+                            size={isNonMobileScreens ? "m" : "s"}
                             variant="contained"
                             outerStyle={{ marginRight: "50px" }}
                             onClick={() => {
@@ -92,19 +92,23 @@ const Home = () => {
                         >
                             Try Free
                         </Container>
-                        <Container italicized size="m" variant="outlined">
+                        <Container
+                            italicized
+                            size={isNonMobileScreens ? "m" : "s"}
+                            variant="outlined"
+                        >
                             See how it works
                         </Container>
                     </Box>
                 </Box>
                 <Box
-                    width={isNonMobileScreens ? "700px" : "100%"}
+                    width={isNonMobileScreens ? "700px" : "50vw"}
                     display="flex"
                     justifyContent="center"
                 >
                     <video
                         style={{
-                            height: isNonMobileScreens ? "450" : "80vw",
+                            height: isNonMobileScreens ? "450px" : "50vw",
                         }}
                         autoPlay
                         loop
@@ -112,7 +116,7 @@ const Home = () => {
                     >
                         <source
                             src={HeroSafariCompatible}
-                            type='video/mp4; codecs="hvc1"'
+                            type="video/mp4; codecs=hvc1"
                         />
                         <source src={Hero} type="video/webm" />
                     </video>

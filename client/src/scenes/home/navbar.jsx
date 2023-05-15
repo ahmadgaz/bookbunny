@@ -1,12 +1,12 @@
 // import { useState } from "react";
 import {
     Box,
-    // useMediaQuery,
     AppBar,
     Toolbar,
     Typography,
     useScrollTrigger,
     Slide,
+    useMediaQuery,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/Logo-02.svg";
@@ -29,6 +29,7 @@ const HideOnScroll = (props) => {
 };
 
 const Navbar = (props) => {
+    const isNonMobileScreens = useMediaQuery("(min-width: 1400px)");
     const { setPrevPage } = props;
     // const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const navigate = useNavigate();
@@ -40,6 +41,7 @@ const Navbar = (props) => {
                 <Toolbar>
                     <Button
                         variant="outlined"
+                        size={isNonMobileScreens ? "m" : "s"}
                         onClick={() => {
                             setPrevPage();
                             navigate("/login");
@@ -50,11 +52,15 @@ const Navbar = (props) => {
                     <img
                         src={Logo}
                         alt="Logo"
-                        style={{ height: "50px", margin: "10px 0" }}
+                        style={{
+                            height: isNonMobileScreens ? "50px" : "40px",
+                            margin: "10px 0",
+                        }}
                     />
                     <Button
                         rounded
                         variant="contained"
+                        size={isNonMobileScreens ? "m" : "s"}
                         onClick={() => {
                             setPrevPage();
                             navigate("/register");
