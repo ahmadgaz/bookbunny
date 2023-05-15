@@ -102,7 +102,14 @@ const Home = () => {
                     display="flex"
                     justifyContent="center"
                 >
-                    <video height="450" autoPlay loop muted>
+                    <video
+                        style={{
+                            height: isNonMobileScreens ? "450" : "80vw",
+                        }}
+                        autoPlay
+                        loop
+                        muted
+                    >
                         <source
                             src={HeroSafariCompatible}
                             type='video/mp4; codecs="hvc1"'
