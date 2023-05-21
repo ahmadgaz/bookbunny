@@ -741,7 +741,7 @@ const Calendar = () => {
                     ></Box>
                 </div>
             </Box>
-            <Box flexGrow={1}>
+            <Box flexGrow={1} width="90vw">
                 <Box marginBottom="30px" width="100%" height="100%">
                     <Container
                         fullWidth
