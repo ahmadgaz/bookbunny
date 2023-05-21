@@ -181,14 +181,14 @@ const Calendar = () => {
     const [rightArrowHovered, setRightArrowHovered] = useState(false);
     const [randomKey, setRandomKey] = useState(v4()); // Random key used to remount the Schedule component when needed as it won't remount without changing the key
 
-    return (
+    return isNonMobileScreens ? (
         <Box
             sx={{
                 width: "fit-content",
                 height: "940px",
                 display: "flex",
                 flexDirection: "column",
-                marginBottom: "120px",
+                marginBottom: "30px",
             }}
         >
             <Box
@@ -614,6 +614,438 @@ const Calendar = () => {
                         }}
                     ></Box>
                 </div>
+            </Box>
+        </Box>
+    ) : (
+        <Box
+            sx={{
+                width: "fit-content",
+                height: "940px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginBottom: "30px",
+            }}
+        >
+            <Box
+                margin="20px 0"
+                display="grid"
+                gridTemplateColumns="50px auto 50px"
+                width="100%"
+            >
+                <div
+                    onClick={() => {
+                        setLoading("Loading...");
+                        setRandomKey(v4());
+                        setStartOfCurrentWeek(
+                            startOfCurrentWeek.subtract(7, "days")
+                        );
+                    }}
+                    onMouseOver={() => setLeftArrowHovered(true)}
+                    onMouseLeave={() => setLeftArrowHovered(false)}
+                    style={{
+                        marginTop: "20px",
+                        width: "30px",
+                        cursor: "pointer",
+                        height: "43.2px",
+                    }}
+                >
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            width: "5px",
+                            height: "55%",
+                            rotate: "45deg",
+                            border: leftArrowHovered
+                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease",
+                        }}
+                    ></Box>
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            top: leftArrowHovered ? "-12px" : "-10px",
+                            width: "5px",
+                            height: "55%",
+                            rotate: "-45deg",
+                            border: leftArrowHovered
+                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease, top 0.1s ease",
+                        }}
+                    ></Box>
+                </div>
+                <Box paddingBottom="5px" alignSelf="end" justifySelf="center">
+                    <Typography variant="h2">
+                        <b>
+                            {startOfCurrentWeek.month() ===
+                            startOfCurrentWeek.add(7, "days").month()
+                                ? `${startOfCurrentWeek.format(
+                                      "MMMM"
+                                  )} ${startOfCurrentWeek.format("YYYY")}`
+                                : `${startOfCurrentWeek.format(
+                                      "MMMM"
+                                  )} - ${startOfCurrentWeek
+                                      .add(7, "days")
+                                      .format(
+                                          "MMMM"
+                                      )} ${startOfCurrentWeek.format("YYYY")}`}
+                        </b>
+                    </Typography>
+                </Box>
+                <div
+                    onClick={() => {
+                        setStartOfCurrentWeek(
+                            startOfCurrentWeek.add(7, "days")
+                        );
+                    }}
+                    onMouseOver={() => setRightArrowHovered(true)}
+                    onMouseLeave={() => setRightArrowHovered(false)}
+                    style={{
+                        width: "30px",
+                        cursor: "pointer",
+                        height: "43.2px",
+                        marginTop: "20px",
+                        paddingLeft: "45px",
+                    }}
+                >
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            width: "5px",
+                            height: "55%",
+                            rotate: "-45deg",
+                            border: rightArrowHovered
+                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease",
+                        }}
+                    ></Box>
+                    <Box
+                        backgroundColor={colors.neutralDark[500]}
+                        sx={{
+                            position: "relative",
+                            top: rightArrowHovered ? "-12px" : "-10px",
+                            width: "5px",
+                            height: "55%",
+                            rotate: "45deg",
+                            border: rightArrowHovered
+                                ? ` 4px solid ${colors.neutralDark[500]}`
+                                : ` 0px solid ${colors.neutralDark[500]}`,
+                            transition: "border 0.1s ease, top 0.1s ease",
+                        }}
+                    ></Box>
+                </div>
+            </Box>
+            <Box flexGrow={1}>
+                <Box marginBottom="30px" width="100%" height="100%">
+                    <Container
+                        fullWidth
+                        fullHeight
+                        button={false}
+                        style={{
+                            padding: "0 20px",
+                            maxWidth: "90vw",
+                            backgroundColor: colors.neutralLight[100],
+                        }}
+                    >
+                        {loading ? (
+                            <Box
+                                position="relative"
+                                width="100%"
+                                height="fit-content"
+                            >
+                                <Box position="absolute">
+                                    <Box
+                                        position="relative"
+                                        paddingTop="20px"
+                                        display="grid"
+                                        gridTemplateColumns="50px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px"
+                                        gridTemplateRows="fit-content"
+                                    >
+                                        <Typography
+                                            variant="h5"
+                                            lineHeight={1.7}
+                                            textAlign="center"
+                                            color={colors.neutralDark[300]}
+                                        ></Typography>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                        <Box
+                                            height="30.75px"
+                                            backgroundColor={
+                                                colors.neutralDark[100]
+                                            }
+                                            sx={{
+                                                clipPath:
+                                                    "circle(14px at 50% 45%)",
+                                            }}
+                                        ></Box>
+                                    </Box>
+                                    <Box
+                                        position="relative"
+                                        top="-10px"
+                                        height="750px"
+                                        width="600px"
+                                    >
+                                        <Schedule
+                                            key={randomKey}
+                                            week={startOfCurrentWeek}
+                                            direction="vertical"
+                                            type="read"
+                                            pxSize="750"
+                                            incrementDuration="1"
+                                            views={[]}
+                                            deleteEvent={deleteEvent}
+                                            acceptEvent={acceptEvent}
+                                        />
+                                    </Box>
+                                </Box>
+                                <div className="loading-backdrop"></div>
+                            </Box>
+                        ) : (
+                            <>
+                                <Box
+                                    position="relative"
+                                    paddingTop="20px"
+                                    display="grid"
+                                    gridTemplateColumns="50px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px 85.6px"
+                                    gridTemplateRows="fit-content"
+                                >
+                                    <Typography
+                                        variant="h5"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                    ></Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek.isSame(
+                                                dayjs(),
+                                                "day"
+                                            )
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek.format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(1, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(1, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(2, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(2, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(3, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(3, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(4, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(4, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(5, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(5, "days")
+                                            .format("D")}
+                                    </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        lineHeight={1.7}
+                                        textAlign="center"
+                                        color={colors.neutralDark[300]}
+                                        backgroundColor={
+                                            startOfCurrentWeek
+                                                .add(6, "days")
+                                                .isSame(dayjs(), "day")
+                                                ? colors.neutralDark[100]
+                                                : ""
+                                        }
+                                        sx={{
+                                            clipPath: "circle(14px at 50% 45%)",
+                                        }}
+                                    >
+                                        {startOfCurrentWeek
+                                            .add(6, "days")
+                                            .format("D")}
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    position="relative"
+                                    top="-10px"
+                                    height="750px"
+                                    width="600px"
+                                >
+                                    <Schedule
+                                        key={randomKey}
+                                        week={startOfCurrentWeek}
+                                        direction="vertical"
+                                        type="read"
+                                        pxSize="750"
+                                        incrementDuration="1"
+                                        views={[
+                                            ...selectedView,
+                                            ...googleEvents,
+                                            ...userEvents,
+                                        ]}
+                                        deleteEvent={deleteEvent}
+                                        acceptEvent={acceptEvent}
+                                    />
+                                </Box>
+                            </>
+                        )}
+                    </Container>
+                </Box>
             </Box>
         </Box>
     );

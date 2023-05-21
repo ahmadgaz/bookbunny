@@ -24,7 +24,7 @@ const Dashboard = () => {
     });
     document
         .querySelector("meta[name='theme-color']")
-        .setAttribute("content", colors.neutralLight[500]);
+        .setAttribute("content", colors.neutralLight[100]);
     const viewRef = useRef();
     const calendarRef = useRef();
     const helpRef = useRef();

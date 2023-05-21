@@ -1,6 +1,5 @@
 import { createTheme } from "@mui/material";
 
-// TODO: Add dark mode
 export const tokens = (mode) => ({
     ...(mode === "light"
         ? {

@@ -101,6 +101,7 @@ const Schedule = (props) => {
                 setTouchAction("none");
             }}
             style={{
+                touchAction: "none",
                 position: "relative",
                 width:
                     direction === "horizontal"

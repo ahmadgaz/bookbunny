@@ -2173,28 +2173,42 @@ const View = () => {
                             scrollbars: "",
                             // touchAction: "none",
                             display: "flex",
-                            padding: "30px",
+                            flexDirection: "column",
+                            padding: "20px",
                             height: "100%",
                             backgroundColor: colors.neutralLight[100],
                             textAlign: "center",
                         }}
                     >
-                        <Box
-                            height="260px"
-                            width="fit-content"
-                            sx={{
-                                overflow: "none",
-                            }}
-                        >
-                            <Schedule
-                                direction="horizontal"
-                                type="write"
-                                pxSize="650"
-                                views={
-                                    getSelectedView() ? [getSelectedView()] : []
-                                }
-                                updateView={updateView}
-                            />
+                        <Box width="710px">
+                            <Box
+                                margin="0 0 20px 0"
+                                borderRadius="25px"
+                                height="50px"
+                                width="100%"
+                                sx={{
+                                    background: `repeating-linear-gradient(45deg, ${colors.neutralLight[600]}AA, ${colors.neutralLight[600]}AA 1px,  ${colors.neutralLight[600]}7F 2.5px,  ${colors.neutralLight[600]}7F 10px)`,
+                                }}
+                            ></Box>
+                            <Box
+                                height="260px"
+                                width="fit-content"
+                                sx={{
+                                    overflow: "none",
+                                }}
+                            >
+                                <Schedule
+                                    direction="horizontal"
+                                    type="write"
+                                    pxSize="650"
+                                    views={
+                                        getSelectedView()
+                                            ? [getSelectedView()]
+                                            : []
+                                    }
+                                    updateView={updateView}
+                                />
+                            </Box>
                         </Box>
                     </Container>
                 </Box>

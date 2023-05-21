@@ -774,7 +774,7 @@ const Account = () => {
 
     return (
         <Box marginBottom="30px">
-            <Box width="700px" maxWidth="80vw">
+            <Box width="700px" maxWidth="80vw" paddingBottom="80px">
                 <Box display="flex" flexDirection="column">
                     {connectedToGoogle && (
                         <Box
