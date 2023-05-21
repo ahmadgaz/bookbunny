@@ -3,8 +3,7 @@ import { useDispatch } from "react-redux";
 import { setRouteBeforeLogInOrSignUp } from "state";
 import NavbarSpacer from "components/NavbarSpacer";
 import Navbar from "./navbar";
-import HeroSafariCompatible from "../../assets/Hero4.mp4";
-import Hero from "../../assets/Hero.webm";
+import Hero from "../../assets/Hero.gif";
 import { tokens } from "theme";
 import Container from "components/Container";
 import { useNavigate } from "react-router-dom";
@@ -106,20 +105,13 @@ const Home = () => {
                     display="flex"
                     justifyContent="center"
                 >
-                    <video
+                    <img
+                        src={Hero}
                         style={{
-                            height: isNonMobileScreens ? "450px" : "50vw",
+                            height: isNonMobileScreens ? "450px" : "80vw",
                         }}
-                        autoPlay
-                        loop
-                        muted
-                    >
-                        <source
-                            src={HeroSafariCompatible}
-                            type="video/mp4; codecs=hvc1"
-                        />
-                        <source src={Hero} type="video/webm" />
-                    </video>
+                        alt="hero"
+                    />
                 </Box>
             </Box>
         </Box>
