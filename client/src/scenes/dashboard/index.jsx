@@ -9,8 +9,11 @@ import Navbar from "./navbar.jsx";
 import View from "./View.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { hideSnackbar } from "state";
+import { tokens } from "theme.js";
 
 const Dashboard = () => {
+    const mode = useSelector((state) => state.mode);
+    const colors = tokens(mode);
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
     const [tab, setTab] = useState(1);
     const dispatch = useDispatch();
@@ -19,6 +22,9 @@ const Dashboard = () => {
         axis: "x",
         draggable: false,
     });
+    document
+        .querySelector("meta[name='theme-color']")
+        .setAttribute("content", colors.neutralLight[500]);
     const viewRef = useRef();
     const calendarRef = useRef();
     const helpRef = useRef();

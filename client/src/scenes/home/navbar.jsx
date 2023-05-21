@@ -42,6 +42,7 @@ const Navbar = (props) => {
                     <Button
                         variant="outlined"
                         size={isNonMobileScreens ? "m" : "s"}
+                        outerStyle={{ margin: "0 10px" }}
                         onClick={() => {
                             setPrevPage();
                             navigate("/login");
@@ -61,6 +62,7 @@ const Navbar = (props) => {
                         rounded
                         variant="contained"
                         size={isNonMobileScreens ? "m" : "s"}
+                        outerStyle={{ margin: "0 10px" }}
                         onClick={() => {
                             setPrevPage();
                             navigate("/register");

@@ -9,6 +9,9 @@ import Form from "./form";
 const Register = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
+    document
+        .querySelector("meta[name='theme-color']")
+        .setAttribute("content", "#ffffff");
 
     const navigate = useNavigate();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
@@ -140,26 +143,26 @@ const Register = () => {
             <Form />
             <Box
                 display="flex"
-                flexWrap="nowrap"
+                flexWrap="wrap"
                 justifyContent="center"
                 alignItems="center"
                 padding="30px 0 0 0"
             >
                 <Container
                     variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
+                    outerStyle={{ padding: "5px 10px" }}
                 >
                     Contact
                 </Container>
                 <Container
                     variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
+                    outerStyle={{ padding: "5px 10px" }}
                 >
                     Privacy Policy
                 </Container>
                 <Container
                     variant="outlined"
-                    outerStyle={{ padding: "0 10px" }}
+                    outerStyle={{ padding: "5px 10px" }}
                 >
                     Terms & Conditions
                 </Container>

@@ -9,6 +9,9 @@ import Form from "./form";
 const Login = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
+    document
+        .querySelector("meta[name='theme-color']")
+        .setAttribute("content", "#ffffff");
 
     const navigate = useNavigate();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");

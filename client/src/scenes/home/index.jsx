@@ -11,6 +11,9 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
     const isNonMobileScreens = useMediaQuery("(min-width: 1400px)");
     const colors = tokens();
+    document
+        .querySelector("meta[name='theme-color']")
+        .setAttribute("content", colors.neutralDark[500]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const setPrevPageToHome = () => {
@@ -50,7 +53,7 @@ const Home = () => {
                             margin: "15px 0",
                             height: "1px",
                             border: "none",
-                            background: colors.neutralDark[500],
+                            background: colors.neutralLight[500],
                         }}
                     />
                     <Typography variant="h3">

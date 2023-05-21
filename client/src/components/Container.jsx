@@ -245,6 +245,19 @@ const Container = (props) => {
 
                 {/* Button */}
                 <Typography
+                    onTouchStart={() => {
+                        setContainedAnimation(`-${colors.boxShadowHovered}px`);
+                        setTranslation("translateY(-100%)");
+                    }}
+                    onTouchCancel={() => {
+                        setContainedAnimation(`-${colors.boxShadowSize}px`);
+                        setTranslation("");
+                    }}
+                    onTouchEnd={() => {
+                        setContainedAnimation(`-${colors.boxShadowSize}px`);
+                        setTranslation("");
+                        onClick();
+                    }}
                     onMouseEnter={() => {
                         setContainedAnimation(`-${colors.boxShadowHovered}px`);
                         setTranslation("translateY(-100%)");
@@ -403,6 +416,16 @@ const Container = (props) => {
             >
                 <b>
                     <div
+                        onTouchStart={() => {
+                            setTranslation("translateY(-100%)");
+                        }}
+                        onTouchCancel={() => {
+                            setTranslation("");
+                        }}
+                        onTouchEnd={() => {
+                            setTranslation("");
+                            onClick();
+                        }}
                         onMouseEnter={() => {
                             setTranslation("translateY(-100%)");
                         }}

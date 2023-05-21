@@ -18,7 +18,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { tokens } from "theme";
 import { v4 } from "uuid";
-import { getTime, getPosAndSize } from "./convertData";
+import { getTime, getPosAndSize } from "../../utils/convertData";
 import Event from "./Event";
 
 function hexToRgb(hex) {
