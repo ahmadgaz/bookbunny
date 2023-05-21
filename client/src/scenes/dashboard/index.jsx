@@ -24,7 +24,7 @@ const Dashboard = () => {
     });
     document
         .querySelector("meta[name='theme-color']")
-        .setAttribute("content", colors.neutralLight[100]);
+        .setAttribute("content", colors.neutralLight[500]);
     const viewRef = useRef();
     const calendarRef = useRef();
     const helpRef = useRef();
@@ -60,7 +60,7 @@ const Dashboard = () => {
     }, [emblaApi, tab]);
 
     return (
-        <Box width="100vw" height="100vh" sx={{ touchAction: "pan-y" }}>
+        <Box width="100vw" height="90vh" sx={{ touchAction: "pan-y" }}>
             <Navbar
                 tab={tab}
                 handleTabChange={handleTabChange}
@@ -158,7 +158,7 @@ const Dashboard = () => {
                     style={{
                         overflowX: "hidden",
                         height: "100%",
-                        touchAction: "none",
+                        touchAction: "pan-y",
                     }}
                 >
                     <div
@@ -167,7 +167,7 @@ const Dashboard = () => {
                             display: "flex",
                             flexDirection: "row",
                             height: "100%",
-                            touchAction: "none",
+                            touchAction: "pan-y",
                         }}
                     >
                         <div
@@ -182,7 +182,7 @@ const Dashboard = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 minWidth: 0,
-                                touchAction: "none",
+                                touchAction: "pan-y",
                             }}
                         >
                             <View />
@@ -198,7 +198,7 @@ const Dashboard = () => {
                                 flex: "0 0 100%",
                                 display: "flex",
                                 justifyContent: "center",
-                                touchAction: "none",
+                                touchAction: "pan-y",
                                 minWidth: 0,
                             }}
                         >
@@ -215,7 +215,7 @@ const Dashboard = () => {
                                 flex: "0 0 100%",
                                 display: "flex",
                                 justifyContent: "center",
-                                touchAction: "none",
+                                touchAction: "pan-y",
                                 minWidth: 0,
                             }}
                         >
@@ -232,7 +232,7 @@ const Dashboard = () => {
                                 flex: "0 0 100%",
                                 display: "flex",
                                 justifyContent: "center",
-                                touchAction: "none",
+                                touchAction: "pan-y",
                                 minWidth: 0,
                             }}
                         >
