@@ -158,7 +158,7 @@ const Dashboard = () => {
                     style={{
                         overflowX: "hidden",
                         height: "100%",
-                        touchAction: "pan-y",
+                        touchAction: "none",
                     }}
                 >
                     <div
@@ -167,7 +167,7 @@ const Dashboard = () => {
                             display: "flex",
                             flexDirection: "row",
                             height: "100%",
-                            touchAction: "pan-y",
+                            touchAction: "none",
                         }}
                     >
                         <div
@@ -182,7 +182,7 @@ const Dashboard = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 minWidth: 0,
-                                touchAction: "pan-y",
+                                touchAction: "none",
                             }}
                         >
                             <View />
@@ -198,7 +198,7 @@ const Dashboard = () => {
                                 flex: "0 0 100%",
                                 display: "flex",
                                 justifyContent: "center",
-                                touchAction: "pan-y",
+                                touchAction: "none",
                                 minWidth: 0,
                             }}
                         >
@@ -215,7 +215,7 @@ const Dashboard = () => {
                                 flex: "0 0 100%",
                                 display: "flex",
                                 justifyContent: "center",
-                                touchAction: "pan-y",
+                                touchAction: "none",
                                 minWidth: 0,
                             }}
                         >
@@ -232,7 +232,7 @@ const Dashboard = () => {
                                 flex: "0 0 100%",
                                 display: "flex",
                                 justifyContent: "center",
-                                touchAction: "pan-y",
+                                touchAction: "none",
                                 minWidth: 0,
                             }}
                         >
