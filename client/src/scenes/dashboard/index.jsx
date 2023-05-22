@@ -24,7 +24,7 @@ const Dashboard = () => {
     });
     document
         .querySelector("meta[name='theme-color']")
-        .setAttribute("content", colors.neutralLight[500]);
+        .setAttribute("content", colors.neutralLight[100]);
     const viewRef = useRef();
     const calendarRef = useRef();
     const helpRef = useRef();
@@ -60,7 +60,11 @@ const Dashboard = () => {
     }, [emblaApi, tab]);
 
     return (
-        <Box width="100vw" height="90vh" sx={{ touchAction: "pan-y" }}>
+        <Box
+            width="100vw"
+            height={isNonMobileScreens ? "100vh" : "90vh"}
+            sx={{ touchAction: "pan-y" }}
+        >
             <Navbar
                 tab={tab}
                 handleTabChange={handleTabChange}

@@ -11,7 +11,7 @@ const Register = () => {
     const colors = tokens(mode);
     document
         .querySelector("meta[name='theme-color']")
-        .setAttribute("content", "#ffffff");
+        .setAttribute("content", colors.neutralLight[100]);
 
     const navigate = useNavigate();
     const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");

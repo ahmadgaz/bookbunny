@@ -76,30 +76,30 @@ const Schedule = (props) => {
     }
 
     const [touchAction, setTouchAction] = useState("none");
-    const key = useRef(v4());
+    // const key = useRef(v4());
 
     return (
         <div
-            onTouchStart={() => {
-                key.current = v4();
-                setTouchAction("auto");
-            }}
-            onTouchEnd={() => {
-                key.current = v4();
-                setTouchAction("none");
-            }}
-            onTouchEndCapture={() => {
-                key.current = v4();
-                setTouchAction("none");
-            }}
-            onTouchCancel={() => {
-                key.current = v4();
-                setTouchAction("none");
-            }}
-            onTouchCancelCapture={() => {
-                key.current = v4();
-                setTouchAction("none");
-            }}
+            // onTouchStart={() => {
+            //     key.current = v4();
+            //     setTouchAction("auto");
+            // }}
+            // onTouchEnd={() => {
+            //     key.current = v4();
+            //     setTouchAction("none");
+            // }}
+            // onTouchEndCapture={() => {
+            //     key.current = v4();
+            //     setTouchAction("none");
+            // }}
+            // onTouchCancel={() => {
+            //     key.current = v4();
+            //     setTouchAction("none");
+            // }}
+            // onTouchCancelCapture={() => {
+            //     key.current = v4();
+            //     setTouchAction("none");
+            // }}
             style={{
                 touchAction: type === "write" ? "none" : "",
                 position: "relative",
@@ -121,7 +121,7 @@ const Schedule = (props) => {
             }}
         >
             <div
-                key={key.current}
+                // key={key.current}
                 style={{
                     position: "relative",
                     width:

@@ -743,7 +743,7 @@ const Timeline = (props) => {
                                 <Event timeslot={timeslot} />
                             </Container>
                         </Popover>
-                    ) : (
+                    ) : timeslot.event && !isNonMobileScreens ? (
                         <Dialog
                             fullScreen
                             open={Boolean(timeslot.popoverAnchorEl)}
@@ -779,6 +779,8 @@ const Timeline = (props) => {
                                 <Event timeslot={timeslot} />
                             </Paper>
                         </Dialog>
+                    ) : (
+                        ""
                     )}
                 </div>
             )),
