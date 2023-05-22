@@ -1947,7 +1947,7 @@ const View = () => {
                 display="grid"
                 p="20px"
                 paddingBottom="80px"
-                gridTemplateColumns="9.5vw 9.5vw 9.5vw 9.5vw 9.5vw 9.5vw 9.5vw"
+                gridTemplateColumns="9vw 9vw 9vw 9vw 9vw 9vw 9vw"
                 gridTemplateRows="100px 100px fit-content 40px 100px 100px 100px 100px 100px 100px 100px"
                 columnGap="20px"
                 rowGap="20px"
