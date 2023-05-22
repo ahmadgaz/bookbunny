@@ -753,6 +753,7 @@ const Timeline = (props) => {
                         >
                             <Paper
                                 sx={{
+                                    borderRadius: 0,
                                     display: "flex",
                                     flexDirection: "column",
                                     flexWrap: "nowrap",

@@ -294,6 +294,11 @@ export const themeSettings = (mode) => {
                 defaultProps: {
                     elevation: 0,
                 },
+                styleOverrides: {
+                    root: {
+                        backgroundColor: colors.neutralLight[100],
+                    },
+                },
             },
             MuiButton: {
                 defaultProps: {
