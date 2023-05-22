@@ -707,6 +707,7 @@ const Account = () => {
         confirmPassword,
     } = useContext(CRUDFunctionsContext);
     const isNonMobile = useMediaQuery("(min-width:600px)");
+    const isNonMobileScreens = useMediaQuery("(min-width: 1400px)");
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [connectedToGoogle, setConnectedToGoogle] = useState();
@@ -772,9 +773,686 @@ const Account = () => {
         passwordConfirm: "",
     };
 
-    return (
+    return isNonMobileScreens ? (
         <Box marginBottom="30px">
             <Box width="700px" maxWidth="80vw" paddingBottom="80px">
+                <Box display="flex" flexDirection="column">
+                    {connectedToGoogle && (
+                        <Box
+                            sx={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                padding: "10px 0",
+                            }}
+                        >
+                            <Container
+                                fullWidth
+                                fullHeight
+                                button={false}
+                                style={{
+                                    padding: "15px 20px",
+                                    height: "100%",
+                                    backgroundColor: colors.secondary[200],
+                                    textAlign: "left",
+                                }}
+                            >
+                                <Typography variant="body1">
+                                    Your <b>Bookbunny</b> account is currently
+                                    linked to your <b>Google Account</b>. If you
+                                    unlink these accounts, then your{" "}
+                                    <b>Bookbunny</b> account password will be
+                                    reset and you will be able to change your
+                                    email address.
+                                </Typography>
+                            </Container>
+                        </Box>
+                    )}
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            padding: "10px 0",
+                        }}
+                    >
+                        <Container
+                            fullWidth
+                            fullHeight
+                            button={false}
+                            style={{
+                                padding: "30px",
+                                height: "100%",
+                                backgroundColor: colors.neutralLight[100],
+                                textAlign: "center",
+                            }}
+                        >
+                            <Typography variant="h3" margin="5px 0 20px 0">
+                                <b>Profile</b>
+                            </Typography>
+                            {connectedToGoogle ? (
+                                <Box
+                                    display="grid"
+                                    gap="30px"
+                                    gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                    sx={{
+                                        "& > div": {
+                                            gridColumn: isNonMobile
+                                                ? undefined
+                                                : "span 4",
+                                        },
+                                    }}
+                                >
+                                    <TextField
+                                        disabled
+                                        label="First Name*"
+                                        value={initialValuesProfile.first_name}
+                                        name="first_name"
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        disabled
+                                        label="Last Name"
+                                        value={initialValuesProfile.last_name}
+                                        name="last_name"
+                                        sx={{ gridColumn: "span 2" }}
+                                    />
+                                    <TextField
+                                        disabled
+                                        label="Email*"
+                                        value={initialValuesProfile.email}
+                                        name="email"
+                                        sx={{ gridColumn: "span 4" }}
+                                    />
+                                    <Container
+                                        size="m"
+                                        fullWidth
+                                        variant="contained"
+                                        onClick={() => {
+                                            setShowUnlinkFromGoogleDialog(true);
+                                        }}
+                                        outerStyle={{
+                                            gridColumn: "span 4",
+                                        }}
+                                        style={{
+                                            backgroundColor:
+                                                colors.neutralLight[100],
+                                            // fontFamily: "Product Sans",
+                                        }}
+                                    >
+                                        Unlink from <b color="#4285f4">G</b>
+                                        <b color="#EA4335">o</b>
+                                        <b color="#FBBC05">o</b>
+                                        <b color="#4285f4">g</b>
+                                        <b color="#34A853">l</b>
+                                        <b color="#EA4335">e</b>
+                                    </Container>
+                                </Box>
+                            ) : (
+                                <Formik
+                                    onSubmit={submitProfile}
+                                    initialValues={initialValuesProfile}
+                                    validationSchema={profileSchema}
+                                >
+                                    {({
+                                        values,
+                                        errors,
+                                        touched,
+                                        handleBlur,
+                                        handleChange,
+                                        handleSubmit,
+                                        resetForm,
+                                        isValidating,
+                                        isSubmitting,
+                                        isValid,
+                                        initialErrors,
+                                    }) => (
+                                        <form onSubmit={handleSubmit}>
+                                            {profError && (
+                                                <Typography
+                                                    textAlign="left"
+                                                    variant="h6"
+                                                    margin="0 0 30px 0"
+                                                    color={
+                                                        colors.redAccent[500]
+                                                    }
+                                                >
+                                                    {profError}
+                                                </Typography>
+                                            )}
+
+                                            {/* FIELDS */}
+                                            <Box
+                                                display="grid"
+                                                gap="30px"
+                                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                                sx={{
+                                                    "& > div": {
+                                                        gridColumn: isNonMobile
+                                                            ? undefined
+                                                            : "span 4",
+                                                    },
+                                                }}
+                                            >
+                                                <TextField
+                                                    label="First Name*"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={values.first_name}
+                                                    name="first_name"
+                                                    error={
+                                                        Boolean(
+                                                            touched.first_name
+                                                        ) &&
+                                                        Boolean(
+                                                            errors.first_name
+                                                        )
+                                                    }
+                                                    helperText={
+                                                        touched.first_name &&
+                                                        errors.first_name
+                                                    }
+                                                    sx={{
+                                                        gridColumn: "span 2",
+                                                    }}
+                                                />
+                                                <TextField
+                                                    label="Last Name"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={values.last_name}
+                                                    name="last_name"
+                                                    error={
+                                                        Boolean(
+                                                            touched.last_name
+                                                        ) &&
+                                                        Boolean(
+                                                            errors.last_name
+                                                        )
+                                                    }
+                                                    helperText={
+                                                        touched.last_name &&
+                                                        errors.last_name
+                                                    }
+                                                    sx={{
+                                                        gridColumn: "span 2",
+                                                    }}
+                                                />
+                                                <TextField
+                                                    disabled
+                                                    label="Email*"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={values.email}
+                                                    name="email"
+                                                    error={
+                                                        Boolean(
+                                                            touched.email
+                                                        ) &&
+                                                        Boolean(errors.email)
+                                                    }
+                                                    helperText={
+                                                        touched.email &&
+                                                        errors.email
+                                                    }
+                                                    sx={{
+                                                        gridColumn: "span 4",
+                                                    }}
+                                                />
+                                                <Typography
+                                                    onClick={() => {}}
+                                                    sx={{
+                                                        gridColumn: "span 4",
+                                                        color: colors
+                                                            .primary[500],
+                                                        textDecoration:
+                                                            "underline",
+                                                        textAlign: "left",
+                                                        "&:hover": {
+                                                            cursor: "pointer",
+                                                        },
+                                                    }}
+                                                >
+                                                    Change Email Address
+                                                </Typography>
+                                                <Button
+                                                    disabled={
+                                                        !Boolean(
+                                                            touched.first_name
+                                                        ) &&
+                                                        !Boolean(
+                                                            touched.last_name
+                                                        ) &&
+                                                        !Boolean(touched.email)
+                                                    }
+                                                    variant="outlined"
+                                                    color="inherit"
+                                                    style={{}}
+                                                    onClick={() => {
+                                                        setProfError(null);
+                                                        resetForm();
+                                                    }}
+                                                    sx={{
+                                                        gridColumn: "span 2",
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    disabled={
+                                                        !Boolean(
+                                                            touched.first_name
+                                                        ) &&
+                                                        !Boolean(
+                                                            touched.last_name
+                                                        ) &&
+                                                        !Boolean(touched.email)
+                                                    }
+                                                    variant="contained"
+                                                    color="inherit"
+                                                    type="submit"
+                                                    sx={{
+                                                        gridColumn: "span 2",
+                                                    }}
+                                                >
+                                                    Save
+                                                </Button>
+                                            </Box>
+                                        </form>
+                                    )}
+                                </Formik>
+                            )}
+                        </Container>
+                    </Box>
+                    {!connectedToGoogle && (
+                        <Box
+                            sx={{
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                padding: "10px 0",
+                            }}
+                        >
+                            <Container
+                                fullWidth
+                                fullHeight
+                                button={false}
+                                style={{
+                                    padding: "30px",
+                                    height: "100%",
+                                    backgroundColor: colors.neutralLight[100],
+                                    textAlign: "center",
+                                }}
+                            >
+                                <Typography variant="h3" margin="5px 0 25px 0">
+                                    <b>Change Your Password</b>
+                                </Typography>
+                                <Formik
+                                    onSubmit={submitPass}
+                                    initialValues={initialValuesPassword}
+                                    validationSchema={passwordSchema}
+                                >
+                                    {({
+                                        values,
+                                        errors,
+                                        touched,
+                                        handleBlur,
+                                        handleChange,
+                                        handleSubmit,
+                                        setFieldValue,
+                                        resetForm,
+                                    }) => (
+                                        <form onSubmit={handleSubmit}>
+                                            {passError && (
+                                                <Typography
+                                                    textAlign="left"
+                                                    variant="h6"
+                                                    margin="0 0 10px 0"
+                                                    color={
+                                                        colors.redAccent[500]
+                                                    }
+                                                >
+                                                    {passError}
+                                                </Typography>
+                                            )}
+
+                                            {/* FIELDS */}
+                                            <Box
+                                                display="grid"
+                                                gap="30px"
+                                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                                sx={{
+                                                    "& > div": {
+                                                        gridColumn: isNonMobile
+                                                            ? undefined
+                                                            : "span 4",
+                                                    },
+                                                }}
+                                            >
+                                                <TextField
+                                                    label="Current Password*"
+                                                    type="password"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={
+                                                        values.currentPassword
+                                                    }
+                                                    name="currentPassword"
+                                                    error={
+                                                        Boolean(
+                                                            touched.currentPassword
+                                                        ) &&
+                                                        Boolean(
+                                                            errors.currentPassword
+                                                        )
+                                                    }
+                                                    helperText={
+                                                        touched.currentPassword &&
+                                                        errors.currentPassword
+                                                    }
+                                                    sx={{
+                                                        gridColumn: "span 4",
+                                                    }}
+                                                />
+                                                <Typography
+                                                    onClick={() => {
+                                                        navigate(
+                                                            "/forgot_password"
+                                                        );
+                                                        resetForm();
+                                                    }}
+                                                    sx={{
+                                                        gridColumn: "span 4",
+                                                        color: colors
+                                                            .primary[500],
+                                                        textDecoration:
+                                                            "underline",
+                                                        textAlign: "left",
+                                                        "&:hover": {
+                                                            cursor: "pointer",
+                                                        },
+                                                    }}
+                                                >
+                                                    Forgot Password?
+                                                </Typography>
+                                                <TextField
+                                                    label="New Password*"
+                                                    type="password"
+                                                    onBlur={handleBlur}
+                                                    onChange={(e) => {
+                                                        setShowPasswordRequirements(
+                                                            e.target.value
+                                                        );
+                                                        handleChange(e);
+                                                    }}
+                                                    value={values.newPassword}
+                                                    name="newPassword"
+                                                    error={
+                                                        Boolean(
+                                                            touched.newPassword
+                                                        ) &&
+                                                        Boolean(
+                                                            errors.newPassword
+                                                        )
+                                                    }
+                                                    helperText={
+                                                        touched.newPassword &&
+                                                        errors.newPassword
+                                                    }
+                                                    sx={{
+                                                        gridColumn: "span 4",
+                                                    }}
+                                                />
+                                                {showPasswordRequirements && (
+                                                    <Box
+                                                        sx={{
+                                                            gridColumn:
+                                                                "span 4",
+                                                            opacity:
+                                                                showPasswordRequirements
+                                                                    ? "100%"
+                                                                    : "0%",
+                                                            transition:
+                                                                "opacity 0.2s ease",
+                                                        }}
+                                                    >
+                                                        <Container
+                                                            fullWidth
+                                                            button={false}
+                                                            style={{
+                                                                padding: "15px",
+                                                                backgroundColor:
+                                                                    colors
+                                                                        .secondary[200],
+                                                                textAlign:
+                                                                    "left",
+                                                            }}
+                                                        >
+                                                            <Typography variant="h6">
+                                                                <b>
+                                                                    Your
+                                                                    password
+                                                                    must:
+                                                                </b>
+                                                            </Typography>
+
+                                                            <ul>
+                                                                <li>
+                                                                    <Typography
+                                                                        variant="body1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    >
+                                                                        Contain
+                                                                        at least{" "}
+                                                                        <b>
+                                                                            8
+                                                                            characters
+                                                                        </b>
+                                                                    </Typography>
+                                                                </li>
+                                                                <li>
+                                                                    <Typography
+                                                                        variant="body1"
+                                                                        fontSize={
+                                                                            14
+                                                                        }
+                                                                    >
+                                                                        Contain
+                                                                        at least{" "}
+                                                                        <b>
+                                                                            1
+                                                                            number
+                                                                        </b>
+                                                                        ,{" "}
+                                                                        <b>
+                                                                            1
+                                                                            lowercase
+                                                                            letter
+                                                                        </b>
+                                                                        ,{" "}
+                                                                        <b>
+                                                                            1
+                                                                            uppercase
+                                                                            letter
+                                                                        </b>
+                                                                        , and{" "}
+                                                                        <b>
+                                                                            1
+                                                                            unique
+                                                                            character
+                                                                        </b>
+                                                                    </Typography>
+                                                                </li>
+                                                            </ul>
+                                                        </Container>
+                                                    </Box>
+                                                )}
+
+                                                <TextField
+                                                    label="Confirm Password*"
+                                                    type="password"
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    value={
+                                                        values.passwordConfirm
+                                                    }
+                                                    name="passwordConfirm"
+                                                    error={
+                                                        Boolean(
+                                                            touched.passwordConfirm
+                                                        ) &&
+                                                        Boolean(
+                                                            errors.passwordConfirm
+                                                        )
+                                                    }
+                                                    helperText={
+                                                        touched.passwordConfirm &&
+                                                        errors.passwordConfirm
+                                                    }
+                                                    sx={{
+                                                        gridColumn: "span 4",
+                                                    }}
+                                                />
+                                                <Button
+                                                    disabled={
+                                                        !Boolean(
+                                                            touched.currentPassword
+                                                        ) &&
+                                                        !Boolean(
+                                                            touched.newPassword
+                                                        ) &&
+                                                        !Boolean(
+                                                            touched.passwordConfirm
+                                                        )
+                                                    }
+                                                    variant="outlined"
+                                                    color="inherit"
+                                                    style={{}}
+                                                    onClick={() => {
+                                                        setShowPasswordRequirements(
+                                                            null
+                                                        );
+                                                        setPassError(null);
+                                                        resetForm();
+                                                    }}
+                                                    sx={{
+                                                        gridColumn: "span 2",
+                                                    }}
+                                                >
+                                                    Cancel
+                                                </Button>
+                                                <Button
+                                                    disabled={
+                                                        !Boolean(
+                                                            touched.currentPassword
+                                                        ) &&
+                                                        !Boolean(
+                                                            touched.newPassword
+                                                        ) &&
+                                                        !Boolean(
+                                                            touched.passwordConfirm
+                                                        )
+                                                    }
+                                                    variant="contained"
+                                                    color="inherit"
+                                                    type="submit"
+                                                    style={{}}
+                                                    sx={{
+                                                        gridColumn: "span 2",
+                                                    }}
+                                                >
+                                                    Save
+                                                </Button>
+                                            </Box>
+                                        </form>
+                                    )}
+                                </Formik>
+                            </Container>
+                        </Box>
+                    )}
+                    <Box
+                        sx={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            padding: "10px 0",
+                        }}
+                    >
+                        <Container
+                            fullWidth
+                            fullHeight
+                            button={false}
+                            style={{
+                                padding: "30px",
+                                height: "100%",
+                                backgroundColor: colors.neutralLight[100],
+                                textAlign: "center",
+                            }}
+                        >
+                            <Box
+                                display="grid"
+                                gap="15px"
+                                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                                sx={{
+                                    "& > div": {
+                                        gridColumn: isNonMobile
+                                            ? undefined
+                                            : "span 4",
+                                    },
+                                }}
+                            >
+                                <Typography variant="h3" gridColumn="span 4">
+                                    <b>Delete Account</b>
+                                </Typography>
+                                <Typography
+                                    variant="h4"
+                                    color={colors.redAccent[500]}
+                                    gridColumn="span 4"
+                                    margin="0 0 15px 0"
+                                >
+                                    <b>This action will be permenant!</b>
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    color="inherit"
+                                    onClick={() => {
+                                        setShowDeleteDialog(true);
+                                    }}
+                                    style={{
+                                        gridColumn: "span 4",
+                                        backgroundColor: colors.redAccent[500],
+                                    }}
+                                >
+                                    Delete
+                                </Button>
+                            </Box>
+                        </Container>
+                    </Box>
+                </Box>
+            </Box>
+            {showUnlinkFromGoogleDialog && (
+                <UnlinkFromGoogleDialog
+                    setConnectedToGoogle={setConnectedToGoogle}
+                    setShowDialog={setShowUnlinkFromGoogleDialog}
+                />
+            )}
+            {showDeleteDialog && (
+                <DeleteAccountDialog setShowDialog={setShowDeleteDialog} />
+            )}
+        </Box>
+    ) : (
+        <Box marginBottom="30px">
+            <Box width="700px" maxWidth="90vw" paddingBottom="80px">
                 <Box display="flex" flexDirection="column">
                     {connectedToGoogle && (
                         <Box

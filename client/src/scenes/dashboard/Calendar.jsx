@@ -181,10 +181,6 @@ const Calendar = () => {
     const [rightArrowHovered, setRightArrowHovered] = useState(false);
     const [randomKey, setRandomKey] = useState(v4()); // Random key used to remount the Schedule component when needed as it won't remount without changing the key
 
-    useEffect(() => {
-        console.log(randomKey);
-    }, [randomKey]);
-
     return isNonMobileScreens ? (
         <Box
             sx={{
