@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { tokens } from "theme";
-import { setLogout, showSnackbar } from "state";
+import { setTheme, setLogout, showSnackbar } from "state";
 import { useNavigate } from "react-router-dom";
 
 const profileSchema = yup.object().shape({
@@ -70,6 +70,7 @@ const DeleteAccountDialog = (props) => {
 
     const handleOnDelete = async () => {
         await deleteUser();
+        dispatch(setTheme({ theme: "light" }));
         dispatch(setLogout());
     };
 

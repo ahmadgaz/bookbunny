@@ -820,7 +820,12 @@ const Navbar = (props) => {
                                 borderBottomRightRadius: 0,
                             }}
                             onClick={() => {
-                                dispatch(setTheme());
+                                dispatch(
+                                    setTheme({
+                                        theme:
+                                            mode === "light" ? "dark" : "light",
+                                    })
+                                );
                             }}
                         >
                             {mode === "light" ? <DarkMode /> : <LightMode />}
@@ -833,6 +838,7 @@ const Navbar = (props) => {
                                 borderBottomLeftRadius: 0,
                             }}
                             onClick={() => {
+                                dispatch(setTheme({ theme: "light" }));
                                 dispatch(setLogout());
                             }}
                         >
@@ -866,7 +872,11 @@ const Navbar = (props) => {
                 >
                     <IconButton
                         onClick={() => {
-                            dispatch(setTheme());
+                            dispatch(
+                                setTheme({
+                                    theme: mode === "light" ? "dark" : "light",
+                                })
+                            );
                         }}
                         sx={{ marginRight: "30px" }}
                     >
@@ -879,6 +889,7 @@ const Navbar = (props) => {
 
                     <IconButton
                         onClick={() => {
+                            dispatch(setTheme({ theme: "light" }));
                             dispatch(setLogout());
                         }}
                         sx={{ marginLeft: "30px" }}
