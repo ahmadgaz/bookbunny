@@ -296,6 +296,7 @@ export const themeSettings = (mode) => {
                 },
                 styleOverrides: {
                     root: {
+                        borderRadius: 0,
                         backgroundColor: colors.neutralLight[100],
                     },
                 },
