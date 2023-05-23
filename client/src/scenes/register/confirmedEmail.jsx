@@ -5,7 +5,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "theme";
-import Logo from "../../assets/Logo-02.svg";
+import LogoLight from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-04.svg";
 
 const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
@@ -56,7 +57,7 @@ const ConfirmedEmail = () => {
             }}
         >
             <img
-                src={Logo}
+                src={mode === "light" ? LogoLight : LogoDark}
                 alt="Logo"
                 style={{
                     cursor: "pointer",

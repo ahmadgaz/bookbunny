@@ -26,7 +26,8 @@ import ViewDayIcon from "@mui/icons-material/ViewDay";
 import TodayIcon from "@mui/icons-material/Today";
 import PersonIcon from "@mui/icons-material/Person";
 import SupportIcon from "@mui/icons-material/Support";
-import Logo from "../../assets/Logo-01.svg";
+import LogoLight from "../../assets/Logo-01.svg";
+import LogoDark from "../../assets/Logo-03.svg";
 import { CRUDFunctionsContext } from "App";
 import { useDispatch, useSelector } from "react-redux";
 import { hideSnackbar, setLogout, setTheme, showSnackbar } from "state";
@@ -696,7 +697,7 @@ const Navbar = (props) => {
                 >
                     <Box display="flex" alignItems="center">
                         <img
-                            src={Logo}
+                            src={mode === "light" ? LogoLight : LogoDark}
                             alt="Logo"
                             style={{ height: "50px", margin: "0 30px 0 0" }}
                         />

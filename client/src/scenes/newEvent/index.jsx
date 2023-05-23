@@ -14,7 +14,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { CRUDFunctionsContext } from "App";
 import { setRouteBeforeLogInOrSignUp } from "state";
 import useEmblaCarousel from "embla-carousel-react";
-import Logo from "../../assets/Logo-02.svg";
+import LogoLight from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-04.svg";
 import { ArrowBack, ArrowRight } from "@mui/icons-material";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -811,7 +812,7 @@ const NewEvent = () => {
                                 </div>
                             </div>
                             <img
-                                src={Logo}
+                                src={mode === "light" ? LogoLight : LogoDark}
                                 alt="Logo"
                                 style={{
                                     justifySelf: "center",

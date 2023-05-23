@@ -22,6 +22,7 @@ export const sendEmail = async (email, subject, payload, template) => {
         const compiledTemplate = handlebars.compile(source);
         const options = () => {
             return {
+                name: "Bookbunny",
                 from: process.env.EMAIL_USERNAME,
                 to: email,
                 subject: subject,

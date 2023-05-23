@@ -3,7 +3,8 @@ import Container from "components/Container";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "theme";
-import Logo from "../../assets/Logo-02.svg";
+import LogoLight from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-04.svg";
 import Form from "./form";
 
 const ForgotPassword = () => {
@@ -57,7 +58,7 @@ const ForgotPassword = () => {
                     <Form />
                 </Container>
                 <img
-                    src={Logo}
+                    src={mode === "light" ? LogoLight : LogoDark}
                     alt="Logo"
                     style={{
                         cursor: "pointer",
@@ -86,7 +87,7 @@ const ForgotPassword = () => {
             }}
         >
             <img
-                src={Logo}
+                src={mode === "light" ? LogoLight : LogoDark}
                 alt="Logo"
                 style={{
                     cursor: "pointer",

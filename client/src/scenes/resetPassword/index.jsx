@@ -3,7 +3,8 @@ import Container from "components/Container";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "theme";
-import Logo from "../../assets/Logo-02.svg";
+import LogoLight from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-02.svg";
 import Form from "./form";
 
 const ResetPassword = () => {
@@ -48,7 +49,7 @@ const ResetPassword = () => {
                     <Form token={token} userId={userId} />
                 </Container>
                 <img
-                    src={Logo}
+                    src={mode === "light" ? LogoLight : LogoDark}
                     alt="Logo"
                     style={{
                         cursor: "pointer",
@@ -77,7 +78,7 @@ const ResetPassword = () => {
             }}
         >
             <img
-                src={Logo}
+                src={mode === "light" ? LogoLight : LogoDark}
                 alt="Logo"
                 style={{
                     cursor: "pointer",
