@@ -103,6 +103,7 @@ const Home = () => {
                         </Container>
                     </Box>
                 </Box>
+
                 <Box
                     width={isNonMobileScreens ? "700px" : "50vw"}
                     display="flex"
@@ -115,6 +116,53 @@ const Home = () => {
                         }}
                         alt="hero"
                     />
+                </Box>
+            </Box>
+            <Box
+                display="grid"
+                gridTemplateColumns="repeat(12, minmax(1vw,100px))"
+                gridTemplateRows="100px"
+            >
+                <Box
+                    display="flex"
+                    flexWrap="wrap"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{
+                        gridColumnStart: "-4",
+                        gridColumnEnd: "-10",
+                        gridRowStart: "1",
+                    }}
+                >
+                    <Container
+                        variant="outlined"
+                        outerStyle={{
+                            padding: "5px 10px",
+                        }}
+                        onClick={() => {
+                            navigate("/contact");
+                        }}
+                    >
+                        Contact
+                    </Container>
+                    <Container
+                        variant="outlined"
+                        outerStyle={{ padding: "5px 10px" }}
+                        onClick={() => {
+                            navigate("/privacy");
+                        }}
+                    >
+                        Privacy Policy
+                    </Container>
+                    <Container
+                        variant="outlined"
+                        outerStyle={{ padding: "5px 10px" }}
+                        onClick={() => {
+                            navigate("/tos");
+                        }}
+                    >
+                        Terms & Conditions
+                    </Container>
                 </Box>
             </Box>
         </Box>

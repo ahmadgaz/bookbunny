@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import contactRoute from "./routes/contact.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 // import { createServer } from "http";
@@ -47,6 +48,7 @@ app.post("/test", (req, res) => {
         res.status(500).json({ msg: "error!" });
     }
 });
+app.use("/contact", contactRoute);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 

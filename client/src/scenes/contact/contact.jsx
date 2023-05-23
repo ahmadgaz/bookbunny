@@ -3,10 +3,11 @@ import Container from "components/Container";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "theme";
-import Logo from "../../assets/Logo-02.svg";
+import LogoLight from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-04.svg";
 import Form from "./form";
 
-const Register = () => {
+const Contact = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
     document
@@ -45,20 +46,21 @@ const Register = () => {
                     }}
                 >
                     <Typography variant="h1" margin="5px 0 10px 0">
-                        <b>Sign Up</b>
+                        <b>Contact Us</b>
                     </Typography>
                     <Typography
                         variant="body1"
                         fontSize={24}
-                        color={colors.neutralDark[300]}
                         margin="0 0 40px 0"
                     >
-                        Create a Bookbunny account
+                        If you're having issues with your Bookbunny account,
+                        need help navigating our app, or want to provide
+                        feedback, please send us a message!
                     </Typography>
                     <Form />
                 </Container>
                 <img
-                    src={Logo}
+                    src={mode === "light" ? LogoLight : LogoDark}
                     alt="Logo"
                     style={{
                         cursor: "pointer",
@@ -85,18 +87,27 @@ const Register = () => {
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/contact");
+                    }}
                 >
                     Contact
                 </Container>
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/privacy");
+                    }}
                 >
                     Privacy Policy
                 </Container>
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/tos");
+                    }}
                 >
                     Terms & Conditions
                 </Container>
@@ -118,7 +129,7 @@ const Register = () => {
             }}
         >
             <img
-                src={Logo}
+                src={mode === "light" ? LogoLight : LogoDark}
                 alt="Logo"
                 style={{
                     cursor: "pointer",
@@ -130,15 +141,12 @@ const Register = () => {
                 }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
-                <b>Sign Up</b>
+                <b>Contact Us</b>
             </Typography>
-            <Typography
-                variant="body1"
-                fontSize={24}
-                color={colors.neutralDark[300]}
-                margin="0 0 40px 0"
-            >
-                Create a Bookbunny account
+            <Typography variant="body1" fontSize={24} margin="0 0 40px 0">
+                If you're having issues with your Bookbunny account, need help
+                navigating our app, or want to provide feedback, please send us
+                a message!
             </Typography>
             <Form />
             <Box
@@ -180,4 +188,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default Contact;

@@ -14,6 +14,9 @@ import NewEvent from "scenes/newEvent";
 import ForgotPassword from "scenes/forgotPassword";
 import ResetPassword from "scenes/resetPassword";
 import ConfirmedEmail from "scenes/register/confirmedEmail";
+import Contact from "scenes/contact/contact";
+import Privacy from "scenes/privacy/privacy";
+import Tos from "scenes/tos";
 
 function App() {
     const mode = useSelector((state) => state.mode);
@@ -83,6 +86,9 @@ function App() {
                                 path="/confirmation/:token"
                                 element={<ConfirmedEmail />}
                             />
+                            <Route path="/contact" element={<Contact />} />
+                            <Route path="/privacy" element={<Privacy />} />
+                            <Route path="/tos" element={<Tos />} />
                         </Routes>
                     </ThemeProvider>
                 </BrowserRouter>

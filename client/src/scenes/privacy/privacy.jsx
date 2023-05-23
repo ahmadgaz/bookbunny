@@ -1,12 +1,17 @@
 import { Box, Typography, useMediaQuery } from "@mui/material";
 import Container from "components/Container";
+import { useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { tokens } from "theme";
-import Logo from "../../assets/Logo-02.svg";
-import Form from "./form";
+import LogoLight from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-04.svg";
+import __html from "./privacy.html";
 
-const Register = () => {
+const form = { __html: __html };
+
+const Privacy = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
     document
@@ -45,20 +50,12 @@ const Register = () => {
                     }}
                 >
                     <Typography variant="h1" margin="5px 0 10px 0">
-                        <b>Sign Up</b>
+                        <b>Privacy Policy</b>
                     </Typography>
-                    <Typography
-                        variant="body1"
-                        fontSize={24}
-                        color={colors.neutralDark[300]}
-                        margin="0 0 40px 0"
-                    >
-                        Create a Bookbunny account
-                    </Typography>
-                    <Form />
+                    <div dangerouslySetInnerHTML={form} />
                 </Container>
                 <img
-                    src={Logo}
+                    src={mode === "light" ? LogoLight : LogoDark}
                     alt="Logo"
                     style={{
                         cursor: "pointer",
@@ -85,18 +82,27 @@ const Register = () => {
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/contact");
+                    }}
                 >
                     Contact
                 </Container>
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/privacy");
+                    }}
                 >
                     Privacy Policy
                 </Container>
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/tos");
+                    }}
                 >
                     Terms & Conditions
                 </Container>
@@ -118,7 +124,7 @@ const Register = () => {
             }}
         >
             <img
-                src={Logo}
+                src={mode === "light" ? LogoLight : LogoDark}
                 alt="Logo"
                 style={{
                     cursor: "pointer",
@@ -130,17 +136,9 @@ const Register = () => {
                 }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
-                <b>Sign Up</b>
+                <b>Privacy Policy</b>
             </Typography>
-            <Typography
-                variant="body1"
-                fontSize={24}
-                color={colors.neutralDark[300]}
-                margin="0 0 40px 0"
-            >
-                Create a Bookbunny account
-            </Typography>
-            <Form />
+
             <Box
                 display="flex"
                 flexWrap="wrap"
@@ -180,4 +178,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export default Privacy;

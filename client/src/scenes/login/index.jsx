@@ -20,7 +20,7 @@ const Login = () => {
         <Box
             display="grid"
             gridTemplateColumns="100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px"
-            gridTemplateRows="minmax(90vh, min-content) 10vh"
+            gridTemplateRows="900px 100px"
         >
             <Box
                 sx={{
