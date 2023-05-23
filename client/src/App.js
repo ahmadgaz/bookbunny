@@ -16,7 +16,7 @@ import ResetPassword from "scenes/resetPassword";
 import ConfirmedEmail from "scenes/register/confirmedEmail";
 import Contact from "scenes/contact/contact";
 import Privacy from "scenes/privacy/privacy";
-import Tos from "scenes/tos";
+import Tos from "scenes/tos/tos";
 
 function App() {
     const mode = useSelector((state) => state.mode);

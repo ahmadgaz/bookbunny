@@ -7,11 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { tokens } from "theme";
 import LogoLight from "../../assets/Logo-02.svg";
 import LogoDark from "../../assets/Logo-04.svg";
-import __html from "./privacy.html";
+import __html from "./tos.html";
 
 const form = { __html: __html };
 
-const Privacy = () => {
+const Tos = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
     document
@@ -48,7 +48,7 @@ const Privacy = () => {
                     }}
                 >
                     <Typography variant="h1" margin="5px 0 10px 0">
-                        <b>Privacy Policy</b>
+                        <b>Terms & Conditions</b>
                     </Typography>
                     <div dangerouslySetInnerHTML={form} />
                 </Container>
@@ -134,7 +134,7 @@ const Privacy = () => {
                 }}
             />
             <Typography variant="h1" margin="5px 0 10px 0">
-                <b>Privacy Policy</b>
+                <b>Terms & Conditions</b>
             </Typography>
             <div dangerouslySetInnerHTML={form} />
             <Box
@@ -176,4 +176,4 @@ const Privacy = () => {
     );
 };
 
-export default Privacy;
+export default Tos;
