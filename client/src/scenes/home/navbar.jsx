@@ -41,7 +41,7 @@ const Navbar = (props) => {
                 <Toolbar>
                     <Button
                         variant="outlined"
-                        size={isNonMobileScreens ? "m" : "s"}
+                        size="s"
                         outerStyle={{ margin: "0 10px" }}
                         onClick={() => {
                             setPrevPage();
@@ -61,7 +61,7 @@ const Navbar = (props) => {
                     <Button
                         rounded
                         variant="contained"
-                        size={isNonMobileScreens ? "m" : "s"}
+                        size="s"
                         outerStyle={{ margin: "0 10px" }}
                         onClick={() => {
                             setPrevPage();
