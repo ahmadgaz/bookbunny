@@ -85,18 +85,27 @@ const Register = () => {
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/contact");
+                    }}
                 >
                     Contact
                 </Container>
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/privacy");
+                    }}
                 >
                     Privacy Policy
                 </Container>
                 <Container
                     variant="outlined"
                     outerStyle={{ padding: "5px 10px" }}
+                    onClick={() => {
+                        navigate("/tos");
+                    }}
                 >
                     Terms & Conditions
                 </Container>
