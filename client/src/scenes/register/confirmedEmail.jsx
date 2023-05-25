@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "theme";
 import LogoLight from "../../assets/Logo-02.svg";
 import LogoDark from "../../assets/Logo-04.svg";
+import "transition.css";
 
 const authURL = `${process.env.REACT_APP_SERVER_BASE_URL}/auth`;
 
@@ -47,6 +48,7 @@ const ConfirmedEmail = () => {
 
     return (
         <Box
+            className="fadeIn"
             sx={{
                 margin: "30px 0 0 0",
                 width: "100%",

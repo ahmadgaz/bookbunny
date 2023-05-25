@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { tokens } from "theme";
 import Logo from "../../assets/Logo-02.svg";
 import Form from "./form";
+import "transition.css";
 
 const Login = () => {
     const mode = useSelector((state) => state.mode);
@@ -18,6 +19,7 @@ const Login = () => {
 
     return isNonMobileScreens ? (
         <Box
+            className="fadeIn"
             display="grid"
             gridTemplateColumns="100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px"
             gridTemplateRows="900px 100px"
@@ -73,6 +75,7 @@ const Login = () => {
         </Box>
     ) : (
         <Box
+            className="fadeIn"
             sx={{
                 display: "flex",
                 justifyContent: "center",

@@ -6,6 +6,7 @@ import { tokens } from "theme";
 import LogoLight from "../../assets/Logo-02.svg";
 import LogoDark from "../../assets/Logo-04.svg";
 import Form from "./form";
+import "transition.css";
 
 const Contact = () => {
     const mode = useSelector((state) => state.mode);
@@ -19,6 +20,7 @@ const Contact = () => {
 
     return isNonMobileScreens ? (
         <Box
+            className="fadeIn"
             display="grid"
             gridTemplateColumns="100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px"
             gridTemplateRows="900px 100px"
@@ -115,6 +117,7 @@ const Contact = () => {
         </Box>
     ) : (
         <Box
+            className="fadeIn"
             sx={{
                 display: "flex",
                 justifyContent: "center",

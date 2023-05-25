@@ -6,6 +6,7 @@ import { tokens } from "theme";
 import LogoLight from "../../assets/Logo-02.svg";
 import LogoDark from "../../assets/Logo-04.svg";
 import Form from "./form";
+import "transition.css";
 
 const ForgotPassword = () => {
     const mode = useSelector((state) => state.mode);
@@ -16,6 +17,7 @@ const ForgotPassword = () => {
 
     return isNonMobileScreens ? (
         <Box
+            className="fadeIn"
             display="grid"
             gridTemplateColumns="100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px"
             gridTemplateRows="minmax(90vh, min-content) 10vh"
@@ -73,6 +75,7 @@ const ForgotPassword = () => {
         </Box>
     ) : (
         <Box
+            className="fadeIn"
             sx={{
                 display: "flex",
                 justifyContent: "center",

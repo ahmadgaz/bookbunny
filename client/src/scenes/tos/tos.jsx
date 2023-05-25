@@ -8,6 +8,7 @@ import { tokens } from "theme";
 import LogoLight from "../../assets/Logo-02.svg";
 import LogoDark from "../../assets/Logo-04.svg";
 import __html from "./tos.html";
+import "transition.css";
 
 const form = { __html: __html };
 
@@ -23,6 +24,7 @@ const Tos = () => {
 
     return isNonMobileScreens ? (
         <Box
+            className="fadeIn"
             display="grid"
             gridTemplateColumns="100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px 100px"
             gridTemplateRows="900px 100px"
@@ -108,6 +110,7 @@ const Tos = () => {
         </Box>
     ) : (
         <Box
+            className="fadeIn"
             sx={{
                 display: "flex",
                 justifyContent: "center",

@@ -10,6 +10,7 @@ import View from "./View.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { hideSnackbar } from "state";
 import { tokens } from "theme.js";
+import "transition.css";
 
 const Dashboard = () => {
     const mode = useSelector((state) => state.mode);
@@ -61,6 +62,7 @@ const Dashboard = () => {
 
     return (
         <Box
+            className="fadeIn"
             width="100vw"
             height={isNonMobileScreens ? "100vh" : "90vh"}
             sx={{ touchAction: "pan-y" }}

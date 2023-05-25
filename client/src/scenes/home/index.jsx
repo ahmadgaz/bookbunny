@@ -7,6 +7,7 @@ import Hero from "../../assets/Hero.gif";
 import { tokens } from "theme";
 import Container from "components/Container";
 import { useNavigate } from "react-router-dom";
+import "transition.css";
 
 const Home = () => {
     const isNonMobileScreens = useMediaQuery("(min-width: 1400px)");
@@ -26,6 +27,7 @@ const Home = () => {
 
     return (
         <Box
+            className="fadeIn"
             width="100%"
             display="flex"
             flexWrap="nowrap"

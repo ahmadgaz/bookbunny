@@ -23,6 +23,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import isBetween from "dayjs/plugin/isBetween";
 import Container from "components/Container";
 import { tokens } from "theme";
+import "transition.css";
 
 const NewEvent = () => {
     const mode = useSelector((state) => state.mode);
@@ -333,11 +334,11 @@ const NewEvent = () => {
         receivingUser ? (
             typeof receivingUser === "string" ||
             receivingUser instanceof String ? (
-                <Typography variant="body1" fontSize={24}>
+                <Typography className="fadeIn" variant="body1" fontSize={24}>
                     {receivingUser}
                 </Typography>
             ) : (
-                <Box width="100%" height="100vh">
+                <Box className="fadeIn" width="100%" height="100vh">
                     {isAuth ? (
                         isNonMobileScreens ? (
                             <Box
@@ -1367,12 +1368,13 @@ const NewEvent = () => {
                 </Box>
             )
         ) : (
-            <Typography variant="h3" margin="50px">
+            <Typography className="fadeIn" variant="h3" margin="50px">
                 Loading...
             </Typography>
         )
     ) : (
         <Box
+            className="fadeIn"
             display="flex"
             width="100vw"
             height="100vh"
