@@ -293,12 +293,9 @@ const CRUDFunctionsContextProvider = (props) => {
     };
     const getRecievingUser = async (eventType) => {
         const receivingUserResponse = await fetch(
-            `${userURL}/${user._id}/getRecievingUser/${eventType}`,
+            `${userURL}/${user?._id}/getRecievingUser/${eventType}`,
             {
                 method: "GET",
-                headers: {
-                    Authorization: `${token}`,
-                },
             }
         );
         const receivingUser = await receivingUserResponse.json();

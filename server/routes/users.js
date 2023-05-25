@@ -41,7 +41,7 @@ router.delete("/:user/deleteUser", verifyToken, deleteUser);
 router.patch("/:user/updateName", verifyToken, updateName); //
 router.patch("/:user/updatePass", verifyToken, updatePass); //
 router.post("/:user/confirmPassword", verifyToken, confirmPassword); //
-router.get("/:user/getRecievingUser/:eventType", verifyToken, getRecievingUser); //
+router.get("/:user/getRecievingUser/:eventType", getRecievingUser); //
 router.get("/:user/getFirstFourUsers/:filter", verifyToken, getFirstFourUsers); //
 router.get("/:user/getAttendeesInfo/:event", verifyToken, getAttendeesInfo); //
 

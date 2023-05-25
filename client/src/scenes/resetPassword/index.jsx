@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { tokens } from "theme";
 import LogoLight from "../../assets/Logo-02.svg";
-import LogoDark from "../../assets/Logo-02.svg";
+import LogoDark from "../../assets/Logo-04.svg";
 import Form from "./form";
 
 const ResetPassword = () => {

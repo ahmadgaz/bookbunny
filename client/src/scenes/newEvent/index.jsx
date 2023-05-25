@@ -7,6 +7,7 @@ import {
     IconButton,
     TextField,
     Typography,
+    useMediaQuery,
 } from "@mui/material";
 import { Fragment, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +27,9 @@ import { tokens } from "theme";
 const NewEvent = () => {
     const mode = useSelector((state) => state.mode);
     const colors = tokens(mode);
+    document
+        .querySelector("meta[name='theme-color']")
+        .setAttribute("content", colors.neutralLight[100]);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -34,16 +38,28 @@ const NewEvent = () => {
         useContext(CRUDFunctionsContext);
     let { eventTypeID } = useParams();
     let [receivingUser, setRecievingUser] = useState(null);
+    const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
 
     // Get recieving user info
     useEffect(() => {
         async function getUser() {
             const reciever = await getRecievingUser(eventTypeID);
-            setFixedOptions([user ? user.email : "", reciever.email]);
-            setAutoCompleteValue([user ? user.email : "", reciever.email]);
+            setFixedOptions([
+                user ? user.email : "",
+                reciever ? reciever?.email : "",
+            ]);
+            setAutoCompleteValue([
+                user ? user.email : "",
+                reciever ? reciever?.email : "",
+            ]);
             setAttendees([user, reciever]);
-            setOptions([user ? user.email : "", reciever.email]);
-            setRecievingUser(reciever);
+            setOptions([
+                user ? user.email : "",
+                reciever ? reciever?.email : "",
+            ]);
+            setRecievingUser(
+                reciever ? (reciever.error ? null : reciever) : null
+            );
         }
         getUser();
     }, []);
@@ -66,6 +82,7 @@ const NewEvent = () => {
             emblaApi.on("select", onSelect); // Add event listener
         }
     }, [emblaApi, tab]);
+    console.log(receivingUser);
 
     // If logging in/ signing up, set the previous page to this new event page so that after login it can redirect here
     const setPrevPageToNewEvent = () => {
@@ -322,58 +339,567 @@ const NewEvent = () => {
             ) : (
                 <Box width="100%" height="100vh">
                     {isAuth ? (
-                        <Box display="grid" gridTemplateRows="15vh 70vh 15vh">
-                            <Typography
-                                justifySelf="center"
-                                paddingTop="20px"
-                                alignSelf="center"
-                                variant="hero"
-                                fontSize={40}
+                        isNonMobileScreens ? (
+                            <Box
+                                display="grid"
+                                gridTemplateRows="15vh 70vh 15vh"
                             >
-                                <em>
-                                    Book an event with{" "}
-                                    <b>{receivingUser.first_name}</b>!
-                                </em>
-                            </Typography>
-                            <div
-                                className="embla"
-                                ref={emblaRef}
-                                style={{
-                                    overflowX: "hidden",
-                                    height: "100%",
-                                }}
-                            >
+                                <Typography
+                                    justifySelf="center"
+                                    padding="20px"
+                                    textAlign="center"
+                                    alignSelf="center"
+                                    variant="hero"
+                                    fontSize={40}
+                                >
+                                    <em>
+                                        Book an event with{" "}
+                                        <b>{receivingUser.first_name}</b>!
+                                    </em>
+                                </Typography>
                                 <div
-                                    className="embla-container"
+                                    className="embla"
+                                    ref={emblaRef}
                                     style={{
-                                        display: "flex",
-                                        flexDirection: "row",
+                                        overflowX: "hidden",
                                         height: "100%",
                                     }}
                                 >
                                     <div
-                                        className="embla__slide"
-                                        key="0"
+                                        className="embla-container"
                                         style={{
                                             display: "flex",
-                                            justifyContent: "center",
-                                            overflow: "auto",
-                                            flex: "0 0 100%",
-                                            minWidth: 0,
+                                            flexDirection: "row",
+                                            height: "100%",
                                         }}
                                     >
-                                        <Box p="20px" width="fit-content">
-                                            <Container
-                                                button={false}
-                                                style={{
-                                                    padding: "30px",
-                                                    backgroundColor:
-                                                        colors
-                                                            .neutralLight[100],
-                                                    textAlign: "left",
-                                                    width: "fit-content",
-                                                }}
-                                            >
+                                        <div
+                                            className="embla__slide"
+                                            key="0"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                overflow: "auto",
+                                                flex: "0 0 100%",
+                                            }}
+                                        >
+                                            <Box p="20px" width="fit-content">
+                                                <Container
+                                                    button={false}
+                                                    style={{
+                                                        padding: "30px",
+                                                        backgroundColor:
+                                                            colors
+                                                                .neutralLight[100],
+                                                        textAlign: "left",
+                                                        width: "fit-content",
+                                                    }}
+                                                >
+                                                    <Box
+                                                        display="flex"
+                                                        justifyContent="space-between"
+                                                    >
+                                                        <Typography
+                                                            variant="h1"
+                                                            paddingLeft="5px"
+                                                            margin="5px 0 10px 0"
+                                                        >
+                                                            {
+                                                                eventType.event_type_name
+                                                            }
+                                                        </Typography>
+                                                        <Box>
+                                                            <Button
+                                                                disabled={
+                                                                    dayChoice ===
+                                                                    null
+                                                                }
+                                                                endIcon={
+                                                                    <ArrowRight />
+                                                                }
+                                                                variant="contained"
+                                                                onClick={() => {
+                                                                    handleNext(
+                                                                        1
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Next
+                                                            </Button>
+                                                        </Box>
+                                                    </Box>
+                                                    <Box
+                                                        display="flex"
+                                                        flexWrap="nowrap"
+                                                        justifyContent="space-between"
+                                                    >
+                                                        <Typography
+                                                            variant="body1"
+                                                            fontSize={24}
+                                                            color={
+                                                                colors
+                                                                    .neutralDark[300]
+                                                            }
+                                                            margin="0 0 20px 0"
+                                                        >
+                                                            <b>Duration: </b>
+                                                            {
+                                                                eventType.event_type_duration
+                                                            }
+                                                        </Typography>
+                                                        <Typography
+                                                            variant="body1"
+                                                            fontSize={24}
+                                                            color={
+                                                                colors
+                                                                    .neutralDark[300]
+                                                            }
+                                                            margin="0 0 20px 0"
+                                                            textAlign="left"
+                                                        >
+                                                            <b>Location: </b>
+                                                            {
+                                                                eventType.event_type_location
+                                                            }
+                                                        </Typography>
+                                                    </Box>
+                                                    <hr />
+                                                    <Typography
+                                                        variant="body1"
+                                                        fontSize={28}
+                                                        margin="15px 0 20px 0"
+                                                        textAlign="center"
+                                                    >
+                                                        <b>Select a date</b>
+                                                    </Typography>
+                                                    <Box
+                                                        display="flex"
+                                                        flexDirection="column"
+                                                        flexWrap="nowrap"
+                                                    >
+                                                        <Box
+                                                            display="grid"
+                                                            gridTemplateColumns="repeat(4, auto)"
+                                                        >
+                                                            {days()}
+                                                        </Box>
+                                                    </Box>
+                                                </Container>
+                                            </Box>
+                                        </div>
+                                        <div
+                                            className="embla__slide"
+                                            key="1"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                overflow: "auto",
+                                                flex: "0 0 100%",
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            <Box p="20px" width="fit-content">
+                                                <Container
+                                                    button={false}
+                                                    style={{
+                                                        padding: "30px",
+                                                        backgroundColor:
+                                                            colors
+                                                                .neutralLight[100],
+                                                        textAlign: "left",
+                                                        width: "fit-content",
+                                                    }}
+                                                >
+                                                    <Box
+                                                        display="flex"
+                                                        justifyContent="space-between"
+                                                        alignItems="center"
+                                                        width="650px"
+                                                        height="60px"
+                                                        marginBottom="20px"
+                                                    >
+                                                        <IconButton
+                                                            onClick={() => {
+                                                                setTab(0);
+                                                            }}
+                                                        >
+                                                            <ArrowBack />
+                                                        </IconButton>
+                                                        <Typography
+                                                            position="absolute"
+                                                            left="50%"
+                                                            variant="body1"
+                                                            fontSize={28}
+                                                            sx={{
+                                                                transform:
+                                                                    "translateX(-50%)",
+                                                            }}
+                                                        >
+                                                            <b>Select a time</b>
+                                                        </Typography>
+                                                        <Box>
+                                                            <Button
+                                                                disabled={
+                                                                    timeChoice ===
+                                                                    null
+                                                                }
+                                                                endIcon={
+                                                                    <ArrowRight />
+                                                                }
+                                                                variant="contained"
+                                                                onClick={() => {
+                                                                    handleNext(
+                                                                        2
+                                                                    );
+                                                                }}
+                                                            >
+                                                                Next
+                                                            </Button>
+                                                        </Box>
+                                                    </Box>
+                                                    <Box
+                                                        display="flex"
+                                                        flexDirection="column"
+                                                        flexWrap="nowrap"
+                                                    >
+                                                        <Box
+                                                            display="grid"
+                                                            gridTemplateColumns="repeat(4, auto)"
+                                                        >
+                                                            {times()}
+                                                        </Box>
+                                                    </Box>
+                                                </Container>
+                                            </Box>
+                                        </div>
+                                        <div
+                                            className="embla__slide"
+                                            key="2"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                overflow: "auto",
+                                                flex: "0 0 100%",
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            <Box p="20px" width="fit-content">
+                                                <Container
+                                                    button={false}
+                                                    style={{
+                                                        padding: "30px",
+                                                        backgroundColor:
+                                                            colors
+                                                                .neutralLight[100],
+                                                        textAlign: "left",
+                                                        width: "fit-content",
+                                                    }}
+                                                >
+                                                    <Box
+                                                        display="flex"
+                                                        justifyContent="space-between"
+                                                        alignItems="center"
+                                                        width="650px"
+                                                        height="65px"
+                                                        marginBottom="20px"
+                                                    >
+                                                        <IconButton
+                                                            onClick={() => {
+                                                                setTab(1);
+                                                            }}
+                                                        >
+                                                            <ArrowBack />
+                                                        </IconButton>
+                                                        <Typography
+                                                            position="absolute"
+                                                            left="50%"
+                                                            top="30px"
+                                                            variant="body1"
+                                                            fontSize={28}
+                                                            sx={{
+                                                                transform:
+                                                                    "translateX(-50%)",
+                                                            }}
+                                                        >
+                                                            <b>Almost there</b>
+                                                        </Typography>
+                                                        <Typography
+                                                            position="absolute"
+                                                            top="70px"
+                                                            left="50%"
+                                                            variant="body2"
+                                                            fontSize={20}
+                                                            color={
+                                                                colors
+                                                                    .neutralDark[300]
+                                                            }
+                                                            sx={{
+                                                                transform:
+                                                                    "translateX(-50%)",
+                                                            }}
+                                                        >
+                                                            Add some more
+                                                            details!
+                                                        </Typography>
+                                                    </Box>
+                                                    <Box
+                                                        display="flex"
+                                                        flexDirection="column"
+                                                        flexWrap="nowrap"
+                                                    >
+                                                        <Box
+                                                            display="grid"
+                                                            gridTemplateColumns="repeat(4, auto)"
+                                                        >
+                                                            <TextField
+                                                                disabled
+                                                                label="Duration"
+                                                                value={
+                                                                    eventType.event_type_duration
+                                                                }
+                                                                sx={{
+                                                                    gridColumn:
+                                                                        "span 4",
+                                                                    margin: "10px",
+                                                                }}
+                                                            />
+                                                            <TextField
+                                                                label="Notes"
+                                                                onChange={(
+                                                                    e
+                                                                ) => {
+                                                                    setNotes(
+                                                                        e.target
+                                                                            .value
+                                                                    );
+                                                                }}
+                                                                name="event_notes"
+                                                                sx={{
+                                                                    gridColumn:
+                                                                        "span 4",
+                                                                    margin: "10px",
+                                                                }}
+                                                            />
+                                                            {autoCompleteValue && (
+                                                                <Autocomplete
+                                                                    multiple
+                                                                    id="event_attendees"
+                                                                    limitTags={
+                                                                        3
+                                                                    }
+                                                                    value={
+                                                                        autoCompleteValue
+                                                                    }
+                                                                    sx={{
+                                                                        gridColumn:
+                                                                            "span 4",
+                                                                        margin: "10px",
+                                                                    }}
+                                                                    onChange={(
+                                                                        event,
+                                                                        newValue
+                                                                    ) => {
+                                                                        setAutoCompleteValue(
+                                                                            [
+                                                                                ...fixedOptions,
+                                                                                ...newValue.filter(
+                                                                                    (
+                                                                                        option
+                                                                                    ) =>
+                                                                                        fixedOptions.indexOf(
+                                                                                            option
+                                                                                        ) ===
+                                                                                        -1
+                                                                                ),
+                                                                            ]
+                                                                        );
+                                                                    }}
+                                                                    options={
+                                                                        options
+                                                                    }
+                                                                    loading={
+                                                                        loading
+                                                                    }
+                                                                    renderTags={(
+                                                                        tagValue,
+                                                                        getTagProps
+                                                                    ) =>
+                                                                        tagValue.map(
+                                                                            (
+                                                                                option,
+                                                                                index
+                                                                            ) => (
+                                                                                <Chip
+                                                                                    label={
+                                                                                        option
+                                                                                    }
+                                                                                    {...getTagProps(
+                                                                                        {
+                                                                                            index,
+                                                                                        }
+                                                                                    )}
+                                                                                    disabled={
+                                                                                        fixedOptions.indexOf(
+                                                                                            option
+                                                                                        ) !==
+                                                                                        -1
+                                                                                    }
+                                                                                />
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                    renderInput={(
+                                                                        params
+                                                                    ) => (
+                                                                        <TextField
+                                                                            {...params}
+                                                                            onChange={(
+                                                                                e
+                                                                            ) => {
+                                                                                setLoading(
+                                                                                    true
+                                                                                );
+                                                                                setAttendeesTextFieldValue(
+                                                                                    e
+                                                                                        .target
+                                                                                        .value
+                                                                                );
+                                                                            }}
+                                                                            label="Attendees"
+                                                                            placeholder="Add a Guest"
+                                                                            InputProps={{
+                                                                                ...params.InputProps,
+                                                                                endAdornment:
+                                                                                    (
+                                                                                        <Fragment>
+                                                                                            {loading ? (
+                                                                                                <CircularProgress
+                                                                                                    color="inherit"
+                                                                                                    size={
+                                                                                                        20
+                                                                                                    }
+                                                                                                />
+                                                                                            ) : null}
+                                                                                            {
+                                                                                                params
+                                                                                                    .InputProps
+                                                                                                    .endAdornment
+                                                                                            }
+                                                                                        </Fragment>
+                                                                                    ),
+                                                                            }}
+                                                                        />
+                                                                    )}
+                                                                />
+                                                            )}
+
+                                                            <Box
+                                                                sx={{
+                                                                    gridColumn:
+                                                                        "span 4",
+                                                                    margin: "20px 10px 0 10px",
+                                                                }}
+                                                            >
+                                                                <Container
+                                                                    fullWidth
+                                                                    button
+                                                                    size="m"
+                                                                    variant="contained"
+                                                                    onClick={() => {
+                                                                        createEvent(
+                                                                            {
+                                                                                event_date:
+                                                                                    listOfAvailableTimesOnChosenDay[
+                                                                                        timeChoice
+                                                                                    ],
+                                                                                event_duration:
+                                                                                    duration,
+                                                                                event_notes:
+                                                                                    notes,
+                                                                                event_attendees:
+                                                                                    attendees.map(
+                                                                                        (
+                                                                                            attendee
+                                                                                        ) =>
+                                                                                            attendee.email
+                                                                                    ),
+                                                                            },
+                                                                            eventTypeID
+                                                                        );
+                                                                        setSubmitted(
+                                                                            true
+                                                                        );
+                                                                    }}
+                                                                >
+                                                                    Schedule
+                                                                </Container>
+                                                            </Box>
+                                                        </Box>
+                                                    </Box>
+                                                </Container>
+                                            </Box>
+                                        </div>
+                                    </div>
+                                </div>
+                                <img
+                                    src={
+                                        mode === "light" ? LogoLight : LogoDark
+                                    }
+                                    alt="Logo"
+                                    style={{
+                                        justifySelf: "center",
+                                        alignSelf: "center",
+                                        height: "50px",
+                                        margin: "10px 0",
+                                    }}
+                                />
+                            </Box>
+                        ) : (
+                            <Box
+                                display="grid"
+                                gridTemplateRows="15vh 70vh 15vh"
+                                backgroundColor={colors.neutralLight[100]}
+                            >
+                                <Typography
+                                    justifySelf="center"
+                                    paddingTop="20px"
+                                    textAlign="center"
+                                    alignSelf="center"
+                                    variant="hero"
+                                    fontSize={40}
+                                >
+                                    <em>
+                                        Book an event with{" "}
+                                        <b>{receivingUser.first_name}</b>!
+                                    </em>
+                                </Typography>
+                                <div
+                                    className="embla"
+                                    ref={emblaRef}
+                                    style={{
+                                        overflowX: "hidden",
+                                        height: "100%",
+                                    }}
+                                >
+                                    <div
+                                        className="embla-container"
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            height: "100%",
+                                        }}
+                                    >
+                                        <div
+                                            className="embla__slide"
+                                            key="0"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                overflow: "auto",
+                                                flex: "0 0 100%",
+                                            }}
+                                        >
+                                            <Box p="20px" width="fit-content">
                                                 <Box
                                                     display="flex"
                                                     justifyContent="space-between"
@@ -452,48 +978,32 @@ const NewEvent = () => {
                                                 <Box
                                                     display="flex"
                                                     flexDirection="column"
-                                                    flexWrap="nowrap"
                                                 >
                                                     <Box
-                                                        display="grid"
-                                                        gridTemplateColumns="repeat(4, auto)"
+                                                        display="flex"
+                                                        flexWrap="wrap"
+                                                        justifyContent="center"
                                                     >
                                                         {days()}
                                                     </Box>
                                                 </Box>
-                                            </Container>
-                                        </Box>
-                                    </div>
-                                    <div
-                                        className="embla__slide"
-                                        key="1"
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            overflow: "auto",
-                                            flex: "0 0 100%",
-                                            minWidth: 0,
-                                        }}
-                                    >
-                                        <Box p="20px" width="fit-content">
-                                            <Container
-                                                button={false}
-                                                style={{
-                                                    padding: "30px",
-                                                    backgroundColor:
-                                                        colors
-                                                            .neutralLight[100],
-                                                    textAlign: "left",
-                                                    width: "fit-content",
-                                                }}
-                                            >
+                                            </Box>
+                                        </div>
+                                        <div
+                                            className="embla__slide"
+                                            key="1"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                overflow: "auto",
+                                                flex: "0 0 100%",
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            <Box p="20px" width="fit-content">
                                                 <Box
                                                     display="flex"
                                                     justifyContent="space-between"
-                                                    alignItems="center"
-                                                    width="650px"
-                                                    height="60px"
-                                                    marginBottom="20px"
                                                 >
                                                     <IconButton
                                                         onClick={() => {
@@ -503,14 +1013,8 @@ const NewEvent = () => {
                                                         <ArrowBack />
                                                     </IconButton>
                                                     <Typography
-                                                        position="absolute"
-                                                        left="50%"
                                                         variant="body1"
                                                         fontSize={28}
-                                                        sx={{
-                                                            transform:
-                                                                "translateX(-50%)",
-                                                        }}
                                                     >
                                                         <b>Select a time</b>
                                                     </Typography>
@@ -535,46 +1039,34 @@ const NewEvent = () => {
                                                 <Box
                                                     display="flex"
                                                     flexDirection="column"
-                                                    flexWrap="nowrap"
                                                 >
                                                     <Box
-                                                        display="grid"
-                                                        gridTemplateColumns="repeat(4, auto)"
+                                                        display="flex"
+                                                        flexWrap="wrap"
+                                                        justifyContent="center"
                                                     >
                                                         {times()}
                                                     </Box>
                                                 </Box>
-                                            </Container>
-                                        </Box>
-                                    </div>
-                                    <div
-                                        className="embla__slide"
-                                        key="2"
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            overflow: "auto",
-                                            flex: "0 0 100%",
-                                            minWidth: 0,
-                                        }}
-                                    >
-                                        <Box p="20px" width="fit-content">
-                                            <Container
-                                                button={false}
-                                                style={{
-                                                    padding: "30px",
-                                                    backgroundColor:
-                                                        colors
-                                                            .neutralLight[100],
-                                                    textAlign: "left",
-                                                    width: "fit-content",
-                                                }}
-                                            >
+                                            </Box>
+                                        </div>
+                                        <div
+                                            className="embla__slide"
+                                            key="2"
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                overflow: "auto",
+                                                flex: "0 0 100%",
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            <Box p="20px" width="fit-content">
                                                 <Box
                                                     display="flex"
                                                     justifyContent="space-between"
                                                     alignItems="center"
-                                                    width="650px"
+                                                    width="100%`"
                                                     height="65px"
                                                     marginBottom="20px"
                                                 >
@@ -585,16 +1077,11 @@ const NewEvent = () => {
                                                     >
                                                         <ArrowBack />
                                                     </IconButton>
+
                                                     <Typography
-                                                        position="absolute"
-                                                        left="50%"
                                                         top="30px"
                                                         variant="body1"
                                                         fontSize={28}
-                                                        sx={{
-                                                            transform:
-                                                                "translateX(-50%)",
-                                                        }}
                                                     >
                                                         <b>Almost there</b>
                                                     </Typography>
@@ -615,6 +1102,7 @@ const NewEvent = () => {
                                                     >
                                                         Add some more details!
                                                     </Typography>
+                                                    <IconButton></IconButton>
                                                 </Box>
                                                 <Box
                                                     display="flex"
@@ -806,22 +1294,24 @@ const NewEvent = () => {
                                                         </Box>
                                                     </Box>
                                                 </Box>
-                                            </Container>
-                                        </Box>
+                                            </Box>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <img
-                                src={mode === "light" ? LogoLight : LogoDark}
-                                alt="Logo"
-                                style={{
-                                    justifySelf: "center",
-                                    alignSelf: "center",
-                                    height: "50px",
-                                    margin: "10px 0",
-                                }}
-                            />
-                        </Box>
+                                <img
+                                    src={
+                                        mode === "light" ? LogoLight : LogoDark
+                                    }
+                                    alt="Logo"
+                                    style={{
+                                        justifySelf: "center",
+                                        alignSelf: "center",
+                                        height: "50px",
+                                        margin: "10px 0",
+                                    }}
+                                />
+                            </Box>
+                        )
                     ) : (
                         <Box
                             display="flex"
@@ -889,6 +1379,7 @@ const NewEvent = () => {
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
+            backgroundColor={colors.neutralLight[100]}
         >
             <Typography
                 variant="hero"

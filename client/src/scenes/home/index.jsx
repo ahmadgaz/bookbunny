@@ -105,14 +105,14 @@ const Home = () => {
                 </Box>
 
                 <Box
-                    width={isNonMobileScreens ? "700px" : "50vw"}
+                    width="min(50vw,700px)"
                     display="flex"
                     justifyContent="center"
                 >
                     <img
                         src={Hero}
                         style={{
-                            height: isNonMobileScreens ? "450px" : "80vw",
+                            height: "min(80vw,450px)",
                         }}
                         alt="hero"
                     />
