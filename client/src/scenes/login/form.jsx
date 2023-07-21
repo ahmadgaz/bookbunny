@@ -37,6 +37,7 @@ const Form = () => {
     const isNonMobile = useMediaQuery("(min-width:600px)");
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const googleLogin = useGoogleLogin({
         onSuccess: async (codeResponse) => {
@@ -64,8 +65,12 @@ const Form = () => {
             } else {
                 setError("There has been an error on our end.");
             }
+            setLoading(false);
         },
-        onError: (err) => setError(err),
+        onError: (err) => {
+            setError(err);
+            setLoading(false);
+        },
         scope: [
             "openid",
             "email",
@@ -79,6 +84,7 @@ const Form = () => {
     });
 
     const login = async (values, onSubmitProps) => {
+        setLoading(true);
         const loggedInResponse = await fetch(`${authURL}/login`, {
             method: "POST",
             body: JSON.stringify({
@@ -104,6 +110,7 @@ const Form = () => {
         } else {
             setError("There has been an error in the server.");
         }
+        setLoading(false);
     };
 
     return (
@@ -199,6 +206,7 @@ const Form = () => {
                             }}
                         >
                             <Container
+                                loading={loading}
                                 size="m"
                                 fullWidth
                                 variant="contained"
@@ -214,10 +222,14 @@ const Form = () => {
                                 onSuccess={googleLogin}
                             /> */}
                             <Container
+                                loading={loading}
                                 size="m"
                                 fullWidth
                                 variant="contained"
-                                onClick={() => googleLogin()}
+                                onClick={() => {
+                                    setLoading(true);
+                                    googleLogin();
+                                }}
                                 style={{
                                     backgroundColor: colors.neutralLight[100],
                                     // fontFamily: "Product Sans",

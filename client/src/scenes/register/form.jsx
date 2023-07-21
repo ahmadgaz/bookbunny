@@ -58,6 +58,7 @@ const Form = () => {
     const previousPage = useSelector((state) => state.routeBeforeLogInOrSignUp);
     const [error, setError] = useState(null);
     const [showPasswordRequirements, setShowPasswordRequirements] = useState();
+    const [loading, setLoading] = useState(false);
 
     const googleRegister = useGoogleLogin({
         onSuccess: async (codeResponse) => {
@@ -85,8 +86,12 @@ const Form = () => {
             } else {
                 setError("There has been an error on our end.");
             }
+            setLoading(false);
         },
-        onError: (err) => setError(err),
+        onError: (err) => {
+            setLoading(false);
+            setError(err);
+        },
         scope: [
             "openid",
             "email",
@@ -100,6 +105,7 @@ const Form = () => {
     });
 
     const register = async (values, onSubmitProps) => {
+        setLoading(true);
         const sentConfirmationEmailResponse = await fetch(
             `${authURL}/register`,
             {
@@ -120,6 +126,7 @@ const Form = () => {
             setError(sentConfirmationEmail.msg);
             return;
         }
+        setLoading(false);
     };
 
     return (
@@ -289,6 +296,7 @@ const Form = () => {
                     <Box>
                         <Box sx={{ m: "2rem 0", p: "2px" }}>
                             <Container
+                                loading={loading}
                                 size="m"
                                 fullWidth
                                 variant="contained"
@@ -304,10 +312,14 @@ const Form = () => {
                                 onSuccess={googleLogin}
                             /> */}
                             <Container
+                                loading={loading}
                                 size="m"
                                 fullWidth
                                 variant="contained"
-                                onClick={googleRegister}
+                                onClick={() => {
+                                    setLoading(true);
+                                    googleRegister();
+                                }}
                                 style={{
                                     backgroundColor: colors.neutralLight[100],
                                     // fontFamily: "Product Sans",

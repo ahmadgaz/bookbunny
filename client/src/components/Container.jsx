@@ -4,6 +4,7 @@ import jsxToString from "jsx-to-string";
 import { useState } from "react";
 import { tokens } from "theme";
 import { useSelector } from "react-redux";
+import "../index.css";
 
 const Text = (props) => {
     const { translation, height, italicized, children } = props;
@@ -94,6 +95,7 @@ const Container = (props) => {
     const colors = tokens(mode);
 
     const {
+        loading = false,
         italicized = false,
         size = "s",
         variant = "text",
@@ -331,10 +333,26 @@ const Container = (props) => {
                         >
                             <div
                                 style={{
+                                    position: "absolute",
+                                    top: -15,
+                                    scale: "0.75",
+                                    opacity: loading ? "100%" : "0%",
+                                }}
+                            >
+                                <div id="lds-ellipsis">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div
+                                style={{
                                     margin: 0,
                                     display: "flex",
                                     flexWrap: "nowrap",
                                     height: height,
+                                    opacity: loading ? "0%" : "100%",
                                 }}
                             >
                                 <Text
@@ -351,6 +369,7 @@ const Container = (props) => {
                                     display: "flex",
                                     flexWrap: "nowrap",
                                     height: height,
+                                    opacity: loading ? "0%" : "100%",
                                 }}
                             >
                                 <Text
@@ -367,6 +386,7 @@ const Container = (props) => {
                                     display: "flex",
                                     flexWrap: "nowrap",
                                     height: height,
+                                    opacity: loading ? "0%" : "100%",
                                 }}
                             >
                                 <Text
