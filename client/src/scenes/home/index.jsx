@@ -96,13 +96,22 @@ const Home = () => {
                         >
                             Try Free
                         </Container>
-                        <Container
-                            italicized
-                            size={isNonMobileScreens ? "m" : "s"}
-                            variant="outlined"
+                        <a
+                            href="https://github.com/ahmadgaz/bookbunny"
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                                textDecoration: "none",
+                            }}
                         >
-                            See how it works
-                        </Container>
+                            <Container
+                                italicized
+                                size={isNonMobileScreens ? "m" : "s"}
+                                variant="outlined"
+                            >
+                                See how it works
+                            </Container>
+                        </a>
                     </Box>
                 </Box>
 
