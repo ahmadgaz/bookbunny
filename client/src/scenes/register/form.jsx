@@ -61,7 +61,9 @@ const Form = () => {
     const [loading, setLoading] = useState(false);
 
     const googleRegister = useGoogleLogin({
-        ux_mode: "redirect",
+        onNonOAuthError: (err) => {
+            setLoading(false);
+        },
         onSuccess: async (codeResponse) => {
             const savedUserResponse = await fetch(`${authURL}/register`, {
                 method: "POST",

@@ -40,7 +40,10 @@ const Form = () => {
     const [loading, setLoading] = useState(false);
 
     const googleLogin = useGoogleLogin({
-        ux_mode: "redirect",
+        // ux_mode: "redirect",
+        onNonOAuthError: (err) => {
+            setLoading(false);
+        },
         onSuccess: async (codeResponse) => {
             const loggedInResponse = await fetch(`${authURL}/login`, {
                 method: "POST",
