@@ -447,13 +447,6 @@ const ViewsDropdown = (props) => {
             boxShadow: `none`,
         },
     });
-    const StyledButton3 = styled(Button)({
-        transition:
-            "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
-        "&:hover": {
-            filter: "brightness(110%)",
-        },
-    });
 
     const { mobile = false } = props;
     const { user, getSelectedView, updateView } =
@@ -568,7 +561,7 @@ const ViewsDropdown = (props) => {
     return (
         <>
             {view._id ? (
-                <StyledButton3
+                <Button
                     key="styledbutton3"
                     variant="contained"
                     onClick={(e) => {
@@ -593,7 +586,7 @@ const ViewsDropdown = (props) => {
                     }}
                 >
                     {view.view_name}
-                </StyledButton3>
+                </Button>
             ) : (
                 <Button
                     variant="contained"
@@ -614,7 +607,7 @@ const ViewsDropdown = (props) => {
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}
                 anchorOrigin={{
-                    vertical: "bottom",
+                    vertical: 40,
                     horizontal: "left",
                 }}
                 onClose={() => {
@@ -626,6 +619,7 @@ const ViewsDropdown = (props) => {
                         overflow: "visible",
                         backgroundColor: "rgba(0,0,0,0)",
                         marginTop: "10px",
+                        width: anchorEl ? anchorEl.clientWidth : null,
                     },
                 }}
             >

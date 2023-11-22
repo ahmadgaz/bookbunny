@@ -46,6 +46,8 @@ const Dashboard = () => {
             case 3:
                 setEmblaContainerRef(accountRef);
                 break;
+            default:
+                break;
         }
         setTab(newValue);
     };
@@ -64,7 +66,7 @@ const Dashboard = () => {
         <Box
             className="fadeIn"
             width="100vw"
-            height={isNonMobileScreens ? "100vh" : "90vh"}
+            height={isNonMobileScreens ? "100vh" : "100vh"}
             sx={{ touchAction: "pan-y" }}
         >
             <Navbar

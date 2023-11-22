@@ -61,6 +61,7 @@ const Form = () => {
     const [loading, setLoading] = useState(false);
 
     const googleRegister = useGoogleLogin({
+        ux_mode: "redirect",
         onSuccess: async (codeResponse) => {
             const savedUserResponse = await fetch(`${authURL}/register`, {
                 method: "POST",
@@ -121,9 +122,11 @@ const Form = () => {
 
         if (!sentConfirmationEmail) {
             setError("There has been an error in the server.");
+            setLoading(false);
             return;
         } else if (sentConfirmationEmail.msg) {
             setError(sentConfirmationEmail.msg);
+            setLoading(false);
             return;
         }
         setLoading(false);

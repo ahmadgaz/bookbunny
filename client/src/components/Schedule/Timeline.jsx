@@ -879,13 +879,13 @@ const Timeline = (props) => {
                         updateView(view.current);
                     }
                 }}
-                onMouseLeave={() => {
-                    if (type === "write" && views.length > 0) {
-                        timeslotsData.current = handleMouseUpMouseLeave();
-                        updateTimeslots();
-                        updateView(view.current);
-                    }
-                }}
+                // onMouseLeave={() => {
+                //     if (type === "write" && views.length > 0) {
+                //         timeslotsData.current = handleMouseUpMouseLeave();
+                //         updateTimeslots();
+                //         updateView(view.current);
+                //     }
+                // }}
             >
                 {ticker && timeTicker}
                 {timeslots}
