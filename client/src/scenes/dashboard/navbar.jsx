@@ -451,6 +451,7 @@ const ViewsDropdown = (props) => {
     const { mobile = false } = props;
     const { user, getSelectedView, updateView } =
         useContext(CRUDFunctionsContext);
+    const [width, setWidth] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
     const [showAddedSnackbar, setShowAddedSnackbar] = useState(false);
@@ -460,6 +461,7 @@ const ViewsDropdown = (props) => {
         setShowDialog(true);
     };
     const handlePopoverOpen = (event) => {
+        setWidth(event.currentTarget.clientWidth);
         setAnchorEl(event.currentTarget);
     };
     const handlePopoverClose = () => {
@@ -594,6 +596,11 @@ const ViewsDropdown = (props) => {
                         handleDialogOpen();
                     }}
                     style={{
+                        transition:
+                            "filter 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, left 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms",
+                        ":hover": {
+                            filter: "brightness(110%)",
+                        },
                         backgroundColor: "",
                         flexGrow: 1,
                         borderTopRightRadius: mobile ? "" : 0,
@@ -619,7 +626,7 @@ const ViewsDropdown = (props) => {
                         overflow: "visible",
                         backgroundColor: "rgba(0,0,0,0)",
                         marginTop: "10px",
-                        width: anchorEl ? anchorEl.clientWidth : null,
+                        width: width,
                     },
                 }}
             >

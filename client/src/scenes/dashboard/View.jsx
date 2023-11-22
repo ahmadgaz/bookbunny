@@ -1634,36 +1634,33 @@ const View = () => {
                                 >
                                     <Box
                                         backgroundColor={
-                                            colors.neutralDark[500]
+                                            leftArrowHovered
+                                                ? colors.neutralDark[400]
+                                                : colors.neutralDark[500]
                                         }
                                         sx={{
                                             position: "relative",
                                             width: "5px",
                                             height: "55%",
                                             rotate: "45deg",
-                                            border: leftArrowHovered
-                                                ? ` 4px solid ${colors.neutralDark[500]}`
-                                                : ` 0px solid ${colors.neutralDark[500]}`,
-                                            transition: "border 0.1s ease",
+                                            transition:
+                                                "background-color 0.1s ease",
                                         }}
                                     ></Box>
                                     <Box
                                         backgroundColor={
-                                            colors.neutralDark[500]
+                                            leftArrowHovered
+                                                ? colors.neutralDark[400]
+                                                : colors.neutralDark[500]
                                         }
                                         sx={{
                                             position: "relative",
-                                            top: leftArrowHovered
-                                                ? "-12px"
-                                                : "-10px",
+                                            top: "-10px",
                                             width: "5px",
                                             height: "55%",
                                             rotate: "-45deg",
-                                            border: leftArrowHovered
-                                                ? ` 4px solid ${colors.neutralDark[500]}`
-                                                : ` 0px solid ${colors.neutralDark[500]}`,
                                             transition:
-                                                "border 0.1s ease, top 0.1s ease",
+                                                "background-color 0.1s ease",
                                         }}
                                     ></Box>
                                 </div>
@@ -1697,36 +1694,33 @@ const View = () => {
                                 >
                                     <Box
                                         backgroundColor={
-                                            colors.neutralDark[500]
+                                            rightArrowHovered
+                                                ? colors.neutralDark[400]
+                                                : colors.neutralDark[500]
                                         }
                                         sx={{
                                             position: "relative",
                                             width: "5px",
                                             height: "55%",
                                             rotate: "-45deg",
-                                            border: rightArrowHovered
-                                                ? ` 4px solid ${colors.neutralDark[500]}`
-                                                : ` 0px solid ${colors.neutralDark[500]}`,
-                                            transition: "border 0.1s ease",
+                                            transition:
+                                                "background-color 0.1s ease",
                                         }}
                                     ></Box>
                                     <Box
                                         backgroundColor={
-                                            colors.neutralDark[500]
+                                            rightArrowHovered
+                                                ? colors.neutralDark[400]
+                                                : colors.neutralDark[500]
                                         }
                                         sx={{
                                             position: "relative",
-                                            top: rightArrowHovered
-                                                ? "-12px"
-                                                : "-10px",
+                                            top: "-10px",
                                             width: "5px",
                                             height: "55%",
                                             rotate: "45deg",
-                                            border: rightArrowHovered
-                                                ? ` 4px solid ${colors.neutralDark[500]}`
-                                                : ` 0px solid ${colors.neutralDark[500]}`,
                                             transition:
-                                                "border 0.1s ease, top 0.1s ease",
+                                                "background-color 0.1s ease",
                                         }}
                                     ></Box>
                                 </div>
@@ -1989,33 +1983,34 @@ const View = () => {
                                 }}
                             >
                                 <Box
-                                    backgroundColor={colors.neutralDark[500]}
+                                    backgroundColor={
+                                        leftArrowHovered
+                                            ? colors.neutralDark[400]
+                                            : colors.neutralDark[500]
+                                    }
                                     sx={{
                                         position: "relative",
                                         width: "5px",
                                         height: "55%",
                                         rotate: "45deg",
-                                        border: leftArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
-                                        transition: "border 0.1s ease",
+                                        transition:
+                                            "background-color 0.1s ease",
                                     }}
                                 ></Box>
                                 <Box
-                                    backgroundColor={colors.neutralDark[500]}
+                                    backgroundColor={
+                                        leftArrowHovered
+                                            ? colors.neutralDark[400]
+                                            : colors.neutralDark[500]
+                                    }
                                     sx={{
                                         position: "relative",
-                                        top: leftArrowHovered
-                                            ? "-12px"
-                                            : "-10px",
+                                        top: "-10px",
                                         width: "5px",
                                         height: "55%",
                                         rotate: "-45deg",
-                                        border: leftArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
                                         transition:
-                                            "border 0.1s ease, top 0.1s ease",
+                                            "background-color 0.1s ease",
                                     }}
                                 ></Box>
                             </div>
@@ -2044,33 +2039,34 @@ const View = () => {
                                 }}
                             >
                                 <Box
-                                    backgroundColor={colors.neutralDark[500]}
+                                    backgroundColor={
+                                        rightArrowHovered
+                                            ? colors.neutralDark[400]
+                                            : colors.neutralDark[500]
+                                    }
                                     sx={{
                                         position: "relative",
                                         width: "5px",
                                         height: "55%",
                                         rotate: "-45deg",
-                                        border: rightArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
-                                        transition: "border 0.1s ease",
+                                        transition:
+                                            "background-color 0.1s ease",
                                     }}
                                 ></Box>
                                 <Box
-                                    backgroundColor={colors.neutralDark[500]}
+                                    backgroundColor={
+                                        rightArrowHovered
+                                            ? colors.neutralDark[400]
+                                            : colors.neutralDark[500]
+                                    }
                                     sx={{
                                         position: "relative",
-                                        top: rightArrowHovered
-                                            ? "-12px"
-                                            : "-10px",
+                                        top: "-10px",
                                         width: "5px",
                                         height: "55%",
                                         rotate: "45deg",
-                                        border: rightArrowHovered
-                                            ? ` 4px solid ${colors.neutralDark[500]}`
-                                            : ` 0px solid ${colors.neutralDark[500]}`,
                                         transition:
-                                            "border 0.1s ease, top 0.1s ease",
+                                            "background-color 0.1s ease",
                                     }}
                                 ></Box>
                             </div>
